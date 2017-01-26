@@ -23,26 +23,26 @@ var workspace = angular.module('workspace', [])
                 // params.class = "org.ecocean.media.MediaAssetSet";
                 $scope.loading = 'on';
                 console.log(params);
-                $scope.workspace_args = params; 
-                $.ajax({
-                    type: "POST",
-                    url: 'http://springbreak.wildbook.org/TranslateQuery',
-                    data: params,
-                    dataType: "json"
+                $scope.workspace_args = params; 
+                $.ajax({
+                    type: "POST",
+                    url: 'http://wb.scribble.com/TranslateQuery',
+                    data: params,
+                    dataType: "json"
 
-                }).then(function(data) {
+                }).then(function(data) {
                     $scope.loading = 'off';
-                    // this callback will be called asynchronously
-                    // when the response is available
-                    $scope.$apply(function() {
-                        $scope.currentSlides = data.assets;
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    $scope.$apply(function() {
+                        $scope.currentSlides = data.assets;
 
-                    })
-                }).fail(function(data) {
+                    })
+                }).fail(function(data) {
                         $scope.loading = 'off';
-                        console.log("failed workspaces query");
-                    });
-            };
+                        console.log("failed workspaces query");
+                    });
+                };
 
 			//query all workspaces to populate workspace dropdown
 			$scope.queryWorkspaceList = function() {
@@ -220,7 +220,7 @@ var workspace = angular.module('workspace', [])
 				Wildbook.saveDateTime(params)
 					.then(function(data) {
 						console.log("save complete " + response.data);
-						$http.get('http://springbreak.wildbook.org/MediaAssetContext?id=' + $scope.mediaAssetId)
+						$http.get('http://wb.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
 							.then(function(response) {
 								$scope.mediaAssetContext = response.data;
 							});
@@ -269,7 +269,7 @@ var workspace = angular.module('workspace', [])
 
 			};
 			//fake filtering data
-			$http.get('assets/json/fakeClassDefinitions.json').success(function(data) {
+			$http.get('assets/json/fakeClassDefinitions.json').then(function(data) {
 				$scope.filter.filtering_tests = data;
 			});
 			//used in table view
@@ -507,8 +507,8 @@ var workspace = angular.module('workspace', [])
 					else {
 						$scope.detection.firstRun = false;
 						var time = new Date().getTime();
-						console.log("http://springbreak.wildbook.org/ia?getDetectionReviewHtmlNext&time=" + time);
-						$("#detection-review").load("http://springbreak.wildbook.org/ia?getDetectionReviewHtmlNext&time=" + time, function(response, status, xhr) {
+						console.log("http://wb.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time);
+						$("#detection-review").load("http://wb.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time, function(response, status, xhr) {
 							if ($scope.pastDetectionReviews.length <= 0) {
 								$scope.detection.allowBackButton = false;
 							} else {
@@ -530,14 +530,14 @@ var workspace = angular.module('workspace', [])
 					}
 				},
 				loadDetectionHTMLwithOffset: function() {
-					 console.log("http://springbreak.wildbook.org/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
-					 $("#detection-review").load("http://springbreak.wildbook.org/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
+					 console.log("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
+					 $("#detection-review").load("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
 				},
 				// //queries for the actual detection html and sets it in the page
 				// loadDetectionHTML: function() {
 				//	 $scope.reviewOffset = 0;
-				//	 console.log("http://springbreak.wildbook.org/ia?getDetectReviewHtml=" + $scope.last_jobid);
-				//	 $("#ibeis-process").load("http://springbreak.wildbook.org/ia?getDetectReviewHtml=" + $scope.last_jobid);
+				//	 console.log("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
+				//	 $("#ibeis-process").load("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
 				// }
 
 
@@ -580,7 +580,7 @@ var workspace = angular.module('workspace', [])
 			function ImageDialogController($scope, $mdDialog, mediaAsset) {
 				var mediaAssetId = mediaAsset.id;
 				$scope.mediaAssetId = mediaAsset.id;
-				$http.get('http://springbreak.wildbook.org/MediaAssetContext?id=' + mediaAssetId)
+				$http.get('http://wb.scribble.com/MediaAssetContext?id=' + mediaAssetId)
 					.then(function(response) {
 						$scope.mediaAssetContext = response.data;
 					});

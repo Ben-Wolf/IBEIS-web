@@ -2,7 +2,7 @@ angular.module('wildbook.service', [])
     .factory('Wildbook', ['$http', function($http) {
         var factory = {};
 
-        factory.baseUrl = "http://springbreak.wildbook.org/"
+        factory.baseUrl = "http://wb.scribble.com/"
 
         // UPLOADING TO S3 AND THROUGH FLOW
         // ==================================
