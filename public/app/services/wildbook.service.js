@@ -159,6 +159,7 @@ angular.module('wildbook.service', [])
         // };
 
         factory.findMediaAssetSetIdFromUploadSet = function(setName) {
+if (!setName) { alert('findMediaAssetSetIdFromUploadSet() passed no arg'); console.error('no setName passed!'); return; }  //hacky but ya get what ya get
             var params = {
                 method: "GET",
                 url: factory.baseUrl + 'WorkspaceServer',
@@ -259,6 +260,7 @@ angular.module('wildbook.service', [])
 		}
 
         factory.getWorkspace = function(id) {
+if (!id) { alert('getWorkspace() passed no id'); console.error('no id passed!'); return; }  //hacky but ya get what ya get
             return $.ajax({
                 type: "GET",
                 url: factory.baseUrl + 'WorkspaceServer',

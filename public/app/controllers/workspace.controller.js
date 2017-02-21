@@ -48,6 +48,11 @@ var workspace = angular.module('workspace', [])
 			$scope.queryWorkspaceList = function() {
 				Wildbook.retrieveWorkspaces(undefined)
 					.then(function(data) {
+console.info('data -> %o', data);
+                                                if (!data || (data.length < 1)) {
+                                                    console.warn('queryWorkspaceList() got empty data');
+                                                    return;
+                                                }
 						//We need to decide a proper variable for saving workspace data. do we need 1 or 2
 						$scope.$apply(function() {
 
@@ -122,10 +127,15 @@ var workspace = angular.module('workspace', [])
 				//  this should be used as a sort of refresh
 				if (checkSame && $scope.workspace === id_) return;
 				$scope.workspace = "Loading...";
+                                if (!id_) {
+                                    console.warn('setWorkspace() not passed an id; failing!');
+                                    alert('setWorkspace() was not passed an id.  :(');
+                                    return;
+                                }
 				$scope.refreshReviews();
 				Wildbook.getWorkspace(id_)
 					.then(function(data) {
-						console.log(data);
+						console.log('##################### %o', data);
 						$scope.workspace = id_;
 						$scope.currentSlides = data.assets;
 						$scope.workspace_args = data.metadata.TranslateQueryArgs;
@@ -859,6 +869,11 @@ var workspace = angular.module('workspace', [])
 					uploadSets: null,
 					updateUploadSets: function() {
 						Wildbook.retrieveWorkspaces(true).then(function(data) {
+console.info('data -> %o', data);
+                                                        if (!data || (data.length < 1)) {
+                                                            console.warn('updateUploadSets() got empty data');
+                                                            return;
+                                                        }
 							data = data.slice(1, (data.length - 2));
 							$scope.upload.uploadSetDialog.uploadSets = _.without(data.split(", "), "*undefined*");
 						});
