@@ -1,4 +1,7 @@
-var workspace = angular.module('workspace', [])
+/*var workspace = */
+
+angular
+	.module('workspace')
 	.controller('workspace-controller', [
 		'$rootScope', '$scope', '$routeParams', '$mdSidenav', '$mdToast', '$mdDialog', '$mdMedia', '$http', '$sce', 'reader-factory', 'Wildbook', 'leafletData',
 		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData) {
@@ -23,7 +26,7 @@ var workspace = angular.module('workspace', [])
                 // params.class = "org.ecocean.media.MediaAssetSet";
                 $scope.loading = 'on';
                 console.log(params);
-                $scope.workspace_args = params; 
+                $scope.workspace_args = params;
                 $.ajax({
                     type: "POST",
                     url: 'http://wb.scribble.com/TranslateQuery',
@@ -65,7 +68,7 @@ console.info('data -> %o', data);
 					});
 			}
 			$scope.queryWorkspaceList();
-			
+
 
 			//don't know, unused
 			function sanitizePosition() {
@@ -173,7 +176,7 @@ console.info('data -> %o', data);
 						$scope.queryWorkspaceList();
 					});
 			};
-			
+
 			$scope.saveNewWorkspace = function(ev) {
 				var confirm = $mdDialog.prompt()
 				.title('SAVE WORKSPACE')
@@ -196,7 +199,7 @@ console.info('data -> %o', data);
 						});
 				});
 			};
-			
+
 			$scope.deleteWorkspace = function() {
 				var confirm = $mdDialog.confirm()
 					.title('Are you sure you want to delete this workspace?')
@@ -357,7 +360,7 @@ console.info('data -> %o', data);
 									}).fail(function(data) {
 										console.log('IA server error');
 										$scope.detection.startDetectionByImage(ev);
-										
+
 										// $mdDialog.show(
 											// $mdDialog.alert()
 											// .clickOutsideToClose(true)
@@ -491,7 +494,7 @@ console.info('data -> %o', data);
 				},
 				//temp function
 				decrementOffset: function() {
-					//go back to last detection 
+					//go back to last detection
 
 					// $scope.detection.submitDetectionReview();
 					//add logic for only allowing numbers in range of images
@@ -584,7 +587,7 @@ console.info('data -> %o', data);
 					.ok('OK')
 				);
 			};
-			
+
 
 			/* IMAGE INFO DIALOG */
 			function ImageDialogController($scope, $mdDialog, mediaAsset) {
@@ -645,14 +648,14 @@ console.info('data -> %o', data);
 					return true;
 				}
 			};
-	
+
 			var exifToDecimal = function(coords) {
 				return (coords[0].numerator
 						+ coords[1].numerator/60
 						+ (coords[2].numerator/coords[2].denominator)
 						/ 3600).toFixed(4);
 			}
-			
+
 			//Leaflet map
 			$scope.map = {
 				center: {
@@ -757,7 +760,7 @@ console.info('data -> %o', data);
 					});
 				}
 			};
-			
+
 			//everything below is upload
 
 			// stages:
@@ -778,7 +781,7 @@ console.info('data -> %o', data);
             //     transformRequest: angular.identity,
             //     headers: {'Content-Type': undefined}
             // }).then(function(result){
-            //     $scope.upload.completionCallback(formData);                 
+            //     $scope.upload.completionCallback(formData);
             // },function(err){
             //     // do sometingh
             // });
