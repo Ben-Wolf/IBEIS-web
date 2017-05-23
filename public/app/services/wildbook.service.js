@@ -1,4 +1,4 @@
-angular
+var workspace = angular
 .module('wildbook.service', [])
 .service('Wildbook', ['$http', function($http) {
   var service = {};
