@@ -1,17 +1,17 @@
 angular
 .module('wildbook.service', [])
-.factory('Wildbook', ['$http', function($http) {
-  var factory = {};
+.service('Wildbook', ['$http', function($http) {
+  var service = {};
 
-  factory.baseUrl = "http://wb.scribble.com/";
+  service.baseUrl = "http://wb.scribble.com/";
 
   // UPLOADING TO S3 AND THROUGH FLOW
   // ==================================
-  factory.types = ["s3", "local"];
-  factory.upload = function(images, type, progressCallback, completionCallback) {
+  service.types = ["s3", "local"];
+  service.upload = function(images, type, progressCallback, completionCallback) {
     console.log("UPLOADING");
     // retrieve a mediaAssetSetId
-    switch (_.indexOf(factory.types, type)) {
+    switch (_.indexOf(service.types, type)) {
       case 0:
         // s3
         s3Upload(images, progressCallback, completionCallback);
@@ -93,7 +93,7 @@ angular
   // upload to local server with flow
   var flowUpload = function(images, progressCallback, completionCallback) {
     var flow = new Flow({
-      target: factory.baseUrl + 'ResumableUpload',
+      target: service.baseUrl + 'ResumableUpload',
       forceChunkSize: true,
       maxChunkRetries: 5,
       testChunks: false
@@ -154,9 +154,9 @@ angular
     // MEDIA assets
     // ==============
     // request mediaAssetSet
-    factory.requestMediaAssetSet = function() {
+    service.requestMediaAssetSet = function() {
       // TODO: check for errors?
-      return $http.get(factory.baseUrl + 'MediaAssetCreate?requestMediaAssetSet');
+      return $http.get(service.baseUrl + 'MediaAssetCreate?requestMediaAssetSet');
     };
 
     // create MediaAsset for flow upload
@@ -169,11 +169,11 @@ angular
     //     }]
     // };
 
-    factory.findMediaAssetSetIdFromUploadSet = function(setName) {
+    service.findMediaAssetSetIdFromUploadSet = function(setName) {
       if (!setName) { alert('findMediaAssetSetIdFromUploadSet() passed no arg'); console.error('no setName passed!'); return; }  //hacky but ya get what ya get
       var params = {
         method: "GET",
-        url: factory.baseUrl + 'WorkspaceServer',
+        url: service.baseUrl + 'WorkspaceServer',
         params: {
           id: setName
         }
@@ -183,7 +183,7 @@ angular
     };
 
     // if no setId is given, create them outside of a MediaAssetSet
-    factory.createMediaAssets = function(assets, setId) {
+    service.createMediaAssets = function(assets, setId) {
       var mediaAssets = null;
       if (setId) {
         mediaAssets = {
@@ -200,40 +200,40 @@ angular
         };
       }
 
-      return $http.post(factory.baseUrl + 'MediaAssetCreate', mediaAssets);
+      return $http.post(service.baseUrl + 'MediaAssetCreate', mediaAssets);
     };
 
 
-    factory.getAllMediaAssets = function() {
+    service.getAllMediaAssets = function() {
       console.log("retrieving all media assets for this user");
-      return $http.get(factory.baseUrl + 'MediaAssetsForUser');
+      return $http.get(service.baseUrl + 'MediaAssetsForUser');
     };
 
-	  factory.getMediaAssetDetails = function(imageID) {
+	  service.getMediaAssetDetails = function(imageID) {
 		 // Gets data about MediaAsset
      // Primarily used to parse location data for map view
       return $.ajax({
         type: "GET",
-			  url: factory.baseUrl + 'rest/org.ecocean.media.MediaAsset/' + imageID.toString(),
+			  url: service.baseUrl + 'rest/org.ecocean.media.MediaAsset/' + imageID.toString(),
         dataType: "json"
       });
     };
 
-    factory.getReviewCounts = function() {
+    service.getReviewCounts = function() {
       return $.ajax({
         type: "GET",
-        url: factory.baseUrl + 'ia?getReviewCounts',
+        url: service.baseUrl + 'ia?getReviewCounts',
         dataType: "json"
       });
     };
 
     // WORKSPACES
     // ============
-    factory.retrieveWorkspaces = function(isImageSet) {
+    service.retrieveWorkspaces = function(isImageSet) {
       if (typeof isImageSet !== 'undefined') {
         return $.ajax({
           type: "GET",
-          url: factory.baseUrl + 'WorkspacesForUser',
+          url: service.baseUrl + 'WorkspacesForUser',
           params: {
             isImageSet: isImageSet
           }
@@ -241,12 +241,12 @@ angular
       } else {
         return $.ajax({
           type: "GET",
-          url: factory.baseUrl + 'WorkspacesForUser'
+          url: service.baseUrl + 'WorkspacesForUser'
         });
       }
     };
 
-    factory.saveWorkspace = function(name, args) {
+    service.saveWorkspace = function(name, args) {
       var params = $.param({
         id: String(name),
         args: JSON.stringify(args)
@@ -254,16 +254,16 @@ angular
 
       return $.ajax({
         type: "POST",
-        url: factory.baseUrl + 'WorkspaceServer',
+        url: service.baseUrl + 'WorkspaceServer',
         data: params,
         dataType: "json"
       });
     };
 
-    factory.deleteWorkspace = function(workspaceID) {
+    service.deleteWorkspace = function(workspaceID) {
       return $.ajax({
         type: "POST",
-        url: factory.baseUrl + 'WorkspaceDelete',
+        url: service.baseUrl + 'WorkspaceDelete',
         data: {
           id: workspaceID
         },
@@ -271,11 +271,11 @@ angular
       });
     }
 
-    factory.getWorkspace = function(id) {
+    service.getWorkspace = function(id) {
       if (!id) { alert('getWorkspace() passed no id'); console.error('no id passed!'); return; }  //hacky but ya get what ya get
       return $.ajax({
         type: "GET",
-        url: factory.baseUrl + 'WorkspaceServer',
+        url: service.baseUrl + 'WorkspaceServer',
         data: {
           id: id
         },
@@ -283,19 +283,19 @@ angular
       });
     };
 
-    factory.queryWorkspace = function(params) {
+    service.queryWorkspace = function(params) {
       return $.ajax({
         type: "POST",
-        url: factory.baseUrl + 'TranslateQuery',
+        url: service.baseUrl + 'TranslateQuery',
         data: params,
         dataType: "json"
       });
     };
 
-    factory.saveDateTime = function(params) {
+    service.saveDateTime = function(params) {
       return $.ajax({
         type: "POST",
-        url: factory.baseUrl + 'MediaAssetModify',
+        url: service.baseUrl + 'MediaAssetModify',
         data: params,
         dataType: "json"
       });
@@ -303,7 +303,7 @@ angular
 
     // IDENTIFICATION
     // ==================
-    factory.runIdentification = function(occurrences) {
+    service.runIdentification = function(occurrences) {
       var params = {
         identify: {
           occurrenceIds: occurrences
@@ -311,17 +311,17 @@ angular
       };
       return $.ajax({
         type: "POST",
-        url: factory.baseUrl + 'ia',
+        url: service.baseUrl + 'ia',
         data: JSON.stringify(params),
         dataType: "json",
         contentType: 'application/javascript'
       });
     };
 
-    factory.getIdentificationReview = function() {
+    service.getIdentificationReview = function() {
       return $.ajax({
         type: "GET",
-        url: factory.baseUrl + 'ia?getIdentificationReviewHtmlNext&test',
+        url: service.baseUrl + 'ia?getIdentificationReviewHtmlNext&test',
         dataType: "json",
         contentType: 'application/javascript'
       });
@@ -329,7 +329,7 @@ angular
 
     // DETECTION
     // ================
-    factory.runDetection = function(imageSetID) {
+    service.runDetection = function(imageSetID) {
       var params = {
         detect: {
           mediaAssetSetIds: [imageSetID]
@@ -338,14 +338,14 @@ angular
 
       return $.ajax({
         type: "POST",
-        url: factory.baseUrl + 'ia',
+        url: service.baseUrl + 'ia',
         data: JSON.stringify(params),
         dataType: "json",
         contentType: "application/javascript"
       });
     };
 
-    factory.runDetectionByImage = function(imageIDs) {
+    service.runDetectionByImage = function(imageIDs) {
       var params = {
         detect: {
           mediaAssetIds: imageIDs
@@ -353,12 +353,12 @@ angular
       };
       return $.ajax({
         type: "POST",
-        url: factory.baseUrl + 'ia',
+        url: service.baseUrl + 'ia',
         data: JSON.stringify(params),
         dataType: "json",
         contentType: "application/javascript"
       });
     };
 
-    return factory;
+    return service;
   }]);

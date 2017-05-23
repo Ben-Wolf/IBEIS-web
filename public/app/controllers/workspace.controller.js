@@ -998,7 +998,7 @@ console.info('data -> %o', data);
 
 		}
 	])
-	.factory('reader-factory', ['$q', function($q) {
+	.service('reader-factory', ['$q', function($q) {
 
 		var onLoad = function(reader, deferred, scope) {
 			return function() {

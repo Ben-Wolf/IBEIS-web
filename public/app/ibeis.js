@@ -1,3 +1,5 @@
+// import { wildbook.service } from './services/wildbook.service'
+
 angular.module('ibeis', [
   // routes
   'ibeis.routes',
