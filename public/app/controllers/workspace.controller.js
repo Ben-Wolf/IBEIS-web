@@ -1,4 +1,6 @@
-var workspace = angular.module('workspace')
+/* var workspace = */
+
+angular.module('workspace')
 	.controller('workspace-controller', [
 		'$rootScope', '$scope', '$routeParams', '$mdSidenav', '$mdToast', '$mdDialog', '$mdMedia', '$http', '$sce', 'reader-factory', 'Wildbook', 'leafletData',
 		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData) {
