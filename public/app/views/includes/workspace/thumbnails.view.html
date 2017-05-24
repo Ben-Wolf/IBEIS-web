@@ -48,7 +48,7 @@ dropZone.addEventListener('drop', handleDrop);
 <style type="text/css">
 div#dropZone {
   background: white;
-  border-color: lightgray; 
+  border-color: lightgray;
   border-width: 7px;
   border-style: dashed;
   text-align: center;
@@ -72,17 +72,17 @@ div#dropZone {
 
 </style>
   </head>
- 
+
 <body>
   <div class="gridListdemoBasicUsage">
-  
-    
+
+
     <div id="dropZone"><input type="file" multiple accept="image/*" class="file-input" id="img-upload-btn" onchange="angular.element(this).scope().upload.select(this)"><center> Drag and drop files here... </center></div>
     <div class='md-padding' layout="row" layout-align="center center" layout-wrap>
       <!-- <div infinite-scroll="addMoreItems()" infinite-scroll-distance='2'> -->
-  
-        <md-card class="card-img-parent" style="width: 200px; height: 200px;" ng-repeat="slide in currentSlides" ng-click="showImageInfo($event, $index)">
-      
+
+        <md-card class="card-img-parent" style="width: 100px; height: 75px;" ng-repeat="slide in currentSlides" ng-click="showImageInfo($event, $index)">
+
           <div style="border: 1px solid black;">
             <!-- <div ng-repeat="label in slide.children">
               <div ng-repeat="k in label.labels">
@@ -95,7 +95,7 @@ div#dropZone {
           <md-card-actions layout="row" layout-align="center" class="img-text">
           <!-- <h4>{{slide.title}}</h4 > -->
           </md-card-actions>
-      
+
         </md-card>
       <!-- </div> -->
     </div>

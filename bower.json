@@ -3,7 +3,7 @@
   "dependencies": {
     "jquery": "^2.2.1",
     "angular": "^1.5.0",
-    "angular-material": "^1.0.6",
+    "angular-material": "^1.1.4",
     "angular-smart-table": "^2.1.7",
     "font-awesome": "^4.5.0",
     "flow.js": "^2.10.1",

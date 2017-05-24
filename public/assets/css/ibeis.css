@@ -211,12 +211,12 @@ td {
 .gridListdemoBasicUsage md-grid-tile {
     transition: all 400ms ease-out 50ms;
 }
-.datepicker {
-    /** Demo styles for mdCalendar. */
+/*.datepicker {
+
 }
 .datepicker md-content {
     padding-bottom: 200px;
-}
+} */
 .datepicker .validation-messages {
     font-size: 12px;
     color: #dd2c00;
