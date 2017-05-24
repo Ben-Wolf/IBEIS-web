@@ -14,7 +14,7 @@ window.addEventListener("drop",function(e){
   <div class="sidenav-header">
     <md-menu-bar class="main-menu md-whiteframe-z1">
       <md-menu>
-        <button ng-click="$mdOpenMenu()">
+        <button ng-click="$mdMenu.open()">
           File
         </button>
         <md-menu-content>
@@ -25,7 +25,7 @@ window.addEventListener("drop",function(e){
           </md-menu-item>
           <md-menu-item>
             <md-menu>
-              <md-button ng-click="$mdOpenMenu()">Upload with Metadata File</md-button>
+              <md-button ng-click="$meMenu.open()">Upload with Metadata File</md-button>
               <md-menu-content>
                 <md-menu-item>
                   <md-button ng-click="lewaUpload.show()">Lewa XML</md-button>
@@ -47,7 +47,7 @@ window.addEventListener("drop",function(e){
         </md-menu-content>
       </md-menu>
       <md-menu>
-        <button ng-click="$mdOpenMenu()">
+        <button ng-click="$meMenu.open()">
           Options
         </button>
         <md-menu-content>

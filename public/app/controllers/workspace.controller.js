@@ -13,7 +13,7 @@ angular
 	$scope.workspace_occ = [];
 	$scope.workspace_input = {};
 	$scope.reviewData = {};
-	$scope.datetime_model = new Date('2000-01-01T05:00:00.000Z'); //default/test date, should never be seen
+	$scope.datetime_model = new Date(); //default/test date, should never be seen
 	$scope.pastDetectionReviews = [];
   $scope.loading = 'off';
 
@@ -230,7 +230,7 @@ angular
 			$http.get('http://wb.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
 			.then(function(response) {
 				$scope.mediaAsset.datetime = params.datetime;
-				console.log(params.datetime);
+				console.log($scope.mediaAsset.datetime);
 			});
 		}).fail(function(data) {
 			console.log("success or failure - needs fixing");
@@ -333,147 +333,152 @@ angular
 		}
 	};
 
-			//object where all detection functions are stored
-			$scope.detection = {
-				startDetection: function(ev) {
-					$scope.detection.firstRun = true;
-					Wildbook.findMediaAssetSetIdFromUploadSet($scope.workspace)
-						.then(function(response) {
-							if (response.data.metadata.TranslateQueryArgs.query) {
-								console.log(response.data.metadata.TranslateQueryArgs.query.id);
-								Wildbook.runDetection(response.data.metadata.TranslateQueryArgs.query.id)
-									.then(function(data) {
-										// this callback will be called asynchronously
-										// when the response is available
-										$scope.$apply(function() {
-											//detection has started.  Save the job id, then launch review
-											if (data.success) {
-												$scope.last_jobid = data.sendDetect.response;
-												console.log("New jobID " + data.sendDetect.response);
-												$scope.detection.showDetectionReview(ev);
-											}
-											else {
-												console.log('error: ' + data.error);
-												$scope.detection.startDetectionByImage(ev);
-											}
-										});
-									}).fail(function(data) {
-										console.log('IA server error');
-										$scope.detection.startDetectionByImage(ev);
-
-										// $mdDialog.show(
-											// $mdDialog.alert()
-											// .clickOutsideToClose(true)
-											// .title('Error')
-											// .textContent('No Response from IA server.')
-											// .ariaLabel('IA Error')
-											// .ok('OK')
-											// .targetEvent(ev)
-										// )
-									});
+	//object where all detection functions are stored
+	$scope.detection = {
+		startDetection: function(ev) {
+			$scope.detection.firstRun = true;
+			Wildbook.findMediaAssetSetIdFromUploadSet($scope.workspace)
+			.then(function(response) {
+				if (response.data.metadata.TranslateQueryArgs.query) {
+					console.log(response.data.metadata.TranslateQueryArgs.query.id);
+					Wildbook.runDetection(response.data.metadata.TranslateQueryArgs.query.id)
+					.then(function(data) {
+						// this callback will be called asynchronously
+						// when the response is available
+						$scope.$apply(function() {
+							//detection has started.  Save the job id, then launch review
+							if (data.success) {
+								$scope.last_jobid = data.sendDetect.response;
+								console.log("New jobID " + data.sendDetect.response);
+								$scope.detection.showDetectionReview(ev);
 							}
 							else {
-								console.log('error: no valid mediaAssetSetId');
+								console.log('error: ' + data.error);
 								$scope.detection.startDetectionByImage(ev);
 							}
 						});
-				},
-				startDetectionByImage: function(ev) {
-					var ids = [];
-					for (i=0; i<$scope.currentSlides.length; i++) {
-						ids.push($scope.currentSlides[i].id);
-					}
-					Wildbook.runDetectionByImage(ids)
-						.then(function(data) {
-							// this callback will be called asynchronously
-							// when the response is available
-							$scope.$apply(function() {
-								//detection has started.  Save the job id, then launch review
-								if (data.success) {
-									$scope.last_jobid = data.sendDetect.response;
-									console.log("New jobID " + data.sendDetect.response);
-									$scope.detection.showDetectionReview(ev);
-								}
-							});
-						}).fail(function(data) {
+					}).fail(function(data) {
+						console.log('IA server error');
+						$scope.detection.startDetectionByImage(ev);
 
-							$mdDialog.show(
-								$mdDialog.alert()
-								.clickOutsideToClose(true)
-								.title('Error')
-								.textContent('No Response from IA server.')
-								.ariaLabel('IA Error')
-								.ok('OK')
-								.targetEvent(ev)
-							)
-						});
-				},
-				//used to query for results every 3 seconds until it gets a response
-				startCheckDetection: function() {
-					$scope.reviewData.reviewReady = false;
-					$scope.waiting_for_response = true;
-					$scope.detection.reviewCompleteText = '';
-					$scope.detection.getNextDetectionHTML();
-					// $scope.detection.detectionChecker = setInterval($scope.detection.checkLoadedDetection, 500);
-				},
-				//check function every x seconds
-				checkLoadedDetection: function() {
-					if ($scope.reviewCounts.detection > 0) {
-						clearInterval($scope.detection.detectionChecker);
-						$scope.detection.getNextDetectionHTML();
-					}
-					else {
-						$scope.refreshReviews();
-					}
-					// var myElem = document.getElementById('ia-detection-form');
-					// if (myElem != null) {
-					//	 clearInterval($scope.detection.detectionChecker);
-					//	 $scope.$apply(function() {
-					//		 $scope.reviewData.reviewReady = true;
-					//	 });
-					// }
-				},
-				//creates a dialog
-				showDetectionReview: function(ev) {
-					$mdDialog.show({
-						scope: $scope,
-						preserveScope: true,
-						templateUrl: 'app/views/includes/workspace/detection.review.html',
-						targetEvent: ev,
-						clickOutsideToClose: false,
-						fullscreen: true
-
+							// $mdDialog.show(
+								// $mdDialog.alert()
+								// .clickOutsideToClose(true)
+								// .title('Error')
+								// .textContent('No Response from IA server.')
+								// .ariaLabel('IA Error')
+								// .ok('OK')
+								// .targetEvent(ev)
+							// )
 					});
-					$scope.refreshReviews($scope.detection.startCheckDetection);
-				},
+				}
+				else {
+					console.log('error: no valid mediaAssetSetId');
+					$scope.detection.startDetectionByImage(ev);
+				}
+			});
+		},
 
-				detectDialogCancel: function() {
-					$mdDialog.cancel();
-				},
-				//unused?
-				detectDialogHide: function() {
-					$mdDialog.hide();
-				},
-				//on button click prev/next/saveandexit
-				submitDetectionReview: function() {
-					$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
-						ev.preventDefault();
-						$.ajax({
-							url: $(this).attr('action'),
-							type: $(this).attr('method'),
-							dataType: 'json',
-							data: $(this).serialize()
+		startDetectionByImage: function(ev) {
+			var ids = [];
+			for (i=0; i<$scope.currentSlides.length; i++) {
+				ids.push($scope.currentSlides[i].id);
+			}
+			Wildbook.runDetectionByImage(ids)
+			.then(function(data) {
+				// this callback will be called asynchronously
+				// when the response is available
+				$scope.$apply(function() {
+					//detection has started.  Save the job id, then launch review
+					if (data.success) {
+						$scope.last_jobid = data.sendDetect.response;
+						console.log("New jobID " + data.sendDetect.response);
+						$scope.detection.showDetectionReview(ev);
+					}
+				});
+			}).fail(function(data) {
 
-						}).then(function(data) {
-							console.log("submit successful");
-							$scope.refreshReviews($scope.detection.getNextDetectionHTML);
-						}).fail(function(data) {
-							console.log("submit failed");
-						});
-						return false;
-					});
-					$('#ia-detection-form').submit();
-				},
+				$mdDialog.show(
+					$mdDialog.alert()
+					.clickOutsideToClose(true)
+					.title('Error')
+					.textContent('No Response from IA server.')
+					.ariaLabel('IA Error')
+					.ok('OK')
+					.targetEvent(ev)
+				)
+			});
+		},
+
+		//used to query for results every 3 seconds until it gets a response
+		startCheckDetection: function() {
+			$scope.reviewData.reviewReady = false;
+			$scope.waiting_for_response = true;
+			$scope.detection.reviewCompleteText = '';
+			$scope.detection.getNextDetectionHTML();
+			// $scope.detection.detectionChecker = setInterval($scope.detection.checkLoadedDetection, 500);
+		},
+
+		//check function every x seconds
+		checkLoadedDetection: function() {
+			if ($scope.reviewCounts.detection > 0) {
+				clearInterval($scope.detection.detectionChecker);
+				$scope.detection.getNextDetectionHTML();
+			}
+			else {
+				$scope.refreshReviews();
+			}
+			// var myElem = document.getElementById('ia-detection-form');
+			// if (myElem != null) {
+			//	 clearInterval($scope.detection.detectionChecker);
+			//	 $scope.$apply(function() {
+			//		 $scope.reviewData.reviewReady = true;
+			//	 });
+			// }
+		},
+
+		//creates a dialog
+		showDetectionReview: function(ev) {
+			$mdDialog.show({
+				scope: $scope,
+				preserveScope: true,
+				templateUrl: 'app/views/includes/workspace/detection.review.html',
+				targetEvent: ev,
+				clickOutsideToClose: false,
+				fullscreen: true
+
+			});
+			$scope.refreshReviews($scope.detection.startCheckDetection);
+		},
+
+		detectDialogCancel: function() {
+			$mdDialog.cancel();
+		},
+		//unused?
+		detectDialogHide: function() {
+			$mdDialog.hide();
+		},
+		//on button click prev/next/saveandexit
+		submitDetectionReview: function() {
+			$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
+				ev.preventDefault();
+				$.ajax({
+					url: $(this).attr('action'),
+					type: $(this).attr('method'),
+					dataType: 'json',
+					data: $(this).serialize()
+
+				}).then(function(data) {
+					console.log("submit successful");
+					$scope.refreshReviews($scope.detection.getNextDetectionHTML);
+				}).fail(function(data) {
+					console.log("submit failed");
+				});
+				return false;
+			});
+			$('#ia-detection-form').submit();
+		},
+
 				//temp function
 				nextClicked: function() {
 					if(document.getElementsByName("mediaasset-id")[0] != null){

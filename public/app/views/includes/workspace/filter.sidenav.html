@@ -3,7 +3,7 @@
   <md-toolbar class="md-theme-light">
     <h1 class="md-toolbar-tools">Filter Options &nbsp;
       <md-menu md-position-mode="target-right target">
-    <md-button aria-label="View Selector" ng-click="$mdOpenMenu($event)">
+    <md-button aria-label="View Selector" ng-click="$mdMenu.open($event)">
       FILTER FOR...<i class="fa fa-caret-down" aria-hidden="true" fa-lg></i>
       <md-tooltip md-direction="left" md-autohide>
         Viewing {{filterID}} filter.
@@ -17,14 +17,14 @@
               <i class="fa fa-fw fa-binoculars" ng-show="f == 'Encounter'"></i>
               <i class="fa fa-fw fa-user" ng-show="f == 'Marked Individual'"></i>
               <i class="fa fa-fw fa-object-group" ng-show="f == 'Annotation'"></i>
-              <i class="fa fa-fw fa-file-image-o" ng-show="f == 'Media Asset'"></i> &emsp;{{f}} 
+              <i class="fa fa-fw fa-file-image-o" ng-show="f == 'Media Asset'"></i> &emsp;{{f}}
             </p>
           </div>
         </md-button>
       </md-menu-item>
     </md-menu-content>
-  </md-menu></h1> 
-    
+  </md-menu></h1>
+
   </md-toolbar>
   <md-content layout-padding>
 
@@ -72,7 +72,7 @@
         <!-- MARKED INDIVIDUAL FILTER -->
         <div ng-if="filterID === 'Marked Individual'">
           <ul ng-repeat="field in filter.filtering_tests['org.ecocean.MarkedIndividual'].fields">
-        
+
             <div ng-if="field.values">
               <li>
                 <md-input-container>
@@ -142,12 +142,12 @@
               </li>
             </div>
           </ul>
-        </div> 
+        </div>
 
         <!-- MEDIA ASSET FILTER -->
         <div ng-if="filterID === 'Media Asset'">
           <ul ng-repeat="field in filter.filtering_tests['org.ecocean.MediaAsset'].fields">
-        
+
             <div ng-if="field.values">
               <li>
                 <md-input-container>

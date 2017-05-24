@@ -4,7 +4,7 @@
     <md-icon aria-label="Menu" md-svg-icon="assets/img/menu.svg"></md-icon>
   </md-button>
   <md-menu>
-    <md-button style="color: black;" class="md-primary" aria-label="Workspace Selector" ng-click="$mdOpenMenu($event)">
+    <md-button style="color: black;" class="md-primary" aria-label="Workspace Selector" ng-click="$mdMenu.open($event)">
       Upload Set&nbsp;<i class="fa fa-caret-down"></i>
     </md-button>
     <md-menu-content width="4">
@@ -89,7 +89,7 @@
   </md-button> -->
   <span flex></span>
   <md-menu md-position-mode="target-right target">
-    <md-button aria-label="View Selector" ng-click="$mdOpenMenu($event)">
+    <md-button aria-label="View Selector" ng-click="$mdMenu.open($event)">
       VIEW
       <md-tooltip md-direction="left" md-autohide>
         Viewing {{type}} in {{view}} mode.
