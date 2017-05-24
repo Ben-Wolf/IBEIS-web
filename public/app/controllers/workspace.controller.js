@@ -6,332 +6,332 @@ angular
 		'$rootScope', '$scope', '$routeParams', '$mdSidenav', '$mdToast', '$mdDialog', '$mdMedia', '$http', '$sce', 'reader-factory', 'Wildbook', 'leafletData',
 		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData) {
 
-			//DECLARE VARIABLES
-			$scope.last_jobid = "jobid-0004";
-			$scope.reviewOffset = 0;
-			$scope.workspace = null;
-			$scope.workspace_occ = [];
-			$scope.workspace_input = {};
-			$scope.reviewData = {};
-			$scope.datetime_model = new Date('2000-01-01T05:00:00.000Z'); //default/test date, should never be seen
-			$scope.pastDetectionReviews = [];
-            $scope.loading = 'off';
-			//used for saving info using the datepicker
-			$scope.set_datetime_model = function() {
-				$scope.datetime_model = new Date($scope.mediaAsset.dateTime);
-			};
-			//Might be outdated, used sometimes to query with specific parameters
-			$scope.queryWorkspace = function(params) {
-                // $scope.workspace = "Loading...";
-                // params.class = "org.ecocean.media.MediaAssetSet";
-                $scope.loading = 'on';
-                console.log(params);
-                $scope.workspace_args = params;
-                $.ajax({
-                    type: "POST",
-                    url: 'http://wb.scribble.com/TranslateQuery',
-                    data: params,
-                    dataType: "json"
+	//DECLARE VARIABLES
+	$scope.last_jobid = "jobid-0004";
+	$scope.reviewOffset = 0;
+	$scope.workspace = null;
+	$scope.workspace_occ = [];
+	$scope.workspace_input = {};
+	$scope.reviewData = {};
+	$scope.datetime_model = new Date('2000-01-01T05:00:00.000Z'); //default/test date, should never be seen
+	$scope.pastDetectionReviews = [];
+  $scope.loading = 'off';
 
-                }).then(function(data) {
-                    $scope.loading = 'off';
-                    // this callback will be called asynchronously
-                    // when the response is available
-                    $scope.$apply(function() {
-                        $scope.currentSlides = data.assets;
+	//used for saving info using the datepicker
+	$scope.set_datetime_model = function() {
+		$scope.datetime_model = new Date($scope.mediaAsset.dateTime);
+	};
 
-                    })
-                }).fail(function(data) {
-                        $scope.loading = 'off';
-                        console.log("failed workspaces query");
-                    });
-                };
+	//Might be outdated, used sometimes to query with specific parameters
+	$scope.queryWorkspace = function(params) {
+	  // $scope.workspace = "Loading...";
+	  // params.class = "org.ecocean.media.MediaAssetSet";
+	  $scope.loading = 'on';
+	  console.log(params);
+	  $scope.workspace_args = params;
+	  $.ajax({
+	      type: "POST",
+	      url: 'http://wb.scribble.com/TranslateQuery',
+	      data: params,
+	      dataType: "json"
 
-			//query all workspaces to populate workspace dropdown
-			$scope.queryWorkspaceList = function() {
-				Wildbook.retrieveWorkspaces(undefined)
-					.then(function(data) {
-console.info('data -> %o', data);
-                                                if (!data || (data.length < 1)) {
-                                                    console.warn('queryWorkspaceList() got empty data');
-                                                    return;
-                                                }
-						//We need to decide a proper variable for saving workspace data. do we need 1 or 2
-						$scope.$apply(function() {
+	  }).then(function(data) {
+      $scope.loading = 'off';
+      // this callback will be called asynchronously
+      // when the response is available
+      $scope.$apply(function() {
+          $scope.currentSlides = data.assets;
+      })
+	  }).fail(function(data) {
+      $scope.loading = 'off';
+      console.log("failed workspaces query");
+    });
+  };
 
-							data = data.slice(1, (data.length - 2));
-							$scope.workspaces = data.split(", ");
-							$scope.setWorkspace($scope.workspaces[0], false);
-						})
-					}).fail(function(data) {
-						console.log("failed workspaces get");
-					});
-			}
+	//query all workspaces to populate workspace dropdown
+	$scope.queryWorkspaceList = function() {
+		Wildbook.retrieveWorkspaces(undefined).then(function(data) {
+			console.info('data -> %o', data);
+	    if (!data || (data.length < 1)) {
+	        console.warn('queryWorkspaceList() got empty data');
+	        return;
+	    }
+			//We need to decide a proper variable for saving workspace data. do we need 1 or 2
+			$scope.$apply(function() {
+
+				data = data.slice(1, (data.length - 2));
+				$scope.workspaces = data.split(", ");
+				$scope.setWorkspace($scope.workspaces[0], false);
+			})
+		}).fail(function(data) {
+			console.log("failed workspaces get");
+		});
+	}
+
+	$scope.queryWorkspaceList();
+
+	//used for index in workspace
+	$scope.image_index = -1;
+
+	//used for filtering/other sidenavs
+	$scope.toggleSidenav = function(menuId) {
+		$mdSidenav(menuId).toggle();
+	};
+
+	var last = {
+		bottom: false,
+		top: true,
+		left: false,
+		right: true
+	};
+
+	//TODO comment what this does
+	$scope.toastPosition = angular.extend({}, last);
+	$scope.getToastPosition = function() {
+		sanitizePosition();
+		return Object.keys($scope.toastPosition)
+			.filter(function(pos) {
+				return $scope.toastPosition[pos];
+			})
+			.join(' ');
+	};
+
+
+	/* SIDENAVS */
+	$scope.close = function(id) {
+		$mdSidenav(id).close();
+		//sets image-focus to null.  If multiple sidenavs are toggled this could cause an issue (maybe).
+		$scope.image_index = -1;
+	};
+
+	/* TYPE MENU */
+	//Used for top-right selector to change the data between the below 3 items
+	// $scope.types = ['images', 'annotations', 'animals'];
+	$scope.types = ['images'];
+	$scope.type = $scope.types[0];
+
+	$scope.setType = function(t) {
+		if ($scope.type != t) {
+			$scope.type = t;
+		}
+	};
+
+	/* WORKSPACES */
+	$scope.setWorkspace = function(id_, checkSame) {
+		// break if we are checking for the same workspace, otherwise
+		//  this should be used as a sort of refresh
+		if (checkSame && $scope.workspace === id_) return;
+		$scope.workspace = "Loading...";
+
+		if (!id_) {
+        console.warn('setWorkspace() not passed an id; failing!');
+        alert('setWorkspace() was not passed an id.  :(');
+        return;
+    }
+
+		$scope.refreshReviews();
+		Wildbook.getWorkspace(id_)
+		.then(function(data) {
+			console.log('##################### %o', data);
+			$scope.workspace = id_;
+			$scope.currentSlides = data.assets;
+			$scope.workspace_args = data.metadata.TranslateQueryArgs;
+			$scope.workspace_occ = $rootScope.Utils.keys(data.metadata.occurrences);
+			$scope.$apply();
+			$scope.map.refreshMap();
+		}).fail(function(data) {
+			console.log("failed workspace get");
+		});
+	};
+
+	$scope.viewAllImages = function(checkSame) {
+		if (checkSame && $scope.workspace === "All Images") return;
+		$scope.workspace = "Loading...";
+		$scope.refreshReviews();
+		Wildbook.getAllMediaAssets().then(function(response) {
+			console.log(response);
+			$scope.workspace = "All Images";
+			$scope.currentSlides = response.data;
+			$scope.workspace_args = "all";
+			$scope.map.refreshMap();
+		});
+	};
+
+	//used when save button is pressed
+	$scope.saveWorkspace = function() {
+		var id = $scope.workspace_input.form_data;
+		var args = $scope.workspace_args;
+		Wildbook.saveWorkspace(id, args)
+		.then(function(data) {
 			$scope.queryWorkspaceList();
+		}).fail(function(data) {
+			console.log("success or failure - needs fixing");
+			console.log(data);
+			$scope.queryWorkspaceList();
+		});
+	};
 
-
-			//don't know, unused
-			function sanitizePosition() {
-				var current = $scope.toastPosition;
-				if (current.bottom && last.top) current.top = false;
-				if (current.top && last.bottom) current.bottom = false;
-				if (current.right && last.left) current.left = false;
-				if (current.left && last.right) current.right = false;
-				last = angular.extend({}, current);
-			};
-
-			//used for index in workspace
-			$scope.image_index = -1;
-
-			//used for filtering/other sidenavs
-			$scope.toggleSidenav = function(menuId) {
-				$mdSidenav(menuId).toggle();
-			};
-
-			var last = {
-				bottom: false,
-				top: true,
-				left: false,
-				right: true
-			};
-			//TODO comment what this does
-			$scope.toastPosition = angular.extend({}, last);
-			$scope.getToastPosition = function() {
-				sanitizePosition();
-				return Object.keys($scope.toastPosition)
-					.filter(function(pos) {
-						return $scope.toastPosition[pos];
-					})
-					.join(' ');
-			};
-
-
-			/* SIDENAVS */
-			$scope.close = function(id) {
-				$mdSidenav(id).close();
-				//sets image-focus to null.  If multiple sidenavs are toggled this could cause an issue (maybe).
-				$scope.image_index = -1;
-			};
-
-			/* TYPE MENU */
-			//Used for top-right selector to change the data between the below 3 items
-			// $scope.types = ['images', 'annotations', 'animals'];
-			$scope.types = ['images'];
-			$scope.type = $scope.types[0];
-
-			$scope.setType = function(t) {
-				if ($scope.type != t) {
-					$scope.type = t;
-				}
-			};
-			/* WORKSPACES */
-			$scope.setWorkspace = function(id_, checkSame) {
-				// break if we are checking for the same workspace, otherwise
-				//  this should be used as a sort of refresh
-				if (checkSame && $scope.workspace === id_) return;
-				$scope.workspace = "Loading...";
-                                if (!id_) {
-                                    console.warn('setWorkspace() not passed an id; failing!');
-                                    alert('setWorkspace() was not passed an id.  :(');
-                                    return;
-                                }
-				$scope.refreshReviews();
-				Wildbook.getWorkspace(id_)
-					.then(function(data) {
-						console.log('##################### %o', data);
-						$scope.workspace = id_;
-						$scope.currentSlides = data.assets;
-						$scope.workspace_args = data.metadata.TranslateQueryArgs;
-						$scope.workspace_occ = $rootScope.Utils.keys(data.metadata.occurrences);
-						$scope.$apply();
-						$scope.map.refreshMap();
-					}).fail(function(data) {
-						console.log("failed workspace get");
-					});
-			};
-
-			$scope.viewAllImages = function(checkSame) {
-				if (checkSame && $scope.workspace === "All Images") return;
-				$scope.workspace = "Loading...";
-				$scope.refreshReviews();
-				Wildbook.getAllMediaAssets().then(function(response) {
-					console.log(response);
-					$scope.workspace = "All Images";
-					$scope.currentSlides = response.data;
-					$scope.workspace_args = "all";
-					$scope.map.refreshMap();
-				});
-			};
-
-			//used when save button is pressed
-			$scope.saveWorkspace = function() {
-				var id = $scope.workspace_input.form_data;
-				var args = $scope.workspace_args;
-				Wildbook.saveWorkspace(id, args)
-					.then(function(data) {
-						$scope.queryWorkspaceList();
-					}).fail(function(data) {
-						console.log("success or failure - needs fixing");
-						console.log(data);
-						$scope.queryWorkspaceList();
-					});
-			};
-
-			$scope.saveNewWorkspace = function(ev) {
-				var confirm = $mdDialog.prompt()
-				.title('SAVE WORKSPACE')
-				.textContent('what would you like to name this workspace?')
-				.placeholder('enter a name')
-				  .ariaLabel('workspace name')
-				  .targetEvent(ev)
-				  .ok('SAVE')
-				  .cancel('CANCEL');
-				$mdDialog.show(confirm).then(function(result) {
-					var id = result;
-					var args = $scope.workspace_args;
-					Wildbook.saveWorkspace(id, args)
-						.then(function(data) {
-							$scope.queryWorkspaceList();
-						}).fail(function(data) {
-							console.log("success or failure - needs fixing");
-							console.log(data);
-							$scope.queryWorkspaceList();
-						});
-				});
-			};
-
-			$scope.deleteWorkspace = function() {
-				var confirm = $mdDialog.confirm()
-					.title('Are you sure you want to delete this workspace?')
-					.textContent('All of your images will remain in the database.')
-					.ok('Yes')
-					.cancel("No");
-				$mdDialog.show(confirm).then(function() {
-					Wildbook.deleteWorkspace($scope.workspace)
-						.then(function(data) {
-							$scope.queryWorkspaceList();
-						}).fail(function(data) {
-							console.log("success or failure - needs fixing");
-							console.log(data);
-							$scope.queryWorkspaceList();
-						});
-				}, function() {
-					console.log("said no to changing!");
-				});
-
-			};
-
-			$scope.save_datetime = function() {
-				console.log("saving");
-				//this has to have user input
-				//need to find out params for image edit
-				var params = $.param({
-					datetime: String($scope.workspace_input.datetime_input),
-					id: String($scope.mediaAssetId)
-				});
-				console.log(params);
-				Wildbook.saveDateTime(params)
-					.then(function(data) {
-						console.log("save complete " + response.data);
-						$http.get('http://wb.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
-							.then(function(response) {
-								$scope.mediaAssetContext = response.data;
-							});
-					}).fail(function(data) {
-						console.log("success or failure - needs fixing");
-						console.log(data);
-						$scope.queryWorkspaceList();
-					});
-			};
-
-			/* FILTERING */
-			$scope.filterIDs = ['Encounter', 'Marked Individual', 'Annotation', 'Media Asset'];
-			$scope.filterID = $scope.filterIDs[0];
-			$scope.setFilter = function(f) {
-				$scope.filterID = f;
-			};
-
-			//used to catch all form data for filtering and send in for query
-			$scope.filter = {
-				filtering_tests: null,
-				filterData: {},
-				submitFilters: function() {
-					var params = $scope.filter.filterData;
-                    if ($scope.filterID == 'Encounter'){ params.class = "org.ecocean.Encounter"}
-                    if ($scope.filterID == 'Marked Individual'){ params.class = "org.ecocean.MarkedIndividual"}
-                    if ($scope.filterID == 'Annotation'){ params.class = "org.ecocean.Annotation"}
-                    if ($scope.filterID == 'Media Asset'){ params.class = "org.ecocean.MediaAsset"}
-                    // params = JSON.stringify(params);
-					$scope.queryWorkspace(params);
-					$scope.close('filter');
-
-				},
-
-				undoFilter: function() {
-					var toast = $mdToast.simple()
-						.content('You undid your last filter!')
-						.action('REDO')
-						.highlightAction(false)
-						.position($scope.getToastPosition());
-					$mdToast.show(toast).then(function(response) {
-						if (response == 'redo') {
-							alert('You redid the filter.');
-						}
-					});
-				}
-
-			};
-			//fake filtering data
-			$http.get('assets/json/fakeClassDefinitions.json').then(function(data) {
-				$scope.filter.filtering_tests = data;
+	$scope.saveNewWorkspace = function(ev) {
+		var confirm = $mdDialog.prompt()
+		.title('SAVE WORKSPACE')
+		.textContent('what would you like to name this workspace?')
+		.placeholder('enter a name')
+	  .ariaLabel('workspace name')
+	  .targetEvent(ev)
+	  .ok('SAVE')
+	  .cancel('CANCEL');
+		$mdDialog.show(confirm).then(function(result) {
+			var id = result;
+			var args = $scope.workspace_args;
+			Wildbook.saveWorkspace(id, args)
+			.then(function(data) {
+				$scope.queryWorkspaceList();
+			}).fail(function(data) {
+				console.log("success or failure - needs fixing");
+				console.log(data);
+				$scope.queryWorkspaceList();
 			});
-			//used in table view
-			$scope.convertDateTime = function(dateTime) {
-				try {
-					return new Date(dateTime).toISOString().substring(0, 10);
-				} catch (e) {
-					return "No Date Provided";
+		});
+	};
+
+	$scope.deleteWorkspace = function() {
+		var confirm = $mdDialog.confirm()
+		.title('Are you sure you want to delete this workspace?')
+		.textContent('All of your images will remain in the database.')
+		.ok('Yes')
+		.cancel("No");
+		$mdDialog.show(confirm).then(function() {
+			Wildbook.deleteWorkspace($scope.workspace)
+			.then(function(data) {
+				$scope.queryWorkspaceList();
+			}).fail(function(data) {
+				console.log("success or failure - needs fixing");
+				console.log(data);
+				$scope.queryWorkspaceList();
+			});
+		}, function() {
+			console.log("said no to changing!");
+		});
+	};
+
+	$scope.save_datetime = function() {
+		console.log("saving");
+		//this has to have user input
+		//need to find out params for image edit
+		var params = $.param({
+			datetime: String($scope.workspace_input.datetime_input),
+			id: String($scope.mediaAssetId)
+		});
+		console.log(params);
+		Wildbook.saveDateTime(params)
+		.then(function(data) {
+			console.log("save complete " + data);
+			console.log($scope.mediaAssetId);
+			$http.get('http://wb.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
+			.then(function(response) {
+				$scope.mediaAsset.datetime = params.datetime;
+				console.log(params.datetime);
+			});
+		}).fail(function(data) {
+			console.log("success or failure - needs fixing");
+			console.log(data);
+			$scope.queryWorkspaceList();
+		});
+	};
+
+	/* FILTERING */
+	$scope.filterIDs = ['Encounter', 'Marked Individual', 'Annotation', 'Media Asset'];
+	$scope.filterID = $scope.filterIDs[0];
+	$scope.setFilter = function(f) {
+		$scope.filterID = f;
+	};
+
+	//used to catch all form data for filtering and send in for query
+	$scope.filter = {
+		filtering_tests: null,
+		filterData: {},
+		submitFilters: function() {
+			var params = $scope.filter.filterData;
+
+      if ($scope.filterID == 'Encounter'){ params.class = "org.ecocean.Encounter"}
+      if ($scope.filterID == 'Marked Individual'){ params.class = "org.ecocean.MarkedIndividual"}
+      if ($scope.filterID == 'Annotation'){ params.class = "org.ecocean.Annotation"}
+      if ($scope.filterID == 'Media Asset'){ params.class = "org.ecocean.MediaAsset"}
+      // params = JSON.stringify(params);
+			$scope.queryWorkspace(params);
+			$scope.close('filter');
+		},
+
+		undoFilter: function() {
+			var toast = $mdToast.simple()
+			.content('You undid your last filter!')
+			.action('REDO')
+			.highlightAction(false)
+			.position($scope.getToastPosition());
+
+			$mdToast.show(toast).then(function(response) {
+				if (response == 'redo') {
+					alert('You redid the filter.');
 				}
-			};
+			});
+		}
+	};
 
-			$scope.refreshReviews = function(callback = function() {return;}) {
-				Wildbook.getReviewCounts().then(function(response) {
-					$scope.reviewCounts = response;
-					console.log($scope.reviewCounts);
+	//fake filtering data
+	$http.get('assets/json/fakeClassDefinitions.json').then(function(data) {
+		$scope.filter.filtering_tests = data;
+	});
 
-					callback();
-					// Some cases require reviewCounts to be updated before proceeding
-					// Pass function as callback to stall until reviews refreshed
+	//used in table view
+	$scope.convertDateTime = function(dateTime) {
+		try {
+			return new Date(dateTime).toISOString().substring(0, 10);
+		} catch (e) {
+			return "No Date Provided";
+		}
+	};
+
+	$scope.refreshReviews = function(callback = function() {return;}) {
+		Wildbook.getReviewCounts().then(function(response) {
+			$scope.reviewCounts = response;
+			console.log($scope.reviewCounts);
+
+			callback();
+			// Some cases require reviewCounts to be updated before proceeding
+			// Pass function as callback to stall until reviews refreshed
+		});
+	};
+
+	//object where all identification methods are stored
+	$scope.identification = {
+		startIdentification: function(ev) {
+			$scope.refreshReviews();
+			var confirm = $mdDialog.confirm()
+			.title('Would you like to run identification?')
+			.textContent('You will be running identification on ' + $scope.workspace_occ.length + ' occurrences.')
+			.targetEvent(ev)
+			.ok('Yes')
+			.cancel('Not Right Now');
+
+			$mdDialog.show(confirm).then(function() {
+				console.log("starting identification");
+				Wildbook.runIdentification($scope.workspace_occ).then(function(data) {
+					console.log(data);
 				});
-			};
+			});
+		},
 
-			//object where all identification methods are stored
-			$scope.identification = {
-				startIdentification: function(ev) {
-					$scope.refreshReviews();
-					var confirm = $mdDialog.confirm()
-						.title('Would you like to run identification?')
-						.textContent('You will be running identification on ' + $scope.workspace_occ.length + ' occurrences.')
-						.targetEvent(ev)
-						.ok('Yes')
-						.cancel('Not Right Now');
-					$mdDialog.show(confirm).then(function() {
-						console.log("starting identification");
-						Wildbook.runIdentification($scope.workspace_occ).then(function(data) {
-							console.log(data);
-						});
-					});
-				},
-				showIdentificationReview: function(ev) {
-					$scope.refreshReviews();
-					$scope.identification.getReview();
-				},
-				getReview: function() {
-					Wildbook.getIdentificationReview().then(function(response) {
-						console.log(response);
-					});
-				},
-			};
+		showIdentificationReview: function(ev) {
+			$scope.refreshReviews();
+			$scope.identification.getReview();
+		},
+
+		getReview: function() {
+			Wildbook.getIdentificationReview().then(function(response) {
+				console.log(response);
+			});
+		}
+	};
 
 			//object where all detection functions are stored
 			$scope.detection = {
@@ -1039,3 +1039,13 @@ console.info('data -> %o', data);
 		};
 
 	}]);
+
+	//don't know, unused
+	// function sanitizePosition() {
+	// 	var current = $scope.toastPosition;
+	// 	if (current.bottom && last.top) current.top = false;
+	// 	if (current.top && last.bottom) current.bottom = false;
+	// 	if (current.right && last.left) current.left = false;
+	// 	if (current.left && last.right) current.right = false;
+	// 	last = angular.extend({}, current);
+	// };
