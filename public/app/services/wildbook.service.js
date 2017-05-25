@@ -8,7 +8,7 @@ var workspace = angular
   // UPLOADING TO S3 AND THROUGH FLOW
   // ==================================
   service.types = ["s3", "local"];
-  service.upload = function(images, type, progressCallback, completionCallback) {
+  service.upload = function(images, type, progressCallback, completionCallback, failureCallback) {
     console.log("UPLOADING");
     // retrieve a mediaAssetSetId
     switch (_.indexOf(service.types, type)) {
@@ -18,7 +18,7 @@ var workspace = angular
         break;
         case 1:
         // local
-        flowUpload(images, progressCallback, completionCallback);
+        flowUpload(images, progressCallback, completionCallback, failureCallback);
         break;
         default:
         // doesn't exist
@@ -91,7 +91,7 @@ var workspace = angular
   };
 
   // upload to local server with flow
-  var flowUpload = function(images, progressCallback, completionCallback) {
+  var flowUpload = function(images, progressCallback, completionCallback, failureCallback) {
     var flow = new Flow({
       target: service.baseUrl + 'ResumableUpload',
       forceChunkSize: true,
@@ -136,8 +136,8 @@ var workspace = angular
 
       flow.on('fileError', function(file, message, chunk) {
         // TODO: handle error
-        console.log("Failed to upload " + file);
-        completionCallback([]);
+        console.log("Failed to upload " + file.name);
+        failureCallback();
       });
 
       flow.on('fileSuccess', function(file, message, chunk) {

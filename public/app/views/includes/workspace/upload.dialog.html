@@ -38,8 +38,9 @@
     <md-button class="md-primary md-raised" ng-click="upload.upload()" ng-show="upload.stage < 2" ng-disabled="upload.images.length <= 0 || upload.stage > 0">
       Upload <strong>Images</strong>
     </md-button>
-    <md-button class="md-primary md-raised" ng-click="upload.reset()" ng-show="upload.stage === 2">
+    <!-- The idea of the 'Upload More' button just resetting the dialog doesn't make sense, for now I'm just gonna reset the stage to 0 after success -->
+    <!-- <md-button class="md-primary md-raised" ng-click="upload.reset()" ng-show="upload.stage === 2">
       Upload <strong>More</strong>
-    </md-button>
+    </md-button> -->
   </md-dialog-actions>
 </md-dialog>

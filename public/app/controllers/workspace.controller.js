@@ -860,13 +860,20 @@ angular
 					$scope.upload.images[index].progress = progress;
 					$scope.upload.updateProgress();
 				},
+				failureCallback: function() {
+					alert("Failed to upload files");
+					$scope.upload.stage = 0;
+					console.log($scope.upload.stage);
+					$scope.upload.close();
+				},
 				completionCallback: function(assets) {
 					console.log ("upload completed");
-					$scope.upload.stage = 2;
+					$scope.upload.stage = 0;
 					$scope.upload.uploadSetDialog.assets = assets;
 					$scope.upload.uploadSetDialog.updateUploadSets();
-					$mdDialog.show($scope.upload.uploadSetDialog.dialog);
-					// $scope.upload.stage = 0;
+					$scope.upload.close();
+					alert("Successfully uploaded");
+					// $mdDialog.show($scope.upload.uploadSetDialog.dialog); // Not sure what the goal is
 				},
 				uploadSetDialog: {
 					assets: null,
@@ -951,7 +958,7 @@ console.info('data -> %o', data);
 				},
 				upload: function() {
 					$scope.upload.stage = 1;
-					Wildbook.upload($scope.upload.images, $scope.upload.type, $scope.upload.progressCallback, $scope.upload.completionCallback);
+					Wildbook.upload($scope.upload.images, $scope.upload.type, $scope.upload.progressCallback, $scope.upload.completionCallback, $scope.upload.failureCallback);
 				},
 				updateProgress: function() {
 					var max = 100 * $scope.upload.images.length;
