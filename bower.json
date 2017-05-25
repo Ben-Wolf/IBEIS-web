@@ -18,7 +18,14 @@
     "angular-lazy-img": "^1.2.2",
     "lazysizes": "^2.0.0",
     "ngInfiniteScroll": "1.0.0",
-    "lf-ng-md-file-input": "^1.4.8"
+    "lf-ng-md-file-input": "^1.4.8",
+    "ng-photoswipe": "^0.0.9",
+    "marked": "0.3.0",
+    "angular-mocks": "1.2.10",
+    "ng-flow": "^2.7.1"
+  },
+  "resolutions": {
+    "angular": "1.5.0"
   },
   "overrides": {
     "font-awesome": {
