@@ -219,9 +219,10 @@ angular
 		//this has to have user input
 		//need to find out params for image edit
 		var params = $.param({
-			datetime: String($scope.workspace_input.datetime_input),
-			id: String($scope.mediaAssetId)
+			datetime: $scope.workspace_input.datetime_input,
+			id: $scope.mediaAssetId
 		});
+		console.log($scope.workspace_input.datetime_input);
 		console.log(params);
 		Wildbook.saveDateTime(params)
 		.then(function(data) {
@@ -229,8 +230,8 @@ angular
 			console.log($scope.mediaAssetId);
 			$http.get('http://wb.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
 			.then(function(response) {
-				$scope.mediaAsset.datetime = params.datetime;
-				console.log($scope.mediaAsset.datetime);
+				$scope.mediaAsset.dateTime = $scope.workspace_input.datetime_input;
+				console.log($scope.workspace_input.datetime_input);
 			});
 		}).fail(function(data) {
 			console.log("success or failure - needs fixing");
