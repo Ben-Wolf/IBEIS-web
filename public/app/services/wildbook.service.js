@@ -105,6 +105,7 @@ var workspace = angular
       var progress = Math.round(file._prevUploadedSize / file.size * 100);
       var index = -1;
       var fileKey = file.name;
+      console.log(file.name + " images.length = " + images.length);
       for (var i = 0; i < images.length; i++) {
         console.log("Trying to upload : " + fileKey + " to : " + service.baseUrl + 'ResumableUpload');
         var testKey = images[i].name;
