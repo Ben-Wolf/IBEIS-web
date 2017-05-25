@@ -106,6 +106,7 @@ var workspace = angular
       var index = -1;
       var fileKey = file.name;
       for (var i = 0; i < images.length; i++) {
+        console.log("Trying to upload : " + fileKey + " to : " + service.baseUrl + 'ResumableUpload');
         var testKey = images[i].name;
         if (testKey === fileKey) {
           index = i;
@@ -128,19 +129,26 @@ var workspace = angular
         filename: name
       });
 
+      // Change when media assets are created automatically...
       count = count + 1;
         if (count >= images.length) completionCallback(assets);
       });
 
       flow.on('fileError', function(file, message, chunk) {
         // TODO: handle error
+        console.log("Failed to upload " + file);
+        completionCallback([]);
       });
 
-      flow.on('complete', function() {
-        // TODO: if media assets created automatically, use this for completion
-        //  otherwise, use fileSuccess and count
-        console.log("All flow uploads completed");
+      flow.on('fileSuccess', function(file, message, chunk) {
+        console.log("Successfully uploaded " + file);
       });
+
+      // flow.on('complete', function() {
+      //   // TODO: if media assets created automatically, use this for completion
+      //   //  otherwise, use fileSuccess and count
+      //   console.log("All flow uploads completed");
+      // });
 
       // add files to flow and upload
       for (i in images) {

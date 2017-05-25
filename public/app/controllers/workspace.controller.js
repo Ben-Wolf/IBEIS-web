@@ -860,10 +860,12 @@ angular
 					$scope.upload.updateProgress();
 				},
 				completionCallback: function(assets) {
+					console.log ("upload completed");
 					$scope.upload.stage = 2;
 					$scope.upload.uploadSetDialog.assets = assets;
 					$scope.upload.uploadSetDialog.updateUploadSets();
 					$mdDialog.show($scope.upload.uploadSetDialog.dialog);
+					// $scope.upload.stage = 0;
 				},
 				uploadSetDialog: {
 					assets: null,
