@@ -132,8 +132,8 @@ angular
 		$scope.refreshReviews();
 		Wildbook.getWorkspace(id_)
 		.then(function(data) {
-			console.log("Getting Workspace");
-			console.log(String(data));
+			console.log("Getting Workspace: " + id_);
+			console.log("There are " + String(data.assets.length) + " pictures in this workspace.");
 			$scope.workspace = id_;
 			$scope.currentSlides = data.assets;
 			$scope.workspace_args = data.metadata.TranslateQueryArgs;
