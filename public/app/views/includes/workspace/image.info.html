@@ -50,8 +50,8 @@
       </md-list>
       <md-subheader>Occurences</md-subheader>
       <md-list>
-        <md-list-item ng-repeat="occ in mediaAssetContext.Occurences">
-          {{ occ }}
+        <md-list-item>
+          {{ mediaAsset.occurrenceID }}
         </md-list-item>
       </md-list>
       <md-subheader>Annotations</md-subheader>
@@ -62,8 +62,9 @@
       </md-list>
       <md-subheader>Encounters</md-subheader>
       <md-list>
-        <md-list-item ng-repeat="(id, enc) in mediaAssetContext.Encounters">
-          <a href="{{ enc.url }}">{{ id }}</a>
+        <!--md-list-item ng-repeat="(id, enc) in mediaAssetContext.Encounters"-->
+        <md-list-item>
+          {{ mediaAsset.features[0].encounterId }}
         </md-list-item>
       </md-list>
       <md-subheader>Metadata</md-subheader>

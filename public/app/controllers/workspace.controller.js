@@ -634,10 +634,11 @@ angular
 				$http.get('http://wb.scribble.com/MediaAssetContext?id=' + mediaAssetId)
 					.then(function(response) {
 						$scope.mediaAssetContext = response.data;
+						console.log(response);
 					});
 				$scope.mediaAsset = mediaAsset;
 				//$scope.indID=mediaAsset.feature
-				console.log($scope.mediaAsset);
+
 				$scope.hide = function() {
 					$mdDialog.hide();
 				};
