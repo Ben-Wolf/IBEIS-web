@@ -16,6 +16,7 @@ angular
 	$scope.datetime_model = new Date(); //default/test date, should never be seen
 	$scope.pastDetectionReviews = [];
   $scope.loading = 'off';
+	$scope.individual_model="";
 
 	//used for saving info using the datepicker
 	$scope.set_datetime_model = function() {
@@ -41,6 +42,7 @@ angular
       // when the response is available
       $scope.$apply(function() {
           $scope.currentSlides = data.assets;
+					console.log(data);
       })
 	  }).fail(function(data) {
       $scope.loading = 'off';
@@ -135,6 +137,7 @@ angular
 			console.log('##################### %o', data);
 			$scope.workspace = id_;
 			$scope.currentSlides = data.assets;
+			console.log(data);
 			$scope.workspace_args = data.metadata.TranslateQueryArgs;
 			$scope.workspace_occ = $rootScope.Utils.keys(data.metadata.occurrences);
 			$scope.$apply();
@@ -238,6 +241,35 @@ angular
 			console.log(data);
 			$scope.queryWorkspaceList();
 		});
+	};
+
+	//save change of marked individuals
+	$scope.save_marked_individual=function(){
+		console.log($scope.mediaAsset.features);
+		var params= $.param({
+			features:[
+				{
+					annotationId: $scope.mediaAsset.features[0].annotationId,
+					encounterId: $scope.mediaAsset.features[0].encounterId,
+					id: $scope.mediaAsset.features[0].id,
+					individualId: $scope.workspace_input.individual_input
+				}
+			],
+			id: $scope.mediaAssetId
+		});
+		console.log(params);
+		Wildbook.saveMarkedIndividual(params).then(function(data){
+			console.log("testthen");
+			$http.get('http://wb.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
+		.then(function(response) {
+			$scope.mediaAsset.features[0].individualId=$scope.workspace_input.individual_input;
+			console.log(response.data);
+		});
+	}).fail(function(data) {
+		console.log(data);
+		console.log("fail");
+		$scope.queryWorkspaceList();
+	})
 	};
 
 	/* FILTERING */
@@ -604,6 +636,8 @@ angular
 						$scope.mediaAssetContext = response.data;
 					});
 				$scope.mediaAsset = mediaAsset;
+				//$scope.indID=mediaAsset.feature
+				console.log($scope.mediaAsset);
 				$scope.hide = function() {
 					$mdDialog.hide();
 				};

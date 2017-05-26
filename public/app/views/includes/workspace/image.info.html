@@ -33,9 +33,20 @@
       </md-list>
       <md-subheader>Marked Individuals</md-subheader>
       <md-list>
-        <md-list-item ng-repeat="ind in mediaAssetContext.MarkedIndividuals">
-          <a href="{{ ind.url }}">{{ ind.individualID }}</a>
-        </md-list-item>
+        <div ng-if="!edit_marked_individual" ng-init="edit_marked_individual=false">
+          <!--md-list-item ng-repeat="ind in mediaAssetContext.MarkedIndividuals"-->
+          <md-list-item>
+            <!--a href="{{ ind.url }}">{{ ind.individualID }}</a-->
+            {{mediaAsset.features[0].individualId}}
+            <md-icon-button ng-click="$parent.edit_marked_individual=true" class="fa fa-edit" style="color: green; padding-left: 15px;"></md-icon-button>
+          </md-list-item>
+        </div>
+        <div ng-if="edit_marked_individual">
+          <md-input-container >
+            <input ng-model="individual_model" ng-value="mediaAsset.features[0].individualId" ng-change="workspace_input.individual_input=individual_model">
+          </md-input-container>
+          <md-icon-button ng-click="save_marked_individual(); $parent.edit_marked_individual=false" class="fa fa-save"></md-icon-button>
+        </div>
       </md-list>
       <md-subheader>Occurences</md-subheader>
       <md-list>
