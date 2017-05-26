@@ -31,6 +31,11 @@ module.exports = function(config) {
       'public/bower_components/lazysizes/lazysizes.js',
       'public/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
       'public/bower_components/lf-ng-md-file-input/dist/lf-ng-md-file-input.js',
+      'public/bower_components/photoswipe/dist/photoswipe.js',
+      'public/bower_components/photoswipe/dist/photoswipe-ui-default.js',
+      'public/bower_components/ng-photoswipe/angular-photoswipe.min.js',
+      'public/bower_components/angular-mocks/angular-mocks.js',
+      'public/bower_components/ng-flow/dist/ng-flow.js',
       // endbower
       "public/app/ibeis.js",
       "public/app/ibeis.routes.js",
