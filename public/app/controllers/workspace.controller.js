@@ -132,7 +132,8 @@ angular
 		$scope.refreshReviews();
 		Wildbook.getWorkspace(id_)
 		.then(function(data) {
-			console.log('##################### %o', data);
+			console.log("Getting Workspace");
+			console.log(String(data));
 			$scope.workspace = id_;
 			$scope.currentSlides = data.assets;
 			$scope.workspace_args = data.metadata.TranslateQueryArgs;
@@ -173,10 +174,10 @@ angular
 
 	$scope.saveNewWorkspace = function(ev) {
 		var confirm = $mdDialog.prompt()
-		.title('SAVE WORKSPACE')
-		.textContent('what would you like to name this workspace?')
-		.placeholder('enter a name')
-	  .ariaLabel('workspace name')
+		.title('Save Workspace')
+		.textContent('What would you like to name this workspace?')
+		.placeholder('Enter a name')
+	  .ariaLabel('Workspace name')
 	  .targetEvent(ev)
 	  .ok('SAVE')
 	  .cancel('CANCEL');
@@ -185,6 +186,7 @@ angular
 			var args = $scope.workspace_args;
 			Wildbook.saveWorkspace(id, args)
 			.then(function(data) {
+				console.log("Saved workspace");
 				$scope.queryWorkspaceList();
 			}).fail(function(data) {
 				console.log("success or failure - needs fixing");
@@ -340,6 +342,7 @@ angular
 			$scope.detection.firstRun = true;
 			Wildbook.findMediaAssetSetIdFromUploadSet($scope.workspace)
 			.then(function(response) {
+				// console.log(String(response.data.metadata.TranslateQueryArgs.query.id))
 				if (response.data.metadata.TranslateQueryArgs.query) {
 					console.log(response.data.metadata.TranslateQueryArgs.query.id);
 					Wildbook.runDetection(response.data.metadata.TranslateQueryArgs.query.id)
