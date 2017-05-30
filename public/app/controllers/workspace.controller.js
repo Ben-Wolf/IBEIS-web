@@ -324,6 +324,21 @@ angular
 		}
 	};
 
+	//used for dynamic sort in table view
+	$scope.defaultTableSortProperty="id";
+	$scope.reverse=true;
+
+	$scope.tableSortBy = function(newProperty) {
+		if(newProperty==$scope.defaultTableSortProperty){$scope.reverse=!$scope.reverse;}
+
+		else{
+			$scope.reverse=false;
+		}
+
+		$scope.defaultTableSortProperty=newProperty;
+	};
+
+
 	$scope.refreshReviews = function(callback = function() {return;}) {
 		Wildbook.getReviewCounts().then(function(response) {
 			$scope.reviewCounts = response;
