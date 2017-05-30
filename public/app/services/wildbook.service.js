@@ -224,7 +224,7 @@ var workspace = angular
      // Primarily used to parse location data for map view
       return $.ajax({
         type: "GET",
-			  url: service.baseUrl + 'rest/org.ecocean.media.MediaAsset/' + imageID.toString(),
+			  url: service.baseUrl + 'MediaAssetContext?id=' + imageID.toString(),
         dataType: "json"
       });
     };

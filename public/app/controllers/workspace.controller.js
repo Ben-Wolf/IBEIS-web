@@ -51,7 +51,7 @@ angular
 	//query all workspaces to populate workspace dropdown
 	$scope.queryWorkspaceList = function() {
 		Wildbook.retrieveWorkspaces(undefined).then(function(data) {
-			console.info('data -> %o', data);
+			console.info('Workspaces: %o', data);
 	    if (!data || (data.length < 1)) {
 	        console.warn('queryWorkspaceList() got empty data');
 	        return;
@@ -96,16 +96,6 @@ angular
 			.join(' ');
 	};
 
-	// "You undid your last filter"?
-	function sanitizePosition() {
-		 var current = $scope.toastPosition;
-		 if (current.bottom && last.top) current.top = false;
-		 if (current.top && last.bottom) current.bottom = false;
-		 if (current.right && last.left) current.left = false;
-		 if (current.left && last.right) current.right = false;
-		 last = angular.extend({}, current);
-	 }
-
 
 	/* SIDENAVS */
 	$scope.close = function(id) {
@@ -142,8 +132,7 @@ angular
 		$scope.refreshReviews();
 		Wildbook.getWorkspace(id_)
 		.then(function(data) {
-			console.log("Getting Workspace: " + id_);
-			console.log("There are " + String(data.assets.length) + " pictures in this workspace.");
+			// console.log('##################### %o', data); Doesn't provide much information.
 			$scope.workspace = id_;
 			$scope.currentSlides = data.assets;
 			$scope.workspace_args = data.metadata.TranslateQueryArgs;
@@ -184,10 +173,10 @@ angular
 
 	$scope.saveNewWorkspace = function(ev) {
 		var confirm = $mdDialog.prompt()
-		.title('Save Workspace')
-		.textContent('What would you like to name this workspace?')
-		.placeholder('Enter a name')
-	  .ariaLabel('Workspace name')
+		.title('SAVE WORKSPACE')
+		.textContent('what would you like to name this workspace?')
+		.placeholder('enter a name')
+	  .ariaLabel('workspace name')
 	  .targetEvent(ev)
 	  .ok('SAVE')
 	  .cancel('CANCEL');
@@ -196,7 +185,6 @@ angular
 			var args = $scope.workspace_args;
 			Wildbook.saveWorkspace(id, args)
 			.then(function(data) {
-				console.log("Saved workspace");
 				$scope.queryWorkspaceList();
 			}).fail(function(data) {
 				console.log("success or failure - needs fixing");
@@ -352,7 +340,6 @@ angular
 			$scope.detection.firstRun = true;
 			Wildbook.findMediaAssetSetIdFromUploadSet($scope.workspace)
 			.then(function(response) {
-				// console.log(String(response.data.metadata.TranslateQueryArgs.query.id))
 				if (response.data.metadata.TranslateQueryArgs.query) {
 					console.log(response.data.metadata.TranslateQueryArgs.query.id);
 					Wildbook.runDetection(response.data.metadata.TranslateQueryArgs.query.id)
@@ -900,11 +887,11 @@ angular
 					uploadSets: null,
 					updateUploadSets: function() {
 						Wildbook.retrieveWorkspaces(true).then(function(data) {
-console.info('data -> %o', data);
-                                                        if (!data || (data.length < 1)) {
-                                                            console.warn('updateUploadSets() got empty data');
-                                                            return;
-                                                        }
+							console.info('Workspaces: %o', data);
+              if (!data || (data.length < 1)) {
+                console.warn('updateUploadSets() got empty data');
+                return;
+              }
 							data = data.slice(1, (data.length - 2));
 							$scope.upload.uploadSetDialog.uploadSets = _.without(data.split(", "), "*undefined*");
 						});
@@ -1067,3 +1054,13 @@ console.info('data -> %o', data);
 		};
 
 	}]);
+
+	//don't know, unused
+	// function sanitizePosition() {
+	// 	var current = $scope.toastPosition;
+	// 	if (current.bottom && last.top) current.top = false;
+	// 	if (current.top && last.bottom) current.bottom = false;
+	// 	if (current.right && last.left) current.left = false;
+	// 	if (current.left && last.right) current.right = false;
+	// 	last = angular.extend({}, current);
+	// };
