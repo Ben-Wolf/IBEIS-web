@@ -34,11 +34,11 @@
                 <th>Thumbnail</th>
                 <th ng-click="tableSortBy('id')">
                   Annotation ID
-                  <span ng-show="propertyName==='id'" ng-class="{reverse:reverse}"></span>
+                  <span ng-show="propertyName==='slide.id'" ng-class="{reverse:reverse}"></span>
 
                 </th>
                 <th ng-click="tableSortBy('dateTime')">Date</th>
-                <span ng-show="propertyName==='dateTime'" ng-class="{reverse: reverse}"></span>
+                <span ng-show="propertyName==='slide.dateTime'" ng-class="{reverse: reverse}"></span>
                 <th st-sort="submetterOrganization">Organization</th>
                 <th st-sort="recordedBy">recordedBy</th>
             </tr>
