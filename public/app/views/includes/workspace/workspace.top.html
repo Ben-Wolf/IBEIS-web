@@ -5,7 +5,7 @@
   </md-button>
   <md-menu>
     <md-button style="color: black;" class="md-primary" aria-label="Workspace Selector" ng-click="$mdMenu.open($event)">
-      Upload Set&nbsp;<i class="fa fa-caret-down"></i>
+      {{ workspace }}&nbsp;<i class="fa fa-caret-down"></i>
     </md-button>
     <md-menu-content width="4">
       <md-menu-item ng-repeat="w in workspaces">
@@ -48,12 +48,6 @@
       Apply a filter to your workspace.
     </md-tooltip>
   </md-button>
-  <!-- <md-button ng-click="toggleSidenav('filter')" class="md-primary" aria-label="Filter" hide show-gt-md>
-    <i class="fa fa-filter"></i> Filter
-    <md-tooltip md-autohide>
-      Apply a filter to your workspace.
-    </md-tooltip>
-  </md-button> -->
   <md-button class="md-icon-button" aria-label="Undo" ng-click="filter.undoFilter()">
     <i class="fa fa-fw fa-undo"></i>
     <md-tooltip md-autohide>

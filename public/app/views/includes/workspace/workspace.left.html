@@ -25,15 +25,15 @@
                 maxHeight = self.height(),
                 maxWidth = self.width(),
                 words = self.text().split(" ");
-            
+
             function calcSize(text) {
                 var ourText = $("<span>"+text+"</span>").appendTo(self),
                     multiplier = maxWidth/ourText.width(),
                     newSize = fontSize*(multiplier-0.1);
                 ourText.css(
-                    "fontSize", 
-                    (maxFontSize > 0 && newSize > maxFontSize) ? 
-                        maxFontSize : 
+                    "fontSize",
+                    (maxFontSize > 0 && newSize > maxFontSize) ?
+                        maxFontSize :
                         newSize
                 );
                 var scrollHeight = self[0].scrollHeight;
@@ -41,9 +41,9 @@
                     multiplier = maxHeight/scrollHeight;
                     newSize = (newSize*multiplier);
                     ourText.css(
-                        "fontSize", 
-                        (maxFontSize > 0 && newSize > maxFontSize) ? 
-                            maxFontSize : 
+                        "fontSize",
+                        (maxFontSize > 0 && newSize > maxFontSize) ?
+                            maxFontSize :
                             newSize
                     );
                 }
@@ -65,7 +65,7 @@
 
 $(function(){
     $(".textfill.little").textfill();
-    
+
     $(".textfill.much").textfill(0, 11);
 });
 </script>
@@ -95,7 +95,7 @@ $(function(){
     <md-button class="md-primary md-raised sidenav-btn" ng-disabled="workspace == 'Loading...'" ng-click="identification.showIdentificationReview()">
       <strong>Review</strong> Identification ({{ reviewCounts.identification }})
     </md-button>
-    <md-button class="md-secondary md-raised sidenav-btn" ng-disabled="workspace == 'Loading...'" href="http://wb.scribble.com/">
+    <md-button class="md-secondary md-raised sidenav-btn" ng-disabled="workspace == 'Loading...'" href="http://uidev.scribble.com/">
       <strong>View</strong> Biological Data
     </md-button>
   </div>
@@ -121,6 +121,6 @@ $(function(){
   </div> -->
   <md-divider></md-divider>
   <p ng-hide="workspace == 'Loading...'">
-    Other workspace information.
+    <!-- Other workspace information. -->
   </p>
 </md-content>

@@ -3,7 +3,7 @@ var workspace = angular
 .service('Wildbook', ['$http', function($http) {
   var service = {};
 
-  service.baseUrl = "http://wb.scribble.com/";
+  service.baseUrl = "http://uidev.scribble.com/";
 
   // UPLOADING TO S3 AND THROUGH FLOW
   // ==================================
@@ -16,7 +16,7 @@ var workspace = angular
         // s3
         s3Upload(images, progressCallback, completionCallback);
         break;
-        case 1:
+      case 1:
         // local
         flowUpload(images, progressCallback, completionCallback, failureCallback);
         break;
@@ -179,6 +179,7 @@ var workspace = angular
     // };
 
     service.findMediaAssetSetIdFromUploadSet = function(setName) {
+      console.log("WORKSPACE = " + setName);
       if (!setName) { alert('findMediaAssetSetIdFromUploadSet() passed no arg'); console.error('no setName passed!'); return; }  //hacky but ya get what ya get
       var params = {
         method: "GET",
@@ -223,7 +224,7 @@ var workspace = angular
      // Primarily used to parse location data for map view
       return $.ajax({
         type: "GET",
-			  url: service.baseUrl + 'rest/org.ecocean.media.MediaAsset/' + imageID.toString(),
+			  url: service.baseUrl + 'MediaAssetContext?id=' + imageID.toString(),
         dataType: "json"
       });
     };

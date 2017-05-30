@@ -32,7 +32,7 @@ angular
 	  $scope.workspace_args = params;
 	  $.ajax({
 	      type: "POST",
-	      url: 'http://wb.scribble.com/TranslateQuery',
+	      url: 'http://uidev.scribble.com/TranslateQuery',
 	      data: params,
 	      dataType: "json"
 
@@ -53,7 +53,7 @@ angular
 	//query all workspaces to populate workspace dropdown
 	$scope.queryWorkspaceList = function() {
 		Wildbook.retrieveWorkspaces(undefined).then(function(data) {
-			console.info('data -> %o', data);
+			console.info('Workspaces: %o', data);
 	    if (!data || (data.length < 1)) {
 	        console.warn('queryWorkspaceList() got empty data');
 	        return;
@@ -134,7 +134,7 @@ angular
 		$scope.refreshReviews();
 		Wildbook.getWorkspace(id_)
 		.then(function(data) {
-			console.log('##################### %o', data);
+			// console.log('##################### %o', data); Doesn't provide much information.
 			$scope.workspace = id_;
 			$scope.currentSlides = data.assets;
 			console.log(data);
@@ -231,7 +231,7 @@ angular
 		.then(function(data) {
 			console.log("save complete " + data);
 			console.log($scope.mediaAssetId);
-			$http.get('http://wb.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
+			$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
 			.then(function(response) {
 				$scope.mediaAsset.dateTime = $scope.workspace_input.datetime_input;
 				console.log($scope.workspace_input.datetime_input);
@@ -573,8 +573,8 @@ angular
 					else {
 						$scope.detection.firstRun = false;
 						var time = new Date().getTime();
-						console.log("http://wb.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time);
-						$("#detection-review").load("http://wb.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time, function(response, status, xhr) {
+						console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time);
+						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time, function(response, status, xhr) {
 							if ($scope.pastDetectionReviews.length <= 0) {
 								$scope.detection.allowBackButton = false;
 							} else {
@@ -596,14 +596,14 @@ angular
 					}
 				},
 				loadDetectionHTMLwithOffset: function() {
-					 console.log("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
-					 $("#detection-review").load("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
+					 console.log("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
+					 $("#detection-review").load("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
 				},
 				// //queries for the actual detection html and sets it in the page
 				// loadDetectionHTML: function() {
 				//	 $scope.reviewOffset = 0;
-				//	 console.log("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
-				//	 $("#ibeis-process").load("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
+				//	 console.log("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
+				//	 $("#ibeis-process").load("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
 				// }
 
 
@@ -646,7 +646,7 @@ angular
 			function ImageDialogController($scope, $mdDialog, mediaAsset) {
 				var mediaAssetId = mediaAsset.id;
 				$scope.mediaAssetId = mediaAsset.id;
-				$http.get('http://wb.scribble.com/MediaAssetContext?id=' + mediaAssetId)
+				$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + mediaAssetId)
 					.then(function(response) {
 						$scope.mediaAssetContext = response.data;
 						console.log(response);
@@ -937,11 +937,11 @@ angular
 					uploadSets: null,
 					updateUploadSets: function() {
 						Wildbook.retrieveWorkspaces(true).then(function(data) {
-console.info('data -> %o', data);
-                                                        if (!data || (data.length < 1)) {
-                                                            console.warn('updateUploadSets() got empty data');
-                                                            return;
-                                                        }
+							console.info('Workspaces: %o', data);
+              if (!data || (data.length < 1)) {
+                console.warn('updateUploadSets() got empty data');
+                return;
+              }
 							data = data.slice(1, (data.length - 2));
 							$scope.upload.uploadSetDialog.uploadSets = _.without(data.split(", "), "*undefined*");
 						});
