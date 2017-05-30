@@ -3,7 +3,7 @@ var workspace = angular
 .service('Wildbook', ['$http', function($http) {
   var service = {};
 
-  service.baseUrl = "http://wb.scribble.com/";
+  service.baseUrl = "http://uidev.scribble.com/";
 
   // UPLOADING TO S3 AND THROUGH FLOW
   // ==================================

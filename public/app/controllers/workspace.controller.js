@@ -31,7 +31,7 @@ angular
 	  $scope.workspace_args = params;
 	  $.ajax({
 	      type: "POST",
-	      url: 'http://wb.scribble.com/TranslateQuery',
+	      url: 'http://uidev.scribble.com/TranslateQuery',
 	      data: params,
 	      dataType: "json"
 
@@ -240,7 +240,7 @@ angular
 		.then(function(data) {
 			console.log("save complete " + data);
 			console.log($scope.mediaAssetId);
-			$http.get('http://wb.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
+			$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
 			.then(function(response) {
 				$scope.mediaAsset.dateTime = $scope.workspace_input.datetime_input;
 				console.log($scope.workspace_input.datetime_input);
@@ -539,8 +539,8 @@ angular
 					else {
 						$scope.detection.firstRun = false;
 						var time = new Date().getTime();
-						console.log("http://wb.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time);
-						$("#detection-review").load("http://wb.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time, function(response, status, xhr) {
+						console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time);
+						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time, function(response, status, xhr) {
 							if ($scope.pastDetectionReviews.length <= 0) {
 								$scope.detection.allowBackButton = false;
 							} else {
@@ -562,14 +562,14 @@ angular
 					}
 				},
 				loadDetectionHTMLwithOffset: function() {
-					 console.log("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
-					 $("#detection-review").load("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
+					 console.log("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
+					 $("#detection-review").load("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
 				},
 				// //queries for the actual detection html and sets it in the page
 				// loadDetectionHTML: function() {
 				//	 $scope.reviewOffset = 0;
-				//	 console.log("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
-				//	 $("#ibeis-process").load("http://wb.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
+				//	 console.log("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
+				//	 $("#ibeis-process").load("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
 				// }
 
 
@@ -612,7 +612,7 @@ angular
 			function ImageDialogController($scope, $mdDialog, mediaAsset) {
 				var mediaAssetId = mediaAsset.id;
 				$scope.mediaAssetId = mediaAsset.id;
-				$http.get('http://wb.scribble.com/MediaAssetContext?id=' + mediaAssetId)
+				$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + mediaAssetId)
 					.then(function(response) {
 						$scope.mediaAssetContext = response.data;
 					});
