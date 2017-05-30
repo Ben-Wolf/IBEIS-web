@@ -351,7 +351,7 @@ angular
 	};
 
 	//object where all identification methods are stored
-	$scope.identification = {
+	$scope.identification ={
 		startIdentification: function(ev) {
 			$scope.refreshReviews();
 			var confirm = $mdDialog.confirm()
@@ -387,6 +387,7 @@ angular
 			$scope.detection.firstRun = true;
 			Wildbook.findMediaAssetSetIdFromUploadSet($scope.workspace)
 			.then(function(response) {
+				console.log(response);
 				if (response.data.metadata.TranslateQueryArgs.query) {
 					console.log(response.data.metadata.TranslateQueryArgs.query.id);
 					Wildbook.runDetection(response.data.metadata.TranslateQueryArgs.query.id)
