@@ -96,6 +96,16 @@ angular
 			.join(' ');
 	};
 
+	// "You undid your last filter"?
+	function sanitizePosition() {
+		 var current = $scope.toastPosition;
+		 if (current.bottom && last.top) current.top = false;
+		 if (current.top && last.bottom) current.bottom = false;
+		 if (current.right && last.left) current.left = false;
+		 if (current.left && last.right) current.right = false;
+		 last = angular.extend({}, current);
+	 }
+
 
 	/* SIDENAVS */
 	$scope.close = function(id) {
@@ -1057,13 +1067,3 @@ console.info('data -> %o', data);
 		};
 
 	}]);
-
-	//don't know, unused
-	// function sanitizePosition() {
-	// 	var current = $scope.toastPosition;
-	// 	if (current.bottom && last.top) current.top = false;
-	// 	if (current.top && last.bottom) current.bottom = false;
-	// 	if (current.right && last.left) current.left = false;
-	// 	if (current.left && last.right) current.right = false;
-	// 	last = angular.extend({}, current);
-	// };
