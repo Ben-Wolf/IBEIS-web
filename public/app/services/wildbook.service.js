@@ -105,9 +105,9 @@ var workspace = angular
       var progress = Math.round(file._prevUploadedSize / file.size * 100);
       var index = -1;
       var fileKey = file.name;
-      console.log(file.name + " images.length = " + images.length);
+      // console.log(file.name + " images.length = " + images.length);
       for (var i = 0; i < images.length; i++) {
-        console.log("Trying to upload : " + fileKey + " to : " + service.baseUrl + 'ResumableUpload');
+        // console.log("Trying to upload : " + fileKey + " to : " + service.baseUrl + 'ResumableUpload');
         var testKey = images[i].name;
         if (testKey === fileKey) {
           index = i;
@@ -132,7 +132,7 @@ var workspace = angular
 
       // Change when media assets are created automatically...
       count = count + 1;
-        if (count >= images.length) completionCallback(assets);
+        // if (count >= images.length) completionCallback(assets);
       });
 
       flow.on('fileError', function(file, message, chunk) {
@@ -143,6 +143,17 @@ var workspace = angular
 
       flow.on('fileSuccess', function(file, message, chunk) {
         console.log("Successfully uploaded " + file);
+        console.log(file);
+        var name = file.name;
+        assets.push({
+            filename: name
+        });
+        count = count + 1;
+        if (count >= images.length) {
+          console.log("Counter works");
+          console.log("Assets: %o", assets);
+          completionCallback(assets);
+        }
       });
 
       // flow.on('complete', function() {
