@@ -924,8 +924,7 @@ angular
 					$scope.upload.uploadSetDialog.assets = assets;
 					$scope.upload.uploadSetDialog.updateUploadSets();
 					$scope.upload.close();
-					alert("Successfully uploaded");
-					// $mdDialog.show($scope.upload.uploadSetDialog.dialog); // Not sure what the goal is
+					alert("Successfully uploaded"); $mdDialog.show($scope.upload.uploadSetDialog.dialog); // Not sure what the goal is
 				},
 				uploadSetDialog: {
 					assets: null,
