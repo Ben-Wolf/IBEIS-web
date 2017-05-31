@@ -91,7 +91,7 @@ var workspace = angular
   };
 
   // upload to local server with flow
-  var flowUpload = function(images, progressCallback, completionCallback, failureCallback) {
+  var flowUpload = function(images, progressCallback, completionCallback, failureCallback, mediaAssetSetId) {
     var flow = new Flow({
       target: service.baseUrl + 'ResumableUpload',
       forceChunkSize: true,
@@ -101,13 +101,13 @@ var workspace = angular
 
     var count = 0;
     var assets = [];
+    var prog = true;
+
     flow.on('fileProgress', function(file, chunk) {
       var progress = Math.round(file._prevUploadedSize / file.size * 100);
       var index = -1;
       var fileKey = file.name;
-      // console.log(file.name + " images.length = " + images.length);
       for (var i = 0; i < images.length; i++) {
-        // console.log("Trying to upload : " + fileKey + " to : " + service.baseUrl + 'ResumableUpload');
         var testKey = images[i].name;
         if (testKey === fileKey) {
           index = i;
@@ -123,53 +123,32 @@ var workspace = angular
       }
     });
 
+    flow.on('fileError', function(file, message, chunk) {
+      // TODO: handle error
+      console.log("Failed to upload " + file.name);
+      failureCallback();
+    });
+
     flow.on('fileSuccess', function(file, message, chunk) {
-      console.log(file);
+      console.log("Successfully uploaded " + file);
       var name = file.name;
       assets.push({
-        filename: name
+          filename: name
       });
-
-      // Change when media assets are created automatically...
       count = count + 1;
-        // if (count >= images.length) completionCallback(assets);
-      });
+      if (count >= images.length) {
+        console.log("Assets: %o", assets);
+        completionCallback(assets);
+      }
+    });
 
-      flow.on('fileError', function(file, message, chunk) {
-        // TODO: handle error
-        console.log("Failed to upload " + file.name);
-        failureCallback();
-      });
-
-      flow.on('fileSuccess', function(file, message, chunk) {
-        console.log("Successfully uploaded " + file);
-        console.log(file);
-        var name = file.name;
-        assets.push({
-            filename: name
-        });
-        count = count + 1;
-        if (count >= images.length) {
-          console.log("Counter works");
-          console.log("Assets: %o", assets);
-          completionCallback(assets);
-        }
-      });
-
-      // flow.on('complete', function() {
-      //   // TODO: if media assets created automatically, use this for completion
-      //   //  otherwise, use fileSuccess and count
-      //   console.log("All flow uploads completed");
-      // });
-
-      // add files to flow and upload
-      for (i in images) {
-        flow.addFile(images[i]);
-      };
-
-      console.log(flow.files);
-      flow.upload();
+    // add files to flow and upload
+    for (i in images) {
+      flow.addFile(images[i]);
     };
+
+    flow.upload();
+  };
 
     // MEDIA assets
     // ==============
@@ -178,16 +157,6 @@ var workspace = angular
       // TODO: check for errors?
       return $http.get(service.baseUrl + 'MediaAssetCreate?requestMediaAssetSet');
     };
-
-    // create MediaAsset for flow upload
-    // var mediaAsset = {
-    //     MediaAssetCreate: [{
-    //         setId: mediaAssetSetId,
-    //         assets: [{
-    //             filename: fileName
-    //         }]
-    //     }]
-    // };
 
     service.findMediaAssetSetIdFromUploadSet = function(setName) {
       console.log("WORKSPACE = " + setName);
