@@ -4,101 +4,93 @@
     <script src="bower_components/lazysizes/plugins/attrchange/ls.attrchange.min.js" async=""></script>
     <script src="bower_components/lazysizes/lazysizes.min.js" async=""></script>
     <script type="text/javascript">
-    var dropZone = document.getElementById('dropZone');
+      var dropZone = document.getElementById('dropZone');
 
-function showDropZone() {
-    dropZone.style.visibility = "visible";
-}
-function hideDropZone() {
-    dropZone.style.visibility = "hidden";
-}
+      function showDropZone() {
+        dropZone.style.visibility = "visible";
+      }
 
-function allowDrag(e) {
-    if (true) {  // Test that the item being dragged is a valid one
-        e.dataTransfer.dropEffect = 'copy';
+      function hideDropZone() {
+        dropZone.style.visibility = "hidden";
+      }
+
+      function allowDrag(e) {
+        if (true) {  // Test that the item being dragged is a valid one
+          e.dataTransfer.dropEffect = 'copy';
+          e.preventDefault();
+        }
+      }
+
+      function handleDrop(e) {
         e.preventDefault();
-    }
-}
+        // hideDropZone();
+        console.log(e);
+        // e.upload.show();
+        // $scope.upload.images += e;
+        alert('Drop!');
+        hideDropZone();
+      }
 
-function handleDrop(e) {
-    e.preventDefault();
-    hideDropZone();
-    e.upload.show();
-    // $scope.upload.images += e;
-    alert('Drop!');
-}
+      // 1
+      window.addEventListener('dragenter', function(e) {
+        showDropZone();
+      });
 
-// 1
-window.addEventListener('dragenter', function(e) {
-    showDropZone();
-});
+      // 2
+      dropZone.addEventListener('dragenter', allowDrag);
+      dropZone.addEventListener('dragover', allowDrag);
 
-// 2
-dropZone.addEventListener('dragenter', allowDrag);
-dropZone.addEventListener('dragover', allowDrag);
+      // 3
+      dropZone.addEventListener('dragleave', function(e) {
+        hideDropZone();
+      });
 
-// 3
-dropZone.addEventListener('dragleave', function(e) {
-    hideDropZone();
-});
+      // 4
+      dropZone.addEventListener('drop', handleDrop);
+    </script>
 
-// 4
-dropZone.addEventListener('drop', handleDrop);
-</script>
-<style type="text/css">
-div#dropZone {
-  background: white;
-  border-color: lightgray;
-  border-width: 7px;
-  border-style: dashed;
-  text-align: center;
-  vertical-align: middle;
-  position: fixed;
-  top: 65px;
-  left: 350px;
-  width: 100%;
-  height: 100%;
-  z-index: 999;
-  opacity: 0.8;
-  visibility: hidden;
-  position: center;
-  padding-top: 200px;
-  color: gray;
-  font-size: 5em;
-  outline: 15px solid white;
-  margin: 15px;
-}
-
-
-</style>
+    <style type="text/css">
+      div#dropZone {
+        background: white;
+        border-color: lightgray;
+        border-width: 7px;
+        border-style: dashed;
+        text-align: center;
+        vertical-align: middle;
+        position: fixed;
+        top: 65px;
+        left: 350px;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        opacity: 0.8;
+        visibility: hidden;
+        position: center;
+        padding-top: 200px;
+        color: gray;
+        font-size: 5em;
+        outline: 15px solid white;
+        margin: 15px;
+      }
+    </style>
   </head>
 
-<body>
-  <div class="gridListdemoBasicUsage">
+  <body>
+    <div class="gridListdemoBasicUsage">
+      <div id="dropZone"><input type="file" multiple accept="image/*" class="file-input" style="display: none;" id="img-upload-btn" onchange="angular.element(this).scope().upload.select(this)"><center> Drag and drop files here... </center></div>
 
+      <div class='md-padding' layout="row" layout-align="center center" layout-wrap>
+        <!-- <div infinite-scroll="addMoreItems()" infinite-scroll-distance='2'>  stacks the images...-->
+        <md-card class="card-img-parent" style="max-width: 150px; max-height: 150px;" ng-repeat="slide in currentSlides" ng-click="showImageInfo($event, $index)">
 
-    <div id="dropZone"><input type="file" multiple accept="image/*" class="file-input" style="display: none;" id="img-upload-btn" onchange="angular.element(this).scope().upload.select(this)"><center> Drag and drop files here... </center></div>
-    <div class='md-padding' layout="row" layout-align="center center" layout-wrap>
-      <!-- <div infinite-scroll="addMoreItems()" infinite-scroll-distance='2'> -->
+          <!-- <div style="border: 1px solid black;"> -->
 
-        <md-card class="card-img-parent" style="width: 100px; height: 75px;" ng-repeat="slide in currentSlides" ng-click="showImageInfo($event, $index)">
+          <img class="lazyload" data-src="{{slide.url}}" style="max-height: 150px; max-width: 150px; width: auto" />
 
-          <div style="border: 1px solid black;">
-            <!-- <div ng-repeat="label in slide.children">
-              <div ng-repeat="k in label.labels">
-              {{k}}
-              </div>
-            </div> -->
-            <!-- <img class="card-img lazyload" data-src="{{slide.children[0].url}}"/> -->
-            <img class="card-img lazyload" data-src="{{slide.url}}"/> -->
-          <!-- </div>
-          <md-card-actions layout="row" layout-align="center" class="img-text">
-          <!-- <h4>{{slide.title}}</h4 > -->
-          </md-card-actions>
+          <!-- </div> -->
 
         </md-card>
-      <!-- </div> -->
+      </div>
     </div>
-   </div>
-</body>
+  </body>
 </html>
