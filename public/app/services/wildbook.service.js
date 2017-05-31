@@ -340,6 +340,7 @@ var workspace = angular
     };
 
     service.getIdentificationReview = function() {
+      console.log("test1");
       return $.ajax({
         type: "GET",
         url: service.baseUrl + 'ia?getIdentificationReviewHtmlNext&test',

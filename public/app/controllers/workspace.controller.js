@@ -444,6 +444,7 @@ angular
 						console.log("New jobID " + data.sendDetect.response);
 						$scope.detection.showDetectionReview(ev);
 					}
+					console.log(data);
 				});
 			}).fail(function(data) {
 
