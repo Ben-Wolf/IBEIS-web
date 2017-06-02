@@ -16,9 +16,7 @@ angular
 	$scope.datetime_model = new Date(); //default/test date, should never be seen
 	$scope.pastDetectionReviews = [];
   $scope.loading = 'off';
-<<<<<<< HEAD
 	$scope.individual_model="";
-=======
 	$scope.myDate=new Date();
 	$scope.min_date=new Date(
 		$scope.myDate.getFullYear()-20,
@@ -30,7 +28,6 @@ angular
 		$scope.myDate.getMonth(),
 		$scope.myDate.getDate()
 	)
->>>>>>> origin/master
 
 	//used for saving info using the datepicker
 	$scope.set_datetime_model = function() {
@@ -695,10 +692,31 @@ angular
 					}
 				});
 			};
+			$scope.tableImageInfo=function(ev,id){
+				console.log(id);
+				var assets=$scope.currentSlides.filter(function( obj ) {
+  				return obj.id === id;
+					});
+					var asset=assets[0];
+					console.log(asset);
+					$scope.image_index=$scope.currentSlides.indexOf(asset);
+					$mdDialog.show({
+						controller: ImageDialogController,
+						templateUrl: 'app/views/includes/workspace/image.info.html',
+						targetEvent: ev,
+						clickOutsideToClose: true,
+						fullscreen: true,
+						scope: $scope,
+						preserveScope: true,
+						locals: {
+							mediaAsset: asset
+						}
+					});
+			};
 			$scope.delete_image=function(ev,image_index){
 
 
-			}
+			};
 
 
 			$scope.toggleLogo = function() {
@@ -926,12 +944,8 @@ angular
 					$scope.upload.uploadSetDialog.assets = assets;
 					$scope.upload.uploadSetDialog.updateUploadSets();
 					$scope.upload.close();
-<<<<<<< HEAD
-					alert("Successfully uploaded"); $mdDialog.show($scope.upload.uploadSetDialog.dialog); // Not sure what the goal is
-=======
 					alert("Successfully uploaded");
 					$mdDialog.show($scope.upload.uploadSetDialog.dialog); // Opens completed_upload.dialog.html
->>>>>>> origin/master
 				},
 				uploadSetDialog: {
 					assets: null,
