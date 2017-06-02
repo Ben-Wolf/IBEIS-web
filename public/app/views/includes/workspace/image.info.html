@@ -21,7 +21,7 @@
       <md-list>
         <div ng-if="!edit_datetime" ng-init="edit_datetime=false">
           <md-list-item>
-            {{ mediaAsset.dateTime }}
+            {{ convertDateTime(mediaAsset.dateTime) }}
             <md-icon-button ng-click="$parent.edit_datetime=true" class="fa fa-edit" style="color: green; padding-left: 15px;"></md-icon-button>
           </md-list-item>
         </div>
