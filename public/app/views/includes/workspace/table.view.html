@@ -34,17 +34,14 @@
                 <th>Thumbnail</th>
                 <th ng-click="tableSortBy('id')">
                   Annotation ID
-                  <span ng-show="propertyName==='slide.id'" ng-class="{reverse:reverse}"></span>
-
                 </th>
                 <th ng-click="tableSortBy('dateTime')">Date</th>
-                <span ng-show="propertyName==='slide.dateTime'" ng-class="{reverse: reverse}"></span>
                 <th st-sort="submetterOrganization">Organization</th>
                 <th st-sort="recordedBy">recordedBy</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="slide in currentSlides | orderBy:propertyName:reverse" ng-click="tableImageInfo($event, slide.id)">
+            <tr ng-repeat="slide in currentSlides | orderBy:defaultTableSortProperty:reverse" ng-click="tableImageInfo($event, slide.id)">
                 <td><img class="lazyload" data-src="{{slide.url}}" style="max-height: 150px; max-width: 150px; width: auto" /></td>
                 <td>{{slide.id}}</td>
                 <td>
