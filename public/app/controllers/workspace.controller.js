@@ -614,6 +614,7 @@ angular
 			//launched on image click, uses the above controller
 			$scope.showImageInfo = function(ev, index) {
 				var asset = $scope.currentSlides[index];
+				console.log(asset);
 				$scope.image_index = index;
 				$mdDialog.show({
 					controller: ImageDialogController,
