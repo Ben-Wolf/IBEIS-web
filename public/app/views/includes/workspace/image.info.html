@@ -26,7 +26,7 @@
           </md-list-item>
         </div>
         <div ng-if="edit_datetime">
-          <md-datepicker ng-model="datetime_model" ng-init="set_datetime_model()"
+          <md-datepicker ng-model="datetime_model" ng-init="set_datetime_model()" ng-value="mediaAsset.dateTime"
           md-min-date="min_date" md-max-date="max_date" ng-change="workspace_input.datetime_input = datetime_model.toISOString()"></md-datepicker>
           <!-- &nbsp; -->
           <md-icon-button ng-click="save_datetime(); $parent.edit_datetime=false" class="fa fa-save"></md-icon-button>
