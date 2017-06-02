@@ -16,7 +16,21 @@ angular
 	$scope.datetime_model = new Date(); //default/test date, should never be seen
 	$scope.pastDetectionReviews = [];
   $scope.loading = 'off';
+<<<<<<< HEAD
 	$scope.individual_model="";
+=======
+	$scope.myDate=new Date();
+	$scope.min_date=new Date(
+		$scope.myDate.getFullYear()-20,
+    $scope.myDate.getMonth(),
+    $scope.myDate.getDate()
+	)
+	$scope.max_date=new Date(
+		$scope.myDate.getFullYear(),
+		$scope.myDate.getMonth(),
+		$scope.myDate.getDate()
+	)
+>>>>>>> origin/master
 
 	//used for saving info using the datepicker
 	$scope.set_datetime_model = function() {
@@ -666,6 +680,7 @@ angular
 			//launched on image click, uses the above controller
 			$scope.showImageInfo = function(ev, index) {
 				var asset = $scope.currentSlides[index];
+				console.log(asset);
 				$scope.image_index = index;
 				$mdDialog.show({
 					controller: ImageDialogController,
@@ -680,6 +695,10 @@ angular
 					}
 				});
 			};
+			$scope.delete_image=function(ev,image_index){
+
+
+			}
 
 
 			$scope.toggleLogo = function() {
@@ -827,23 +846,6 @@ angular
 			//  - 2 = occurence
 			//  - 3 = complete
 
-            // $scope.$watch('files.length',function(newVal,oldVal){
-            // console.log($scope.files);
-            // });
-            // $scope.onSubmit = function(){
-            // var formData = new FormData();
-            // angular.forEach($scope.files,function(obj){
-            //     formData.append('files[]', obj.lfFile);
-            // });
-            // $http.post('./upload', formData, {
-            //     transformRequest: angular.identity,
-            //     headers: {'Content-Type': undefined}
-            // }).then(function(result){
-            //     $scope.upload.completionCallback(formData);
-            // },function(err){
-            //     // do sometingh
-            // });
-            // };
 			$scope.upload = {
 				types: Wildbook.types,
 				type: "local",
@@ -855,7 +857,7 @@ angular
 					console.log($scope.upload.type);
 				},
 				dialog: {
-					templateUrl: 'app/views/includes/workspace/upload.dialog.html',
+					templateUrl: 'app/views/includes/workspace/upload/upload.dialog.html',
 					clickOutsideToClose: true,
 					fullscreen: true,
 					preserveScope: true,
@@ -924,12 +926,17 @@ angular
 					$scope.upload.uploadSetDialog.assets = assets;
 					$scope.upload.uploadSetDialog.updateUploadSets();
 					$scope.upload.close();
+<<<<<<< HEAD
 					alert("Successfully uploaded"); $mdDialog.show($scope.upload.uploadSetDialog.dialog); // Not sure what the goal is
+=======
+					alert("Successfully uploaded");
+					$mdDialog.show($scope.upload.uploadSetDialog.dialog); // Opens completed_upload.dialog.html
+>>>>>>> origin/master
 				},
 				uploadSetDialog: {
 					assets: null,
 					dialog: {
-						templateUrl: 'app/views/includes/workspace/completed_upload.dialog.html',
+						templateUrl: 'app/views/includes/workspace/upload/completed_upload.dialog.html',
 						clickOutsideToClose: false,
 						preserveScope: true,
 						scope: $scope
@@ -990,9 +997,13 @@ angular
 								});
 								break;
 							default:
-								Wildbook.createMediaAssets(assets).then(function(response) {
+								Wildbook.createMediaAssets(assets)
+								.then(function(response) {
 									$scope.viewAllImages();
 									$mdDialog.hide($scope.upload.uploadSetDialog.dialog);
+								})
+								.fail(function(){
+									console.log("Failed to upload to all images.");
 								});
 						}
 					},
@@ -1009,7 +1020,7 @@ angular
 				},
 				upload: function() {
 					$scope.upload.stage = 1;
-					Wildbook.upload($scope.upload.images, $scope.upload.type, $scope.upload.progressCallback, $scope.upload.completionCallback, $scope.upload.failureCallback);
+					Wildbook.upload($scope.upload.images, $scope.upload.type, $scope.upload.progressCallback, $scope.upload.completionCallback, $scope.upload.failureCallback, $scope.workspace);
 				},
 				updateProgress: function() {
 					var max = 100 * $scope.upload.images.length;

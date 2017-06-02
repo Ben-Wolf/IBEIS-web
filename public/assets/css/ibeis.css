@@ -179,8 +179,8 @@ td {
 }
 
 .card-img-parent {
-    width: 200px;
-    height: 100%;
+    width: auto;  /* On auto it looks nicest, but doesn't handle imageless assets well. previously was 200px */
+    height: auto; /* ^ previously was 100% */
     /*border: 1px solid black;*/
     overflow: hidden;
     /*background: gray;*/
