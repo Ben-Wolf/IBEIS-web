@@ -2,8 +2,8 @@
 
 [![Tasks on Trello](https://img.shields.io/badge/tasks-on%20trello-blue.svg)](https://trello.com/b/SHDAvm7L)
 [![Build Status](https://travis-ci.org/Danlowe95/IBEIS-web.svg?branch=master)](https://travis-ci.org/Danlowe95/IBEIS-web)
-[![Dependency Status](https://david-dm.org/Danlowe95/IBEIS-web.svg)](https://david-dm.org/Danlowe95/IBEIS-web)
-[![devDependency Status](https://david-dm.org/Danlowe95/IBEIS-web/dev-status.svg)](https://david-dm.org/Danlowe95/IBEIS-web#info=devDependencies)
+[![Dependency Status](https://david-dm.org/Ben-Wolf/IBEIS-web.svg)](https://david-dm.org/Ben-Wolf/IBEIS-web)
+[![devDependency Status](https://david-dm.org/Ben-Wolf/IBEIS-web/dev-status.svg)](https://david-dm.org/Ben-Wolf/IBEIS-web#info=devDependencies)
 
 **IBEIS Web** is the new front-end solution for the [**IBEIS image analysis**](https://github.com/Erotemic/ibeis) suite. It provides a researcher friendly interface with the goal of providing animal identification to fuel biological and ecological insight.
 
