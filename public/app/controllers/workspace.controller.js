@@ -16,6 +16,17 @@ angular
 	$scope.datetime_model = new Date(); //default/test date, should never be seen
 	$scope.pastDetectionReviews = [];
   $scope.loading = 'off';
+	$scope.myDate=new Date();
+	$scope.min_date=new Date(
+		$scope.myDate.getFullYear()-20,
+    $scope.myDate.getMonth(),
+    $scope.myDate.getDate()
+	)
+	$scope.max_date=new Date(
+		$scope.myDate.getFullYear(),
+		$scope.myDate.getMonth(),
+		$scope.myDate.getDate()
+	)
 
 	//used for saving info using the datepicker
 	$scope.set_datetime_model = function() {
@@ -629,6 +640,10 @@ angular
 					}
 				});
 			};
+			$scope.delete_image=function(ev,image_index){
+
+
+			}
 
 
 			$scope.toggleLogo = function() {
