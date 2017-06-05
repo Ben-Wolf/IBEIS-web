@@ -1,5 +1,3 @@
-/* var workspace = */
-
 angular
 	.module('workspace')
 	.controller('workspace-controller', [
@@ -13,17 +11,17 @@ angular
 	$scope.workspace_occ = [];
 	$scope.workspace_input = {};
 	$scope.reviewData = {};
-	$scope.datetime_model = new Date(); //default/test date, should never be seen
+	$scope.datetime_model = new Date();
 	$scope.pastDetectionReviews = [];
   $scope.loading = 'off';
 	$scope.individual_model="";
-	$scope.myDate=new Date();
-	$scope.min_date=new Date(
+	$scope.myDate = new Date();
+	$scope.min_date = new Date(
 		$scope.myDate.getFullYear()-20,
     $scope.myDate.getMonth(),
     $scope.myDate.getDate()
 	)
-	$scope.max_date=new Date(
+	$scope.max_date = new Date(
 		$scope.myDate.getFullYear(),
 		$scope.myDate.getMonth(),
 		$scope.myDate.getDate()
@@ -36,8 +34,6 @@ angular
 
 	//Might be outdated, used sometimes to query with specific parameters
 	$scope.queryWorkspace = function(params) {
-	  // $scope.workspace = "Loading...";
-	  // params.class = "org.ecocean.media.MediaAssetSet";
 	  $scope.loading = 'on';
 	  $scope.workspace_args = params;
 	  $.ajax({
@@ -146,7 +142,7 @@ angular
 		.then(function(data) {
 			$scope.workspace = id_;
 			$scope.currentSlides = data.assets;
-			console.log(data);
+			// console.log(data);
 			$scope.workspace_args = data.metadata.TranslateQueryArgs;
 			$scope.workspace_occ = $rootScope.Utils.keys(data.metadata.occurrences);
 			$scope.$apply();
@@ -199,57 +195,34 @@ angular
 			var original = $scope.workspace_args.query.id;
 			var assets = [];
 
+			$scope.loading = 'on';		// Provides user confirmation that data is loading.
+			$scope.currentSlides = [];	// Hides current pictures to confirm loading + more aesthetically pleasing
 			Wildbook.requestMediaAssetSet().then(function(response) {
 				args.query.id = response.data.mediaAssetSetId;
-				console.log("ORIGINAL is " + original);
-				console.log("NEW is " + args.query.id);
 				Wildbook.getWorkspace($scope.workspace)
 				.then(function(data) {
 					assets = data.assets;
 
 					Wildbook.createMediaAssets(assets, args.query.id)
 					.then(function() {
-						console.log("ASSETS = %o", assets);
 						var setArgs = {
 							query: {
 								id: args.query.id
 							},
 							class: "org.ecocean.media.MediaAssetSet"
 						};
-						// why does this succeed but return a failure
+
 						Wildbook.saveWorkspace(result, setArgs)
 						.then(function(response) {
-							console.log(response);
+							$scope.loading = 'off';				// For some reason saveworkspace fails but succeeds..
 						}, function(response) {
-							console.log(response);
+							$scope.loading = 'off';
 							$scope.queryWorkspaceList();
 							$scope.setWorkspace(result, false);
 						});
 					});
 				});
 			});
-
-			//
-			// console.log("AFTER");
-			// console.log($scope.workspace_args.query.id);
-			//
-			// Wildbook.saveWorkspace(id, args)
-			// 	.then(function(data) {
-			// 		$scope.queryWorkspaceList();
-			// 	}).fail(function(data) {
-			// 		console.log("success or failure - needs fixing");
-			// 		console.log(data);
-			// 		$scope.queryWorkspaceList();
-			// 	});
-
-			// Wildbook.saveNewWorkspace(id, args)
-			// .then(function(data) {
-			// 	$scope.queryWorkspaceList();
-			// }).fail(function(data) {
-			// 	console.log("success or failure - needs fixing");
-			// 	console.log(data);
-			// 	$scope.queryWorkspaceList();
-			// });
 		});
 	};
 
@@ -265,7 +238,6 @@ angular
 				$scope.queryWorkspaceList();
 			}).fail(function(data) {
 				console.log("success or failure - needs fixing");
-				console.log(data);
 				$scope.queryWorkspaceList();
 			});
 		}, function() {
@@ -282,19 +254,14 @@ angular
 			id: $scope.mediaAssetId
 		});
 		console.log($scope.workspace_input.datetime_input);
-		console.log(params);
 		Wildbook.saveDateTime(params)
 		.then(function(data) {
-			console.log("save complete " + data);
-			console.log($scope.mediaAssetId);
 			$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
 			.then(function(response) {
 				$scope.mediaAsset.dateTime = $scope.workspace_input.datetime_input;
-				console.log($scope.workspace_input.datetime_input);
 			});
 		}).fail(function(data) {
 			console.log("success or failure - needs fixing");
-			console.log(data);
 			$scope.queryWorkspaceList();
 		});
 	};
@@ -398,7 +365,7 @@ angular
 	$scope.refreshReviews = function(callback = function() {return;}) {
 		Wildbook.getReviewCounts().then(function(response) {
 			$scope.reviewCounts = response;
-			console.log($scope.reviewCounts);
+			// console.log($scope.reviewCounts);
 
 			callback();
 			// Some cases require reviewCounts to be updated before proceeding
