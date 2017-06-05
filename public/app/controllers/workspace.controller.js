@@ -394,6 +394,10 @@ angular
 		$scope.defaultTableSortProperty=newProperty;
 	};
 
+	$scope.delteImage=function(ev,index){
+
+	};
+
 
 	$scope.refreshReviews = function(callback = function() {return;}) {
 		Wildbook.getReviewCounts().then(function(response) {
@@ -758,9 +762,10 @@ angular
 						}
 					});
 			};
-			$scope.delete_image=function(ev,image_index){
 
-
+			$scope.delete_image=function(image_index){
+				$scope.currentSlides.splice(image_index,1);
+				$mdDialog.hide();
 			};
 
 
