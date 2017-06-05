@@ -7,11 +7,6 @@ angular
 		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData) {
 
 	//DECLARE VARIABLES
-	$scope.idCallback = function(args, id) {
-		args.query.id = id;
-		console.log(args.query.id);
-		return args;
-	}
 	$scope.last_jobid = "jobid-0004";
 	$scope.reviewOffset = 0;
 	$scope.workspace = null;
@@ -149,7 +144,6 @@ angular
 		$scope.refreshReviews();
 		Wildbook.getWorkspace(id_)
 		.then(function(data) {
-			// console.log('##################### %o', data); Doesn't provide much information.
 			$scope.workspace = id_;
 			$scope.currentSlides = data.assets;
 			console.log(data);
@@ -199,47 +193,54 @@ angular
 	  .ok('SAVE')
 	  .cancel('CANCEL');
 		$mdDialog.show(confirm).then(function(result) {
-		// 	Wildbook.requestMediaAssetSet().then(function(response) {
-		// 		console.log(response);
-		// 		var id = response.data.mediaAssetSetId;
-		// 		var assets = $scope.workspace_args;
-		// 		Wildbook.createMediaAssets(assets, id).then(function(response) {
-		// 			console.log(response);
-		// 			var setArgs = {
-		// 				query: {
-		// 					id: id
-		// 				},
-		// 				class: "org.ecocean.media.MediaAssetSet"
-		// 			};
-		// 			// why does this succeed but return a failure
-		// 			Wildbook.saveWorkspace(result, setArgs).then(function(response) {
-		// 				console.log(response);
-		// 			}, function(response) {
-		// 				console.log(response);
-		// 				$scope.queryWorkspaceList();
-		// 				// $scope.setWorkspace(result, false);
-		// 				$mdDialog.hide($scope.upload.uploadSetDialog.dialog);
-		// 			});
-		// 		});
-		// 	});
-		// });
 
 			var id = result;
 			var args = $scope.workspace_args;
+			var original = $scope.workspace_args.query.id;
+			var assets = [];
 
-			Wildbook.changeId(id, args, $scope.idCallback)
-			.then(function(response) {
-				args = response;
+			Wildbook.requestMediaAssetSet().then(function(response) {
+				args.query.id = response.data.mediaAssetSetId;
+				console.log("ORIGINAL is " + original);
+				console.log("NEW is " + args.query.id);
+				Wildbook.getWorkspace($scope.workspace)
+				.then(function(data) {
+					assets = data.assets;
+
+					Wildbook.createMediaAssets(assets, args.query.id)
+					.then(function() {
+						console.log("ASSETS = %o", assets);
+						var setArgs = {
+							query: {
+								id: args.query.id
+							},
+							class: "org.ecocean.media.MediaAssetSet"
+						};
+						// why does this succeed but return a failure
+						Wildbook.saveWorkspace(result, setArgs)
+						.then(function(response) {
+							console.log(response);
+						}, function(response) {
+							console.log(response);
+							$scope.queryWorkspaceList();
+							$scope.setWorkspace(result, false);
+						});
+					});
+				});
 			});
 
-			Wildbook.saveWorkspace(id, args)
-				.then(function(data) {
-					$scope.queryWorkspaceList();
-				}).fail(function(data) {
-					console.log("success or failure - needs fixing");
-					console.log(data);
-					$scope.queryWorkspaceList();
-				});
+			//
+			// console.log("AFTER");
+			// console.log($scope.workspace_args.query.id);
+			//
+			// Wildbook.saveWorkspace(id, args)
+			// 	.then(function(data) {
+			// 		$scope.queryWorkspaceList();
+			// 	}).fail(function(data) {
+			// 		console.log("success or failure - needs fixing");
+			// 		console.log(data);
+			// 		$scope.queryWorkspaceList();
+			// 	});
 
 			// Wildbook.saveNewWorkspace(id, args)
 			// .then(function(data) {
