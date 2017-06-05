@@ -7,6 +7,11 @@ angular
 		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData) {
 
 	//DECLARE VARIABLES
+	$scope.idCallback = function(args, id) {
+		args.query.id = id;
+		console.log(args.query.id);
+		return args;
+	}
 	$scope.last_jobid = "jobid-0004";
 	$scope.reviewOffset = 0;
 	$scope.workspace = null;
@@ -38,7 +43,6 @@ angular
 	  // $scope.workspace = "Loading...";
 	  // params.class = "org.ecocean.media.MediaAssetSet";
 	  $scope.loading = 'on';
-	  console.log(params);
 	  $scope.workspace_args = params;
 	  $.ajax({
 	      type: "POST",
@@ -185,23 +189,63 @@ angular
 	$scope.saveNewWorkspace = function(ev) {
 		var confirm = $mdDialog.prompt()
 		.title('SAVE WORKSPACE')
-		.textContent('what would you like to name this workspace?')
-		.placeholder('enter a name')
+		.textContent('What would you like to name this workspace?')
+		.placeholder('Enter a name')
 	  .ariaLabel('workspace name')
 	  .targetEvent(ev)
 	  .ok('SAVE')
 	  .cancel('CANCEL');
 		$mdDialog.show(confirm).then(function(result) {
+		// 	Wildbook.requestMediaAssetSet().then(function(response) {
+		// 		console.log(response);
+		// 		var id = response.data.mediaAssetSetId;
+		// 		var assets = $scope.workspace_args;
+		// 		Wildbook.createMediaAssets(assets, id).then(function(response) {
+		// 			console.log(response);
+		// 			var setArgs = {
+		// 				query: {
+		// 					id: id
+		// 				},
+		// 				class: "org.ecocean.media.MediaAssetSet"
+		// 			};
+		// 			// why does this succeed but return a failure
+		// 			Wildbook.saveWorkspace(result, setArgs).then(function(response) {
+		// 				console.log(response);
+		// 			}, function(response) {
+		// 				console.log(response);
+		// 				$scope.queryWorkspaceList();
+		// 				// $scope.setWorkspace(result, false);
+		// 				$mdDialog.hide($scope.upload.uploadSetDialog.dialog);
+		// 			});
+		// 		});
+		// 	});
+		// });
+
 			var id = result;
 			var args = $scope.workspace_args;
-			Wildbook.saveWorkspace(id, args)
-			.then(function(data) {
-				$scope.queryWorkspaceList();
-			}).fail(function(data) {
-				console.log("success or failure - needs fixing");
-				console.log(data);
-				$scope.queryWorkspaceList();
+
+			Wildbook.changeId(id, args, $scope.idCallback)
+			.then(function(response) {
+				args = response;
 			});
+
+			Wildbook.saveWorkspace(id, args)
+				.then(function(data) {
+					$scope.queryWorkspaceList();
+				}).fail(function(data) {
+					console.log("success or failure - needs fixing");
+					console.log(data);
+					$scope.queryWorkspaceList();
+				});
+
+			// Wildbook.saveNewWorkspace(id, args)
+			// .then(function(data) {
+			// 	$scope.queryWorkspaceList();
+			// }).fail(function(data) {
+			// 	console.log("success or failure - needs fixing");
+			// 	console.log(data);
+			// 	$scope.queryWorkspaceList();
+			// });
 		});
 	};
 
@@ -938,21 +982,18 @@ angular
 								});
 								break;
 							default:
-								Wildbook.createMediaAssets(assets)
-								.then(function(response) {
-									$scope.viewAllImages();
-									$mdDialog.hide($scope.upload.uploadSetDialog.dialog);
-								})
-								.fail(function(){
-									console.log("Failed to upload to all images.");
-								});
+								var id = false;
+								Wildbook.createMediaAssets(assets, id);
+								$scope.viewAllImages();
+								$mdDialog.hide($scope.upload.uploadSetDialog.dialog);
+								break;
 						}
 					},
 					generateName: function() {
 						var date = new Date();
 						var dateString = date.toDateString();
 						var timeString = date.toTimeString();
-						var generated = dateString + " " + timeString;
+						var generated = "Workspace: " + dateString + " " + timeString;
 						$scope.upload.uploadSetDialog.uploadSetName = generated;
 					},
 					reset: function() {

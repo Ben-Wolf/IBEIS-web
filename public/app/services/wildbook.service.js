@@ -250,6 +250,36 @@ var workspace = angular
       });
     };
 
+    service.changeId = function(name, args, idCallback) {
+      console.log("ORIGINAL QUERY ID");
+      console.log(args.query.id);
+      var orig = args.query.id;
+
+      $http.get(service.baseUrl + 'MediaAssetCreate?requestMediaAssetSet').then(function(response) {
+        idCallback(args, response.data.mediaAssetSetId);
+        // args.query.id = response.data.mediaAssetSetId;
+        // console.log("NEW QUERY ID");
+        // console.log(args.query.id);
+        // if (orig != args.query.id) {
+        //   var params = $.param({
+        //     id: String(name),
+        //     args: JSON.stringify(args)
+        //   });
+        //
+        //   console.log("CHECKING NEW QUERY ID");
+        //   console.log(args.query.id);
+        //   console.log()
+        //
+        //   return $.ajax({
+        //     type: "POST",
+        //     url: service.baseUrl + 'WorkspaceServer',
+        //     data: params,
+        //     dataType: "json"
+        //   });
+        // }
+      });
+    };
+
     service.deleteWorkspace = function(workspaceID) {
       return $.ajax({
         type: "POST",
