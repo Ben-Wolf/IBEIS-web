@@ -21,6 +21,7 @@ angular
 	$scope.datetime_model = new Date(); //default/test date, should never be seen
 	$scope.pastDetectionReviews = [];
   $scope.loading = 'off';
+	$scope.individual_model="";
 	$scope.myDate=new Date();
 	$scope.min_date=new Date(
 		$scope.myDate.getFullYear()-20,
@@ -56,6 +57,7 @@ angular
       // when the response is available
       $scope.$apply(function() {
           $scope.currentSlides = data.assets;
+					console.log(data);
       })
 	  }).fail(function(data) {
       $scope.loading = 'off';
@@ -150,6 +152,7 @@ angular
 			// console.log('##################### %o', data); Doesn't provide much information.
 			$scope.workspace = id_;
 			$scope.currentSlides = data.assets;
+			console.log(data);
 			$scope.workspace_args = data.metadata.TranslateQueryArgs;
 			$scope.workspace_occ = $rootScope.Utils.keys(data.metadata.occurrences);
 			$scope.$apply();
@@ -295,6 +298,35 @@ angular
 		});
 	};
 
+	//save change of marked individuals
+	$scope.save_marked_individual=function(){
+		console.log($scope.mediaAsset.features);
+		var params= $.param({
+			features:[
+				{
+					annotationId: $scope.mediaAsset.features[0].annotationId,
+					encounterId: $scope.mediaAsset.features[0].encounterId,
+					id: $scope.mediaAsset.features[0].id,
+					individualId: $scope.workspace_input.individual_input
+				}
+			],
+			id: $scope.mediaAssetId
+		});
+		console.log(params);
+		Wildbook.saveMarkedIndividual(params).then(function(data){
+			console.log("testthen");
+			$http.get('http://wb.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
+		.then(function(response) {
+			$scope.mediaAsset.features[0].individualId=$scope.workspace_input.individual_input;
+			console.log(response.data);
+		});
+	}).fail(function(data) {
+		console.log(data);
+		console.log("fail");
+		$scope.queryWorkspaceList();
+	})
+	};
+
 	/* FILTERING */
 	$scope.filterIDs = ['Encounter', 'Marked Individual', 'Annotation', 'Media Asset'];
 	$scope.filterID = $scope.filterIDs[0];
@@ -347,6 +379,21 @@ angular
 		}
 	};
 
+	//used for dynamic sort in table view
+	$scope.defaultTableSortProperty="id";
+	$scope.reverse=true;
+
+	$scope.tableSortBy = function(newProperty) {
+		if(newProperty==$scope.defaultTableSortProperty){$scope.reverse=!$scope.reverse;}
+
+		else{
+			$scope.reverse=false;
+		}
+
+		$scope.defaultTableSortProperty=newProperty;
+	};
+
+
 	$scope.refreshReviews = function(callback = function() {return;}) {
 		Wildbook.getReviewCounts().then(function(response) {
 			$scope.reviewCounts = response;
@@ -359,7 +406,7 @@ angular
 	};
 
 	//object where all identification methods are stored
-	$scope.identification = {
+	$scope.identification ={
 		startIdentification: function(ev) {
 			$scope.refreshReviews();
 			var confirm = $mdDialog.confirm()
@@ -395,6 +442,7 @@ angular
 			$scope.detection.firstRun = true;
 			Wildbook.findMediaAssetSetIdFromUploadSet($scope.workspace)
 			.then(function(response) {
+				console.log(response);
 				if (response.data.metadata.TranslateQueryArgs.query) {
 					console.log(response.data.metadata.TranslateQueryArgs.query.id);
 					Wildbook.runDetection(response.data.metadata.TranslateQueryArgs.query.id)
@@ -451,6 +499,7 @@ angular
 						console.log("New jobID " + data.sendDetect.response);
 						$scope.detection.showDetectionReview(ev);
 					}
+					console.log(data);
 				});
 			}).fail(function(data) {
 
@@ -657,8 +706,11 @@ angular
 				$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + mediaAssetId)
 					.then(function(response) {
 						$scope.mediaAssetContext = response.data;
+						console.log(response);
 					});
 				$scope.mediaAsset = mediaAsset;
+				//$scope.indID=mediaAsset.feature
+
 				$scope.hide = function() {
 					$mdDialog.hide();
 				};
@@ -684,10 +736,31 @@ angular
 					}
 				});
 			};
+			$scope.tableImageInfo=function(ev,id){
+				console.log(id);
+				var assets=$scope.currentSlides.filter(function( obj ) {
+  				return obj.id === id;
+					});
+					var asset=assets[0];
+					console.log(asset);
+					$scope.image_index=$scope.currentSlides.indexOf(asset);
+					$mdDialog.show({
+						controller: ImageDialogController,
+						templateUrl: 'app/views/includes/workspace/image.info.html',
+						targetEvent: ev,
+						clickOutsideToClose: true,
+						fullscreen: true,
+						scope: $scope,
+						preserveScope: true,
+						locals: {
+							mediaAsset: asset
+						}
+					});
+			};
 			$scope.delete_image=function(ev,image_index){
 
 
-			}
+			};
 
 
 			$scope.toggleLogo = function() {

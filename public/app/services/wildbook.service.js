@@ -321,6 +321,17 @@ var workspace = angular
       });
     };
 
+    service.saveMarkedIndividual=function(params){
+      console.log("test");
+      console.log(params);
+      return $.ajax({
+        type: "POST",
+        url: service.baseUrl + 'MediaAssetModify',
+        data: params,
+        dataType: "json"
+      });
+    };
+
     // IDENTIFICATION
     // ==================
     service.runIdentification = function(occurrences) {
