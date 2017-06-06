@@ -78,6 +78,16 @@ angular
 
 	$scope.queryWorkspaceList();
 
+	//don't know, unused
+	function sanitizePosition() {
+		var current = $scope.toastPosition;
+		if (current.bottom && last.top) current.top = false;
+		if (current.top && last.bottom) current.bottom = false;
+		if (current.right && last.left) current.left = false;
+		if (current.left && last.right) current.right = false;
+		last = angular.extend({}, current);
+	};
+
 	//used for index in workspace
 	$scope.image_index = -1;
 
@@ -190,35 +200,50 @@ angular
 	  .cancel('CANCEL');
 		$mdDialog.show(confirm).then(function(result) {
 
-			var id = result;
-			var args = $scope.workspace_args;
-			var original = $scope.workspace_args.query.id;
-			var assets = [];
+			// Error checking for duplicate names.
+			Wildbook.retrieveWorkspaces()
+			.then(function(data) {
+				data = data.slice(1,data.length - 2).split(", ");
+				console.log(data);
+				for (var i = 0; i < data.length; i++) {
+					console.log(data[i] + " : " + result);
+					if (data[i] == result) {
+						console.log(data[i] + " : " + result);
+						alert("Cannot have duplicate names");
+						return 0;
+					}
+				}
 
-			$scope.loading = 'on';		// Provides user confirmation that data is loading.
-			$scope.currentSlides = [];	// Hides current pictures to confirm loading + more aesthetically pleasing
-			Wildbook.requestMediaAssetSet().then(function(response) {
-				args.query.id = response.data.mediaAssetSetId;
-				Wildbook.getWorkspace($scope.workspace)
-				.then(function(data) {
-					assets = data.assets;
+				var id = result;
+				var args = $scope.workspace_args;
+				var original = $scope.workspace_args.query.id;
+				var assets = [];
 
-					Wildbook.createMediaAssets(assets, args.query.id)
-					.then(function() {
-						var setArgs = {
-							query: {
-								id: args.query.id
-							},
-							class: "org.ecocean.media.MediaAssetSet"
-						};
+				$scope.loading = 'on';		// Provides user confirmation that data is loading.
+				$scope.currentSlides = [];	// Hides current pictures to confirm loading + more aesthetically pleasing
+				Wildbook.requestMediaAssetSet().then(function(response) {
+					args.query.id = response.data.mediaAssetSetId;
+					Wildbook.getWorkspace($scope.workspace)
+					.then(function(data) {
+						assets = data.assets;
 
-						Wildbook.saveWorkspace(result, setArgs)
-						.then(function(response) {
-							$scope.loading = 'off';				// For some reason saveworkspace fails but succeeds..
-						}, function(response) {
-							$scope.loading = 'off';
-							$scope.queryWorkspaceList();
-							$scope.setWorkspace(result, false);
+						Wildbook.createMediaAssets(assets, args.query.id)
+						.then(function() {
+							var setArgs = {
+								query: {
+									id: args.query.id
+								},
+								class: "org.ecocean.media.MediaAssetSet"
+							};
+
+							Wildbook.saveWorkspace(result, setArgs)
+							.then(function(response) {
+								$scope.loading = 'off';				// For some reason saveworkspace fails but succeeds..
+							}, function(response) {
+								$scope.loading = 'off';
+								$scope.queryWorkspaceList();
+								$scope.setWorkspace(result, false);
+							});
 						});
 					});
 				});
@@ -958,6 +983,7 @@ angular
 				completionCallback: function(assets) {
 					console.log ("upload completed");
 					$scope.upload.stage = 0;
+					$scope.upload.reset();
 					$scope.upload.uploadSetDialog.assets = assets;
 					$scope.upload.uploadSetDialog.updateUploadSets();
 					$scope.upload.close();
@@ -1144,13 +1170,3 @@ angular
 		};
 
 	}]);
-
-	//don't know, unused
-	// function sanitizePosition() {
-	// 	var current = $scope.toastPosition;
-	// 	if (current.bottom && last.top) current.top = false;
-	// 	if (current.top && last.bottom) current.bottom = false;
-	// 	if (current.right && last.left) current.left = false;
-	// 	if (current.left && last.right) current.right = false;
-	// 	last = angular.extend({}, current);
-	// };
