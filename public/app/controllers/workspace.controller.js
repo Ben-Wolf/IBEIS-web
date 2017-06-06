@@ -763,8 +763,15 @@ angular
 					});
 			};
 
-			$scope.delete_image=function(image_index){
-				$scope.currentSlides.splice(image_index,1);
+			$scope.delete_id=""
+
+			$scope.delete_image=function(){
+				var assets=$scope.currentSlides.filter(function(obj) {
+					return obj.id === $scope.delete_id;
+					});
+				var toDelete=assets[0];
+				$scope.delete_index=$scope.currentSlides.indexOf(toDelete);
+				$scope.currentSlides.splice($scope.delete_index,1);
 				$mdDialog.hide();
 			};
 
