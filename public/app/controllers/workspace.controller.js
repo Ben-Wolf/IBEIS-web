@@ -446,6 +446,7 @@ angular
 					.then(function(data) {
 						// this callback will be called asynchronously
 						// when the response is available
+						console.log(data);
 						$scope.$apply(function() {
 							//detection has started.  Save the job id, then launch review
 							if (data.success) {
