@@ -86,7 +86,7 @@ $(function(){
     <md-button class="md-primary md-raised sidenav-btn" ng-click="detection.showDetectionReview($event)" ng-disabled="workspace == 'Loading...'">
       <strong>Review</strong> Detection ({{ reviewCounts.detection }})
     </md-button>
-    <md-button class="md-primary md-raised sidenav-btn" ng-disabled="workspace == 'Loading...'">
+    <md-button class="md-primary md-raised sidenav-btn" ng-click="showReviewAnnotation($event)" ng-disabled="workspace == 'Loading...'">
       <strong>Review</strong> Annotations
     </md-button>
     <md-button class="md-primary md-raised sidenav-btn" ng-disabled="workspace == 'Loading...'" ng-click="identification.startIdentification()">
