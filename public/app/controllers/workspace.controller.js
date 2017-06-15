@@ -386,30 +386,21 @@ angular
 		$scope.defaultTableSortProperty=newProperty;
 	};
 
+	$scope.delteImage=function(ev,index){
+
+	};
 
 
 	$scope.refreshReviews = function(callback = function() {return;}) {
 		Wildbook.getReviewCounts().then(function(response) {
 			$scope.reviewCounts = response;
-		  console.log($scope.reviewCounts);
+			// console.log($scope.reviewCounts);
 
 			callback();
 			// Some cases require reviewCounts to be updated before proceeding
 			// Pass function as callback to stall until reviews refreshed
 		});
 	};
-
-	$scope.showReviewAnnotation=function(ev){
-		$mdDialog.show({
-			scope: $scope,
-			preserveScope: true,
-			templateUrl: 'app/views/includes/workspace/annotation.review.html',
-			targetEvent: ev,
-			clickOutsideToClose: false,
-			fullscreen: false
-		});
-	}
-
 
 	//object where all identification methods are stored
 	$scope.identification ={
@@ -557,7 +548,7 @@ angular
 				templateUrl: 'app/views/includes/workspace/detection.review.html',
 				targetEvent: ev,
 				clickOutsideToClose: false,
-				fullscreen: false
+				fullscreen: true
 
 			});
 			$scope.refreshReviews($scope.detection.startCheckDetection);
@@ -604,40 +595,19 @@ angular
 					document.getElementById("detection-review").style.height="0px";
 					console.log($scope.pastDetectionReviews);
 					$scope.detection.submitDetectionReview();
-					console.log("test");
 					//add logic for only allowing numbers in range of images
 					// $scope.reviewOffset = $scope.reviewOffset + 1;
 					// $scope.detection.getNextDetectionHTML();
 					// $scope.detection.loadDetectionHTMLwithOffset();
 				},
-
-				submitPrevDetectionReview: function() {
-					$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
-						ev.preventDefault();
-						$.ajax({
-							url: $(this).attr('action'),
-							type: $(this).attr('method'),
-							dataType: 'json',
-							data: $(this).serialize()
-
-						}).then(function(data) {
-							console.log("submit successful");
-						}).fail(function(data) {
-							console.log("submit failed");
-						});
-						return false;
-					});
-					$('#ia-detection-form').submit();
-				},
 				//temp function
 				decrementOffset: function() {
 					//go back to last detection
 
-					 $scope.detection.submitPrevDetectionReview();
+					// $scope.detection.submitDetectionReview();
 					//add logic for only allowing numbers in range of images
-					 $scope.reviewOffset = $scope.reviewOffset - 1;
-				 $scope.detection.loadDetectionHTMLwithOffset();
-				 console.log("endback");
+					// $scope.reviewOffset = $scope.reviewOffset - 1;
+					// $scope.detection.loadDetectionHTMLwithOffset();
 				},
 				//temp function
 				endReview: function() {
@@ -659,7 +629,7 @@ angular
 						$scope.detection.firstRun = false;
 						var time = new Date().getTime();
 						console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time);
-						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&&time=" + time, function(response, status, xhr) {
+						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time, function(response, status, xhr) {
 							if ($scope.pastDetectionReviews.length <= 0) {
 								$scope.detection.allowBackButton = false;
 							} else {
@@ -681,8 +651,8 @@ angular
 					}
 				},
 				loadDetectionHTMLwithOffset: function() {
-					 console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlOffset="+ $scope.reviewOffset);
-					 $("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlOffset="+ $scope.reviewOffset);
+					 console.log("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
+					 $("#detection-review").load("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid + "&offset=" + $scope.reviewOffset);
 				},
 				// //queries for the actual detection html and sets it in the page
 				// loadDetectionHTML: function() {
