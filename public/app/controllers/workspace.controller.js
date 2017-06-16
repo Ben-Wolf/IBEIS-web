@@ -590,54 +590,79 @@ angular
 			});
 			$('#ia-detection-form').submit();
 		},
+		submitPrevDetectionReview: function(next_id){
+			$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
+				ev.preventDefault();
+				$.ajax({
+					url: $(this).attr('action'),
+					type: $(this).attr('method'),
+					dataType: 'json',
+					data: $(this).serialize()
+
+				}).then(function(data) {
+					console.log("submit successful");
+					$scope.refreshReviews($scope.detection.getNextDetectionHTMLById);
+				}).fail(function(data) {
+					console.log("submit failed");
+				});
+				return false;
+			});
+			$('#ia-detection-form').submit();
+
+		},
 
 				//temp function
 				nextClicked: function() {
-					if(document.getElementsByName("mediaasset-id")[0] != null){
-						$scope.pastDetectionReviews.push(document.getElementsByName("mediaasset-id")[0].value);
+					if(!(document.getElementsByName("mediaasset-id")[0].value in $scope.pastDetectionReviews)){
+						if(document.getElementsByName("mediaasset-id")[0] != null){
+							$scope.pastDetectionReviews.push(document.getElementsByName("mediaasset-id")[0].value);
+						}
+						$scope.reviewData.reviewReady = false;
+						$scope.waiting_for_response = true;
+						document.getElementById("detection-loading").style.visibility="visible";
+						document.getElementById("detection-loading").style.height="auto";
+						document.getElementById("detection-review").style.visibility="hidden";
+						document.getElementById("detection-review").style.height="0px";
+						console.log($scope.pastDetectionReviews);
+						$scope.detection.submitDetectionReview();
+						console.log("test");
+					}else{
+						var next_idx=$scope.pastDetectionReviews.indexOf(document.getElementsByName("mediaasset-id")[0].value)+1;
+						var next_id=$scope.pastDetectionReviews[next_idx];
+
+
+						$scope.reviewData.reviewReady = false;
+						$scope.waiting_for_response = true;
+						document.getElementById("detection-loading").style.visibility="visible";
+						document.getElementById("detection-loading").style.height="auto";
+						document.getElementById("detection-review").style.visibility="hidden";
+						document.getElementById("detection-review").style.height="0px";
+						console.log($scope.pastDetectionReviews);
+						$scope.detection.submitDetectionReview();
+						$scope.detection.loadDetectionHtmlById(next_id);
+						console.log("test");
 					}
-					$scope.reviewData.reviewReady = false;
-					$scope.waiting_for_response = true;
-					document.getElementById("detection-loading").style.visibility="visible";
-					document.getElementById("detection-loading").style.height="auto";
-					document.getElementById("detection-review").style.visibility="hidden";
-					document.getElementById("detection-review").style.height="0px";
-					console.log($scope.pastDetectionReviews);
-					$scope.detection.submitDetectionReview();
-					console.log("test");
+
 					//add logic for only allowing numbers in range of images
 					// $scope.reviewOffset = $scope.reviewOffset + 1;
 					// $scope.detection.getNextDetectionHTML();
 					// $scope.detection.loadDetectionHTMLwithOffset();
 				},
 
-				submitPrevDetectionReview: function() {
-					$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
-						ev.preventDefault();
-						$.ajax({
-							url: $(this).attr('action'),
-							type: $(this).attr('method'),
-							dataType: 'json',
-							data: $(this).serialize()
 
-						}).then(function(data) {
-							console.log("submit successful");
-						}).fail(function(data) {
-							console.log("submit failed");
-						});
-						return false;
-					});
-					$('#ia-detection-form').submit();
-				},
 				//temp function
 				decrementOffset: function() {
 					//go back to last detection
-
-					 $scope.detection.submitPrevDetectionReview();
+					console.log(document.getElementsByName("mediaasset-id")[0].value);
+					var id=document.getElementsByName("mediaasset-id")[0].value;
+					 $scope.detection.submitPrevDetectionReview(id);
 					//add logic for only allowing numbers in range of images
-					 $scope.reviewOffset = $scope.reviewOffset - 1;
-				 $scope.detection.loadDetectionHTMLwithOffset();
 				 console.log("endback");
+				},
+				loadDetectionHTMLwithById: function(id){
+					console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
+					$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
+
 				},
 				//temp function
 				endReview: function() {
@@ -660,6 +685,41 @@ angular
 						var time = new Date().getTime();
 						console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time);
 						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&&time=" + time, function(response, status, xhr) {
+							if ($scope.pastDetectionReviews.length <= 0) {
+								$scope.detection.allowBackButton = false;
+							} else {
+								$scope.detection.allowBackButton = true;
+							}
+							if (status == 'success') {
+								document.getElementById("detection-loading").style.visibility="hidden";
+								document.getElementById("detection-loading").style.height="0px";
+								document.getElementById("detection-review").style.visibility="visible";
+								document.getElementById("detection-review").style.height="auto";
+								console.log("detection review loaded");
+								$scope.waiting_for_response = false;
+								$scope.reviewData.reviewReady = true;
+							}
+							else {
+								console.log('error retrieving next detection');
+							}
+						});
+					}
+				},
+				getNextDetectionHTMLById: function(id) {
+					if (!$scope.detection.firstRun && $scope.reviewCounts.detection == 0) {
+						console.log('No detections remaining');
+						if (document.getElementById("detection-complete")) {
+							$scope.detection.reviewCompleteText = 'Detection Review Complete!';
+							document.getElementById("detection-loading").style.visibility="hidden";
+							document.getElementById("detection-loading").style.height="0px";
+						}
+					}
+					else {
+						$scope.detection.firstRun = false;
+						var time = new Date().getTime();
+						console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id);
+						console.log(id);
+						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id, function(response, status, xhr) {
 							if ($scope.pastDetectionReviews.length <= 0) {
 								$scope.detection.allowBackButton = false;
 							} else {
