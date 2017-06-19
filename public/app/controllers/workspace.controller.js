@@ -591,6 +591,19 @@ angular
 			$('#ia-detection-form').submit();
 		},
 		submitPrevDetectionReview: function(next_id){
+			var prev_idx=$scope.pastDetectionReviews.indexOf(next_id)-1;
+			var prev_id=0;
+			if(prev_idx<-1){
+				console.log()
+				 prev_id=$scope.pastDetectionReviews[$scope.pastDetectionReviews.length-1];
+			}else{
+				 prev_id=$scope.pastDetectionReviews[prev_idx];
+			}
+
+			console.log(prev_idx);
+			console.log($scope.pastDetectionReviews);
+			console.log(prev_id);
+
 			$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
 				ev.preventDefault();
 				$.ajax({
@@ -601,7 +614,7 @@ angular
 
 				}).then(function(data) {
 					console.log("submit successful");
-					$scope.refreshReviews($scope.detection.getNextDetectionHTMLById);
+					$scope.refreshReviews($scope.detection.getNextDetectionHTMLById(prev_id));
 				}).fail(function(data) {
 					console.log("submit failed");
 				});
