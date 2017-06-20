@@ -444,6 +444,7 @@ angular
 
 	//object where all detection functions are stored
 	$scope.detection = {
+		currentReviewID : 0,
 		startDetection: function(ev) {
 			$scope.detection.firstRun = true;
 			Wildbook.findMediaAssetSetIdFromUploadSet($scope.workspace)
@@ -532,7 +533,7 @@ angular
 		},
 
 		//check function every x seconds
-		checkLoadedDetection: function() {
+		/*checkLoadedDetection: function() {
 			if ($scope.reviewCounts.detection > 0) {
 				clearInterval($scope.detection.detectionChecker);
 				$scope.detection.getNextDetectionHTML();
@@ -547,7 +548,7 @@ angular
 			//		 $scope.reviewData.reviewReady = true;
 			//	 });
 			// }
-		},
+		},*/
 
 		//creates a dialog
 		showDetectionReview: function(ev) {
@@ -626,7 +627,8 @@ angular
 
 				//temp function
 				nextClicked: function() {
-					if(!(document.getElementsByName("mediaasset-id")[0].value in $scope.pastDetectionReviews)){
+					if(!($scope.detection.currentReviewID in $scope.pastDetectionReviews)){
+						console.log("id not reviewed")
 						if(document.getElementsByName("mediaasset-id")[0] != null){
 							$scope.pastDetectionReviews.push(document.getElementsByName("mediaasset-id")[0].value);
 						}
@@ -638,11 +640,12 @@ angular
 						document.getElementById("detection-review").style.height="0px";
 						console.log($scope.pastDetectionReviews);
 						$scope.detection.submitDetectionReview();
+						$scope.detection.currentReviewID=document.getElementsByName("mediaasset-id")[0].value;
 						console.log("test");
 					}else{
-						var next_idx=$scope.pastDetectionReviews.indexOf(document.getElementsByName("mediaasset-id")[0].value)+1;
+						console.log("2nd branch");
+						var next_idx=$scope.pastDetectionReviews.indexOf($scope.detection.ccurrentReviewID)+1;
 						var next_id=$scope.pastDetectionReviews[next_idx];
-
 
 						$scope.reviewData.reviewReady = false;
 						$scope.waiting_for_response = true;
@@ -651,8 +654,9 @@ angular
 						document.getElementById("detection-review").style.visibility="hidden";
 						document.getElementById("detection-review").style.height="0px";
 						console.log($scope.pastDetectionReviews);
-						$scope.detection.submitDetectionReview();
-						$scope.detection.loadDetectionHtmlById(next_id);
+						$scope.detection.submitPrevDetectionReview(next_id);
+						$scope.detection.currentReviewID=next_id;
+						//$scope.detection.loadDetectionHtmlById(next_id);
 						console.log("test");
 					}
 
