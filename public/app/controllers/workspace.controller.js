@@ -616,6 +616,7 @@ angular
 				}).then(function(data) {
 					console.log("submit successful");
 					$scope.refreshReviews($scope.detection.getNextDetectionHTMLById(prev_id));
+					$scope.detection.currentReviewID=prev_id;
 				}).fail(function(data) {
 					console.log("submit failed");
 				});
@@ -624,11 +625,46 @@ angular
 			$('#ia-detection-form').submit();
 
 		},
+		submitPrevNextDetectionReview:function(next_id){
+			var prev_idx=$scope.pastDetectionReviews.indexOf(next_id)-1;
+			var prev_id=0;
+			if(prev_idx<-1){
+				console.log()
+				 prev_id=$scope.pastDetectionReviews[$scope.pastDetectionReviews.length-1];
+			}else{
+				 prev_id=$scope.pastDetectionReviews[prev_idx];
+			}
 
+			console.log(prev_idx);
+			console.log($scope.pastDetectionReviews);
+			console.log(prev_id);
+
+			$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
+				ev.preventDefault();
+				$.ajax({
+					url: $(this).attr('action'),
+					type: $(this).attr('method'),
+					dataType: 'json',
+					data: $(this).serialize()
+
+				}).then(function(data) {
+					console.log("submit successful");
+					$scope.refreshReviews($scope.detection.getNextDetectionHTMLById(next_id));
+					$scope.detection.currentReviewID=next_id;
+				}).fail(function(data) {
+					console.log("submit failed");
+				});
+				return false;
+			});
+			$('#ia-detection-form').submit();
+
+		},
 				//temp function
 				nextClicked: function() {
-					if(!($scope.detection.currentReviewID in $scope.pastDetectionReviews)){
-						console.log("id not reviewed")
+					if($scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)<0||$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)===$scope.pastDetectionReviews.length-1){
+						console.log("id not reviewed");
+						console.log($scope.detection.currentReviewID);
+						console.log($scope.pastDetectionReviews);
 						if(document.getElementsByName("mediaasset-id")[0] != null){
 							$scope.pastDetectionReviews.push(document.getElementsByName("mediaasset-id")[0].value);
 						}
@@ -643,8 +679,10 @@ angular
 						$scope.detection.currentReviewID=document.getElementsByName("mediaasset-id")[0].value;
 						console.log("test");
 					}else{
+						console.log($scope.detection.currentReviewID);
+						console.log($scope.pastDetectionReviews);
 						console.log("2nd branch");
-						var next_idx=$scope.pastDetectionReviews.indexOf($scope.detection.ccurrentReviewID)+1;
+						var next_idx=$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)+1;
 						var next_id=$scope.pastDetectionReviews[next_idx];
 
 						$scope.reviewData.reviewReady = false;
@@ -654,7 +692,7 @@ angular
 						document.getElementById("detection-review").style.visibility="hidden";
 						document.getElementById("detection-review").style.height="0px";
 						console.log($scope.pastDetectionReviews);
-						$scope.detection.submitPrevDetectionReview(next_id);
+						$scope.detection.submitPrevNextDetectionReview(next_id);
 						$scope.detection.currentReviewID=next_id;
 						//$scope.detection.loadDetectionHtmlById(next_id);
 						console.log("test");
@@ -672,7 +710,14 @@ angular
 					//go back to last detection
 					console.log(document.getElementsByName("mediaasset-id")[0].value);
 					var id=document.getElementsByName("mediaasset-id")[0].value;
+					console.log("goback id="+$scope.detection.currentReviewID);
+					console.log(document.getElementsByName("mediaasset-id")[0].value);
+				 if($scope.pastDetectionReviews.indexOf(id)<0){
+					 $scope.pastDetectionReviews.push(id);
+				 }
+				 console.log($scope.pastDetectionReviews);
 					 $scope.detection.submitPrevDetectionReview(id);
+
 					//add logic for only allowing numbers in range of images
 				 console.log("endback");
 				},
