@@ -182,8 +182,6 @@ var workspace = angular
             assets: assets
           }]
         };
-        // console.log("ASSETS %o", assets);
-        // console.log("MEDIA ASSETS %o", mediaAssets);
       } else {
         mediaAssets = {
           MediaAssetCreate: [{
@@ -293,7 +291,7 @@ var workspace = angular
       });
     };
 
-    service.saveMarkedIndividual = function(params){
+    service.saveMarkedIndividual=function(params){
       console.log("test");
       console.log(params);
       return $.ajax({

@@ -307,7 +307,6 @@ angular
 		});
 		console.log(params);
 		Wildbook.saveMarkedIndividual(params).then(function(data){
-			console.log("testthen");
 			$http.get('http://wb.scribble.com/MediaAssetContext?id=' + $scope.mediaAssetId)
 		.then(function(response) {
 			$scope.mediaAsset.features[0].individualId=$scope.workspace_input.individual_input;
@@ -389,6 +388,7 @@ angular
 
 
 	$scope.refreshReviews = function(callback = function() {return;}) {
+		console.log($scope.workspace);
 		Wildbook.getReviewCounts().then(function(response) {
 			$scope.reviewCounts = response;
 		  console.log($scope.reviewCounts);
@@ -558,7 +558,8 @@ angular
 				templateUrl: 'app/views/includes/workspace/detection.review.html',
 				targetEvent: ev,
 				clickOutsideToClose: false,
-				fullscreen: false
+				fullscreen: false,
+				escapeToClose: false
 
 			});
 			$scope.refreshReviews($scope.detection.startCheckDetection);
@@ -595,15 +596,11 @@ angular
 			var prev_idx=$scope.pastDetectionReviews.indexOf(next_id)-1;
 			var prev_id=0;
 			if(prev_idx<-1){
-				console.log()
 				 prev_id=$scope.pastDetectionReviews[$scope.pastDetectionReviews.length-1];
 			}else{
 				 prev_id=$scope.pastDetectionReviews[prev_idx];
 			}
 
-			console.log(prev_idx);
-			console.log($scope.pastDetectionReviews);
-			console.log(prev_id);
 
 			$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
 				ev.preventDefault();
@@ -629,15 +626,11 @@ angular
 			var prev_idx=$scope.pastDetectionReviews.indexOf(next_id)-1;
 			var prev_id=0;
 			if(prev_idx<-1){
-				console.log()
 				 prev_id=$scope.pastDetectionReviews[$scope.pastDetectionReviews.length-1];
 			}else{
 				 prev_id=$scope.pastDetectionReviews[prev_idx];
 			}
 
-			console.log(prev_idx);
-			console.log($scope.pastDetectionReviews);
-			console.log(prev_id);
 
 			$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
 				ev.preventDefault();
@@ -662,9 +655,6 @@ angular
 				//temp function
 				nextClicked: function() {
 					if($scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)<0||$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)===$scope.pastDetectionReviews.length-1){
-						console.log("id not reviewed");
-						console.log($scope.detection.currentReviewID);
-						console.log($scope.pastDetectionReviews);
 						if(document.getElementsByName("mediaasset-id")[0] != null){
 							$scope.pastDetectionReviews.push(document.getElementsByName("mediaasset-id")[0].value);
 						}
@@ -677,11 +667,7 @@ angular
 						console.log($scope.pastDetectionReviews);
 						$scope.detection.submitDetectionReview();
 						$scope.detection.currentReviewID=document.getElementsByName("mediaasset-id")[0].value;
-						console.log("test");
 					}else{
-						console.log($scope.detection.currentReviewID);
-						console.log($scope.pastDetectionReviews);
-						console.log("2nd branch");
 						var next_idx=$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)+1;
 						var next_id=$scope.pastDetectionReviews[next_idx];
 
@@ -694,8 +680,6 @@ angular
 						console.log($scope.pastDetectionReviews);
 						$scope.detection.submitPrevNextDetectionReview(next_id);
 						$scope.detection.currentReviewID=next_id;
-						//$scope.detection.loadDetectionHtmlById(next_id);
-						console.log("test");
 					}
 
 					//add logic for only allowing numbers in range of images
@@ -708,18 +692,14 @@ angular
 				//temp function
 				decrementOffset: function() {
 					//go back to last detection
-					console.log(document.getElementsByName("mediaasset-id")[0].value);
+					//console.log(document.getElementsByName("mediaasset-id")[0].value);
 					var id=document.getElementsByName("mediaasset-id")[0].value;
-					console.log("goback id="+$scope.detection.currentReviewID);
-					console.log(document.getElementsByName("mediaasset-id")[0].value);
 				 if($scope.pastDetectionReviews.indexOf(id)<0){
 					 $scope.pastDetectionReviews.push(id);
 				 }
 				 console.log($scope.pastDetectionReviews);
 					 $scope.detection.submitPrevDetectionReview(id);
 
-					//add logic for only allowing numbers in range of images
-				 console.log("endback");
 				},
 				loadDetectionHTMLwithById: function(id){
 					console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
@@ -745,8 +725,8 @@ angular
 					else {
 						$scope.detection.firstRun = false;
 						var time = new Date().getTime();
-						console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&time=" + time);
-						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&&time=" + time, function(response, status, xhr) {
+						console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&test=123&time=" + time);
+						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+$scope.workspace+"&test=123&time=" + time, function(response, status, xhr) {
 							if ($scope.pastDetectionReviews.length <= 0) {
 								$scope.detection.allowBackButton = false;
 							} else {
