@@ -67,8 +67,16 @@ angular
 			//We need to decide a proper variable for saving workspace data. do we need 1 or 2
 			$scope.$apply(function() {
 
-				data = data.slice(1, (data.length - 2));
-				$scope.workspaces = data.split(", ");
+				//data = data.slice(1, (data.length - 2));
+				$scope.workspacesObj = JSON.parse(data);
+				$scope.workspaces=[];
+				$scope.workspaceid=[];
+				for(var i=0; i<$scope.workspacesObj.length;i++){
+					$scope.workspaces.push($scope.workspacesObj[i].name);
+				}
+				console.log(data);
+				console.log($scope.workspacesObj);
+				console.log($scope.workspaces);
 				$scope.setWorkspace($scope.workspaces[0], false);
 			})
 		}).fail(function(data) {
@@ -725,8 +733,9 @@ angular
 					else {
 						$scope.detection.firstRun = false;
 						var time = new Date().getTime();
+						var currId=$scope.workspacesObj.filter(function(itm){return itm.name===$scope.workspace;})[0].id;
 						console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&test=123&time=" + time);
-						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+$scope.workspace+"&test=123&time=" + time, function(response, status, xhr) {
+						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+currId+"&test=123&time=" + time, function(response, status, xhr) {
 							if ($scope.pastDetectionReviews.length <= 0) {
 								$scope.detection.allowBackButton = false;
 							} else {
