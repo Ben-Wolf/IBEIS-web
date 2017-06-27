@@ -535,7 +535,7 @@ angular
 		startCheckDetection: function() {
 			$scope.reviewData.reviewReady = false;
 			$scope.waiting_for_response = true;
-			$scope.detection.reviewCompleteText = '';
+			$scope.detection.reviewCompleteText = 'Detection Not Complete';
 			$scope.detection.getNextDetectionHTML();
 			// $scope.detection.detectionChecker = setInterval($scope.detection.checkLoadedDetection, 500);
 		},
