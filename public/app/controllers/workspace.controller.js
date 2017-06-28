@@ -5,7 +5,6 @@ angular
 		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData) {
 
 	//DECLARE VARIABLES
-	$scope.last_jobid = "jobid-0004";
 	$scope.reviewOffset = 0;
 	$scope.workspace = null;
 	$scope.workspace_occ = [];
@@ -59,7 +58,6 @@ angular
 	//query all workspaces to populate workspace dropdown
 	$scope.queryWorkspaceList = function() {
 		Wildbook.retrieveWorkspaces(undefined).then(function(data) {
-			console.info('Workspaces: %o', data);
 	    if (!data || (data.length < 1)) {
 	        console.warn('queryWorkspaceList() got empty data');
 	        return;
@@ -468,8 +466,6 @@ angular
 						$scope.$apply(function() {
 							//detection has started.  Save the job id, then launch review
 							if (data.success) {
-								$scope.last_jobid = data.sendDetect.response;
-								console.log("New jobID " + data.sendDetect.response);
 								$scope.detection.showDetectionReview(ev);
 							}
 							else {
@@ -499,6 +495,16 @@ angular
 			});
 		},
 
+		// Function to handle loading and hiding all assets when loading detection
+		detectionLoading: function() {
+			$scope.reviewData.reviewReady = false;
+			$scope.waiting_for_response = true;
+			document.getElementById("detection-loading").style.visibility="visible";
+			document.getElementById("detection-loading").style.height="auto";
+			document.getElementById("detection-review").style.visibility="hidden";
+			document.getElementById("detection-review").style.height="0px";
+		},
+
 		startDetectionByImage: function(ev) {
 			var ids = [];
 			for (i=0; i<$scope.currentSlides.length; i++) {
@@ -509,16 +515,14 @@ angular
 				// this callback will be called asynchronously
 				// when the response is available
 				$scope.$apply(function() {
-					//detection has started.  Save the job id, then launch review
+					//detection has started. Launch review
 					if (data.success) {
-						$scope.last_jobid = data.sendDetect.response;
-						console.log("New jobID " + data.sendDetect.response);
 						$scope.detection.showDetectionReview(ev);
 					}
 					console.log(data);
 				});
 			}).fail(function(data) {
-
+				// Shows failure dialog...
 				$mdDialog.show(
 					$mdDialog.alert()
 					.clickOutsideToClose(true)
@@ -535,28 +539,10 @@ angular
 		startCheckDetection: function() {
 			$scope.reviewData.reviewReady = false;
 			$scope.waiting_for_response = true;
-			$scope.detection.reviewCompleteText = 'Detection Not Complete';
+			$scope.detection.reviewCompleteText = '';
 			$scope.detection.getNextDetectionHTML();
 			// $scope.detection.detectionChecker = setInterval($scope.detection.checkLoadedDetection, 500);
 		},
-
-		//check function every x seconds
-		/*checkLoadedDetection: function() {
-			if ($scope.reviewCounts.detection > 0) {
-				clearInterval($scope.detection.detectionChecker);
-				$scope.detection.getNextDetectionHTML();
-			}
-			else {
-				$scope.refreshReviews();
-			}
-			// var myElem = document.getElementById('ia-detection-form');
-			// if (myElem != null) {
-			//	 clearInterval($scope.detection.detectionChecker);
-			//	 $scope.$apply(function() {
-			//		 $scope.reviewData.reviewReady = true;
-			//	 });
-			// }
-		},*/
 
 		//creates a dialog
 		showDetectionReview: function(ev) {
@@ -576,10 +562,7 @@ angular
 		detectDialogCancel: function() {
 			$mdDialog.cancel();
 		},
-		//unused?
-		detectDialogHide: function() {
-			$mdDialog.hide();
-		},
+
 		//on button click prev/next/saveandexit
 		submitDetectionReview: function() {
 			$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
@@ -600,6 +583,7 @@ angular
 			});
 			$('#ia-detection-form').submit();
 		},
+
 		submitPrevDetectionReview: function(next_id){
 			var prev_idx=$scope.pastDetectionReviews.indexOf(next_id)-1;
 			var prev_id=0;
@@ -608,7 +592,6 @@ angular
 			}else{
 				 prev_id=$scope.pastDetectionReviews[prev_idx];
 			}
-
 
 			$('#ia-detection-form').unbind('submit').bind('submit', function(ev) {
 				ev.preventDefault();
@@ -628,8 +611,8 @@ angular
 				return false;
 			});
 			$('#ia-detection-form').submit();
-
 		},
+
 		submitPrevNextDetectionReview:function(next_id){
 			var prev_idx=$scope.pastDetectionReviews.indexOf(next_id)-1;
 			var prev_id=0;
@@ -660,41 +643,26 @@ angular
 			$('#ia-detection-form').submit();
 
 		},
-				//temp function
-				nextClicked: function() {
-					if($scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)<0||$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)===$scope.pastDetectionReviews.length-1){
-						if(document.getElementsByName("mediaasset-id")[0] != null){
-							$scope.pastDetectionReviews.push(document.getElementsByName("mediaasset-id")[0].value);
-						}
-						$scope.reviewData.reviewReady = false;
-						$scope.waiting_for_response = true;
-						document.getElementById("detection-loading").style.visibility="visible";
-						document.getElementById("detection-loading").style.height="auto";
-						document.getElementById("detection-review").style.visibility="hidden";
-						document.getElementById("detection-review").style.height="0px";
-						console.log($scope.pastDetectionReviews);
-						$scope.detection.submitDetectionReview();
-						$scope.detection.currentReviewID=document.getElementsByName("mediaasset-id")[0].value;
-					}else{
-						var next_idx=$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)+1;
-						var next_id=$scope.pastDetectionReviews[next_idx];
 
-						$scope.reviewData.reviewReady = false;
-						$scope.waiting_for_response = true;
-						document.getElementById("detection-loading").style.visibility="visible";
-						document.getElementById("detection-loading").style.height="auto";
-						document.getElementById("detection-review").style.visibility="hidden";
-						document.getElementById("detection-review").style.height="0px";
-						console.log($scope.pastDetectionReviews);
-						$scope.detection.submitPrevNextDetectionReview(next_id);
-						$scope.detection.currentReviewID=next_id;
-					}
-
-					//add logic for only allowing numbers in range of images
-					// $scope.reviewOffset = $scope.reviewOffset + 1;
-					// $scope.detection.getNextDetectionHTML();
-					// $scope.detection.loadDetectionHTMLwithOffset();
-				},
+		// When user clicks for next image
+		nextClicked: function() {
+			if($scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)<0||$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)===$scope.pastDetectionReviews.length-1){
+				if(document.getElementsByName("mediaasset-id")[0] != null){
+					$scope.pastDetectionReviews.push(document.getElementsByName("mediaasset-id")[0].value);
+				}
+				$scope.detection.detectionLoading();
+				console.log($scope.pastDetectionReviews);
+				$scope.detection.submitDetectionReview();
+				$scope.detection.currentReviewID=document.getElementsByName("mediaasset-id")[0].value;
+			} else {
+				var next_idx=$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)+1;
+				var next_id=$scope.pastDetectionReviews[next_idx];
+				$scope.detection.detectionLoading();
+				console.log($scope.pastDetectionReviews);
+				$scope.detection.submitPrevNextDetectionReview(next_id);
+				$scope.detection.currentReviewID=next_id;
+			}
+		},
 
 
 				//temp function
@@ -702,18 +670,19 @@ angular
 					//go back to last detection
 					//console.log(document.getElementsByName("mediaasset-id")[0].value);
 					var id=document.getElementsByName("mediaasset-id")[0].value;
-				 if($scope.pastDetectionReviews.indexOf(id)<0){
-					 $scope.pastDetectionReviews.push(id);
+				 	if($scope.pastDetectionReviews.indexOf(id)<0){
+						$scope.pastDetectionReviews.push(id);
 				 }
 				 console.log($scope.pastDetectionReviews);
 					 $scope.detection.submitPrevDetectionReview(id);
 
 				},
 				loadDetectionHTMLwithById: function(id){
+					$scope.detection.detectionLoading();
 					console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
 					$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
-
 				},
+
 				//temp function
 				endReview: function() {
 					//do Submit of current review
@@ -795,14 +764,6 @@ angular
 					 console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlOffset="+ $scope.reviewOffset);
 					 $("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlOffset="+ $scope.reviewOffset);
 				},
-				// //queries for the actual detection html and sets it in the page
-				// loadDetectionHTML: function() {
-				//	 $scope.reviewOffset = 0;
-				//	 console.log("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
-				//	 $("#ibeis-process").load("http://uidev.scribble.com/ia?getDetectReviewHtml=" + $scope.last_jobid);
-				// }
-
-
 			};
 
 
