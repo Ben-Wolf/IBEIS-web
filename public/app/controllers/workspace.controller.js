@@ -664,107 +664,108 @@ angular
 			}
 		},
 
+		// Go back to previous image
+		decrementOffset: function() {
+			//go back to last detection
+			//console.log(document.getElementsByName("mediaasset-id")[0].value);
+			$scope.detection.detectionLoading();
+			var id=document.getElementsByName("mediaasset-id")[0].value;
+		 	if($scope.pastDetectionReviews.indexOf(id)<0){
+				$scope.pastDetectionReviews.push(id);
+		 	}
+		 	console.log($scope.pastDetectionReviews);
+			$scope.detection.submitPrevDetectionReview(id);
+		},
 
-				//temp function
-				decrementOffset: function() {
-					//go back to last detection
-					//console.log(document.getElementsByName("mediaasset-id")[0].value);
-					var id=document.getElementsByName("mediaasset-id")[0].value;
-				 	if($scope.pastDetectionReviews.indexOf(id)<0){
-						$scope.pastDetectionReviews.push(id);
-				 }
-				 console.log($scope.pastDetectionReviews);
-					 $scope.detection.submitPrevDetectionReview(id);
+		// Load an image based off its media asset it
+		loadDetectionHTMLwithById: function(id){
+			$scope.detection.detectionLoading();
+			console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
+			$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
+		},
 
-				},
-				loadDetectionHTMLwithById: function(id){
-					$scope.detection.detectionLoading();
-					console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
-					$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
-				},
+		//temp function
+		endReview: function() {
+			//do Submit of current review
+			$scope.detection.submitDetectionReview();
+			//exit
+			$scope.detection.detectDialogCancel();
+		},
 
-				//temp function
-				endReview: function() {
-					//do Submit of current review
-					$scope.detection.submitDetectionReview();
-					//exit
-					$scope.detection.detectDialogCancel();
-				},
-				getNextDetectionHTML: function() {
-					if (!$scope.detection.firstRun && $scope.reviewCounts.detection == 0) {
-						console.log('No detections remaining');
-						if (document.getElementById("detection-complete")) {
-							$scope.detection.reviewCompleteText = 'Detection Review Complete!';
-							document.getElementById("detection-loading").style.visibility="hidden";
-							document.getElementById("detection-loading").style.height="0px";
-						}
+		getNextDetectionHTML: function() {
+			if (!$scope.detection.firstRun && $scope.reviewCounts.detection == 0) {
+				console.log('No detections remaining');
+				if (document.getElementById("detection-complete")) {
+					$scope.detection.reviewCompleteText = 'Detection Review Complete!';
+					document.getElementById("detection-loading").style.visibility="hidden";
+					document.getElementById("detection-loading").style.height="0px";
+				}
+			}
+			else {
+				$scope.detection.firstRun = false;
+				var time = new Date().getTime();
+				var currId=$scope.workspacesObj.filter(function(itm){return itm.name===$scope.workspace;})[0].id;
+				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&test=123&time=" + time);
+				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+currId+"&test=123&time=" + time, function(response, status, xhr) {
+					if ($scope.pastDetectionReviews.length <= 0) {
+						$scope.detection.allowBackButton = false;
+					} else {
+						$scope.detection.allowBackButton = true;
+					}
+					if (status == 'success') {
+						document.getElementById("detection-loading").style.visibility="hidden";
+						document.getElementById("detection-loading").style.height="0px";
+						document.getElementById("detection-review").style.visibility="visible";
+						document.getElementById("detection-review").style.height="auto";
+						console.log("detection review loaded");
+						$scope.waiting_for_response = false;
+						$scope.reviewData.reviewReady = true;
 					}
 					else {
-						$scope.detection.firstRun = false;
-						var time = new Date().getTime();
-						var currId=$scope.workspacesObj.filter(function(itm){return itm.name===$scope.workspace;})[0].id;
-						console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&test=123&time=" + time);
-						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+currId+"&test=123&time=" + time, function(response, status, xhr) {
-							if ($scope.pastDetectionReviews.length <= 0) {
-								$scope.detection.allowBackButton = false;
-							} else {
-								$scope.detection.allowBackButton = true;
-							}
-							if (status == 'success') {
-								document.getElementById("detection-loading").style.visibility="hidden";
-								document.getElementById("detection-loading").style.height="0px";
-								document.getElementById("detection-review").style.visibility="visible";
-								document.getElementById("detection-review").style.height="auto";
-								console.log("detection review loaded");
-								$scope.waiting_for_response = false;
-								$scope.reviewData.reviewReady = true;
-							}
-							else {
-								console.log('error retrieving next detection');
-							}
-						});
+						console.log('error retrieving next detection');
 					}
-				},
-				getNextDetectionHTMLById: function(id) {
-					if (!$scope.detection.firstRun && $scope.reviewCounts.detection == 0) {
-						console.log('No detections remaining');
-						if (document.getElementById("detection-complete")) {
-							$scope.detection.reviewCompleteText = 'Detection Review Complete!';
-							document.getElementById("detection-loading").style.visibility="hidden";
-							document.getElementById("detection-loading").style.height="0px";
-						}
+				});
+			}
+		},
+
+		// Used to get the next detection when going back (uses mediaasset id)
+		getNextDetectionHTMLById: function(id) {
+			if (!$scope.detection.firstRun && $scope.reviewCounts.detection == 0) {
+				console.log('No detections remaining');
+				if (document.getElementById("detection-complete")) {
+					$scope.detection.reviewCompleteText = 'Detection Review Complete!';
+					document.getElementById("detection-loading").style.visibility="hidden";
+					document.getElementById("detection-loading").style.height="0px";
+				}
+			}
+			else {
+				$scope.detection.firstRun = false;
+				var time = new Date().getTime();
+				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id);
+				console.log(id);
+				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id, function(response, status, xhr) {
+					if ($scope.pastDetectionReviews.length <= 0 || id == $scope.pastDetectionReviews[1]) {
+						console.log("Disabling back button");
+						document.getElementById("back-button").style.visibility="hidden";
+					} else {
+						document.getElementById("back-button").style.visibility="visible"
+					}
+					if (status == 'success') {
+						document.getElementById("detection-loading").style.visibility="hidden";
+						document.getElementById("detection-loading").style.height="0px";
+						document.getElementById("detection-review").style.visibility="visible";
+						document.getElementById("detection-review").style.height="auto";
+						console.log("detection review loaded");
+						$scope.waiting_for_response = false;
+						$scope.reviewData.reviewReady = true;
 					}
 					else {
-						$scope.detection.firstRun = false;
-						var time = new Date().getTime();
-						console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id);
-						console.log(id);
-						$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id, function(response, status, xhr) {
-							if ($scope.pastDetectionReviews.length <= 0) {
-								$scope.detection.allowBackButton = false;
-							} else {
-								$scope.detection.allowBackButton = true;
-							}
-							if (status == 'success') {
-								document.getElementById("detection-loading").style.visibility="hidden";
-								document.getElementById("detection-loading").style.height="0px";
-								document.getElementById("detection-review").style.visibility="visible";
-								document.getElementById("detection-review").style.height="auto";
-								console.log("detection review loaded");
-								$scope.waiting_for_response = false;
-								$scope.reviewData.reviewReady = true;
-							}
-							else {
-								console.log('error retrieving next detection');
-							}
-						});
+						console.log('error retrieving next detection');
 					}
-				},
-				loadDetectionHTMLwithOffset: function() {
-					 console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlOffset="+ $scope.reviewOffset);
-					 $("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlOffset="+ $scope.reviewOffset);
-				},
-			};
+				});
+			}
+		},
+	};
 
 
 			/* SIDENAVS */

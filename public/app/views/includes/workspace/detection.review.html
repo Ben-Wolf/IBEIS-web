@@ -19,16 +19,15 @@
   <md-dialog-content>
     <md-dialog-actions layout="row">
       <div>
-        <md-button class="md-primary md-raised" ng-disabled="!detection.allowBackButton" ng-click="detection.decrementOffset()">Go Back</md-button>
+        <md-button id="back-button" class="md-primary md-raised" ng-disabled="!detection.allowBackButton" ng-click="detection.decrementOffset()">Go Back</md-button>
         <md-button class="md-primary md-raised" ng-click="detection.nextClicked()">Next Image</md-button>
         <!-- <md-utton class="md-primary md-raised" ng-click="detection.endReview()">Save and Exit</md-button> -->
       </div>
     </md-dialog-actions>
     <div id="detection-loading" layout="row" layout-sm="column" layout-align="space-around">
       <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-      <div layout="row" layout-sm="column">This may take a while....</div>
     </div>
-    <div id="first-detection" class="ibeis-div" id="detection-review"></div>
+    <div style="#padding-left: 25cm;" class="ibeis-div" id="detection-review"></div>
 	<div id="detection-complete">{{detection.reviewCompleteText}}</div>
 
   </md-dialog-content>
