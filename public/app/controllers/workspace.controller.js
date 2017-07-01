@@ -452,6 +452,7 @@ angular
 	$scope.detection = {
 		currentReviewID : 0,
 		startDetection: function(ev) {
+			console.log("Detection starting");
 			$scope.detection.firstRun = true;
 			Wildbook.findMediaAssetSetIdFromUploadSet($scope.workspace)
 			.then(function(response) {
@@ -476,16 +477,6 @@ angular
 					}).fail(function(data) {
 						console.log('IA server error');
 						$scope.detection.startDetectionByImage(ev);
-
-							// $mdDialog.show(
-								// $mdDialog.alert()
-								// .clickOutsideToClose(true)
-								// .title('Error')
-								// .textContent('No Response from IA server.')
-								// .ariaLabel('IA Error')
-								// .ok('OK')
-								// .targetEvent(ev)
-							// )
 					});
 				}
 				else {
@@ -503,6 +494,17 @@ angular
 			document.getElementById("detection-loading").style.height="auto";
 			document.getElementById("detection-review").style.visibility="hidden";
 			document.getElementById("detection-review").style.height="0px";
+		},
+
+		// Function to handle loading assest when detection is loaded
+		detectionLoaded: function() {
+			document.getElementById("detection-loading").style.visibility="hidden";
+			document.getElementById("detection-loading").style.height="0px";
+			document.getElementById("detection-review").style.visibility="visible";
+			document.getElementById("detection-review").style.height="auto";
+			console.log("detection review loaded");
+			$scope.waiting_for_response = false;
+			$scope.reviewData.reviewReady = true;
 		},
 
 		startDetectionByImage: function(ev) {
@@ -707,19 +709,13 @@ angular
 				var currId=$scope.workspacesObj.filter(function(itm){return itm.name===$scope.workspace;})[0].id;
 				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&test=123&time=" + time);
 				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+currId+"&test=123&time=" + time, function(response, status, xhr) {
-					if ($scope.pastDetectionReviews.length <= 0) {
+					if ($scope.pastDetectionReviews.length <= 0 || document.getElementsByName("mediaasset-id")[0] == $scope.pastDetectionReviews[1]) {
 						$scope.detection.allowBackButton = false;
 					} else {
 						$scope.detection.allowBackButton = true;
 					}
 					if (status == 'success') {
-						document.getElementById("detection-loading").style.visibility="hidden";
-						document.getElementById("detection-loading").style.height="0px";
-						document.getElementById("detection-review").style.visibility="visible";
-						document.getElementById("detection-review").style.height="auto";
-						console.log("detection review loaded");
-						$scope.waiting_for_response = false;
-						$scope.reviewData.reviewReady = true;
+						$scope.detection.detectionLoaded();
 					}
 					else {
 						console.log('error retrieving next detection');
@@ -744,20 +740,13 @@ angular
 				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id);
 				console.log(id);
 				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id, function(response, status, xhr) {
-					if ($scope.pastDetectionReviews.length <= 0 || id == $scope.pastDetectionReviews[1]) {
-						console.log("Disabling back button");
-						document.getElementById("back-button").style.visibility="hidden";
+					if ($scope.pastDetectionReviews.length <= 0  || id == $scope.pastDetectionReviews[1]) {
+						$scope.detection.allowBackButton = false;
 					} else {
-						document.getElementById("back-button").style.visibility="visible"
+						$scope.detection.allowBackButton = true;
 					}
 					if (status == 'success') {
-						document.getElementById("detection-loading").style.visibility="hidden";
-						document.getElementById("detection-loading").style.height="0px";
-						document.getElementById("detection-review").style.visibility="visible";
-						document.getElementById("detection-review").style.height="auto";
-						console.log("detection review loaded");
-						$scope.waiting_for_response = false;
-						$scope.reviewData.reviewReady = true;
+						$scope.detection.detectionLoaded();
 					}
 					else {
 						console.log('error retrieving next detection');
@@ -765,6 +754,11 @@ angular
 				});
 			}
 		},
+
+				loadDetectionHTMLwithOffset: function() {
+					 console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlOffset="+ $scope.reviewOffset);
+					 $("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlOffset="+ $scope.reviewOffset);
+				},
 	};
 
 
