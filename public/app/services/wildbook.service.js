@@ -210,6 +210,7 @@ var workspace = angular
     };
 
     service.getReviewCounts = function() {
+      console.log(service.baseUrl + 'ia?getReviewCounts');
       return $.ajax({
         type: "GET",
         url: service.baseUrl + 'ia?getReviewCounts',

@@ -19,8 +19,8 @@
   <md-dialog-content>
     <md-dialog-actions layout="row">
       <div>
-        <md-button id="back-button" class="md-primary md-raised" ng-disabled="!detection.allowBackButton" ng-click="detection.decrementOffset()">Go Back</md-button>
-        <md-button class="md-primary md-raised" ng-click="detection.nextClicked()">Next Image</md-button>
+        <md-button id="back-button" class="md-primary md-raised" ng-disabled="!detection.allowBackButton" ng-click="detection.getPrev()">Go Back</md-button>
+        <md-button class="md-primary md-raised" ng-click="detection.getNext()">Next Image</md-button>
         <!-- <md-utton class="md-primary md-raised" ng-click="detection.endReview()">Save and Exit</md-button> -->
       </div>
     </md-dialog-actions>
@@ -30,6 +30,17 @@
     <div style="#padding-left: 25cm;" class="ibeis-div" id="detection-review"></div>
 	<div id="detection-complete">{{detection.reviewCompleteText}}</div>
   <md-divider></md-divider>
+  <div id="past-detections" layout="row" layout-sm="column" layout-align="center">
+    <md-card class="card-img-parent" style="max-width: 150px; max-height: 150px;" ng-repeat="id in pastDetectionReviews" ng-click="getNextDetectionHTMLById($id)">
 
+      <!-- <div ng-if="id == $detection.currentReviewID" style="border: 1px solid black;"> -->
+      <p> {{id}} </p>
+      <!-- <img class="lazyload" data-src="{{slide.url}}" style="max-height: 150px; max-width: 150px; width: auto" /> -->
+
+      <!-- </div> -->
+
+    </md-card>
+  </div>
+  <md-divider></md-divider>
   </md-dialog-content>
 </md-dialog>

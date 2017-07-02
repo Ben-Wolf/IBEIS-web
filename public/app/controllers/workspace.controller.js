@@ -12,11 +12,12 @@ angular
 	$scope.reviewData = {};
 	$scope.datetime_model = new Date();
 	$scope.pastDetectionReviews = [];
+	$scope.pastDetectionUrls = [];
   $scope.loading = 'off';
 	$scope.individual_model="";
 	$scope.myDate = new Date();
 	$scope.min_date = new Date(
-		$scope.myDate.getFullYear()-20,
+		$scope.myDate.getFullYear()-40,
     $scope.myDate.getMonth(),
     $scope.myDate.getDate()
 	)
@@ -548,6 +549,7 @@ angular
 
 		//creates a dialog
 		showDetectionReview: function(ev) {
+			console.log("Starting detection review");
 			$mdDialog.show({
 				scope: $scope,
 				preserveScope: true,
@@ -556,7 +558,6 @@ angular
 				clickOutsideToClose: false,
 				fullscreen: false,
 				escapeToClose: false
-
 			});
 			$scope.refreshReviews($scope.detection.startCheckDetection);
 		},
@@ -647,9 +648,9 @@ angular
 		},
 
 		// When user clicks for next image
-		nextClicked: function() {
+		getNext: function() {
 			if($scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)<0||$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)===$scope.pastDetectionReviews.length-1){
-				if(document.getElementsByName("mediaasset-id")[0] != null){
+				if(document.getElementsByName("mediaasset-id")[0] != null) {
 					$scope.pastDetectionReviews.push(document.getElementsByName("mediaasset-id")[0].value);
 				}
 				$scope.detection.detectionLoading();
@@ -667,7 +668,7 @@ angular
 		},
 
 		// Go back to previous image
-		decrementOffset: function() {
+		getPrev: function() {
 			//go back to last detection
 			//console.log(document.getElementsByName("mediaasset-id")[0].value);
 			$scope.detection.detectionLoading();
@@ -754,11 +755,6 @@ angular
 				});
 			}
 		},
-
-				loadDetectionHTMLwithOffset: function() {
-					 console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlOffset="+ $scope.reviewOffset);
-					 $("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlOffset="+ $scope.reviewOffset);
-				},
 	};
 
 
