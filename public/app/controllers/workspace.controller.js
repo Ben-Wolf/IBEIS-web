@@ -216,7 +216,7 @@ angular
 					console.log(data[i] + " : " + result);
 					if (data[i] == result) {
 						console.log(data[i] + " : " + result);
-						alert("Cannot have duplicate names");
+						alert("Cannot have duplicate names in retrieve workspaces");
 						return 0;
 					}
 				}
@@ -1102,15 +1102,14 @@ angular
 					addToOption: null,
 					uploadSets: null,
 					updateUploadSets: function() {
-						Wildbook.retrieveWorkspaces(true).then(function(data) {
-							console.info('Workspaces: %o', data);
-              if (!data || (data.length < 1)) {
-                console.warn('updateUploadSets() got empty data');
-                return;
-              }
-							data = data.slice(1, (data.length - 2));
-							$scope.upload.uploadSetDialog.uploadSets = _.without(data.split(", "), "*undefined*");
-						});
+						var data = $scope.workspaces;
+						console.log(data);
+            if (!data || (data.length < 1)) {
+              console.warn('updateUploadSets() got empty data');
+              return;
+            }
+						data = data.slice(1, (data.length - 2));
+						$scope.upload.uploadSetDialog.uploadSets = data;
 					},
 					uploadSetName: "",
 					completeUpload: function() {
@@ -1120,44 +1119,40 @@ angular
 							var set = $scope.upload.uploadSetDialog.uploadSetName;
 							var assets = $scope.upload.uploadSetDialog.assets;
 							switch ($scope.upload.uploadSetDialog.addToOption) {
-									case "new":
-									Wildbook.retrieveWorkspaces().then(function(data){
-										data = data.slice(1,data.length - 2).split(", ");
-										for (var i = 0; i < data.length; i++) {
-											console.log(data[i] + " : " + set);
-											if (data[i] == set) {
-												console.log(data[i] + " : " + set);
-												alert("Cannot have duplicate names");
-												isDup=true;
-												break;
-											}
-										}
-									});
-									if(isDup){
-										break;
+								case "new":
+									data = $scope.workspaces;
+									console.log(data.length);
+									isDup = data.includes(set);
+									if (isDup) console.log("Duplicate");
+									if (isDup == true) {
+										var confirm = $mdDialog.confirm()
+										.title('Error')
+										.textContent('An image set with the name ' + set + ' already exists.')
+										.ok('Yes');
+										$mdDialog.show(confirm);
 									}
-										Wildbook.requestMediaAssetSet().then(function(response) {
-											var id = response.data.mediaAssetSetId;
-											Wildbook.createMediaAssets(assets, id).then(function(response) {
+									Wildbook.requestMediaAssetSet().then(function(response) {
+										var id = response.data.mediaAssetSetId;
+										Wildbook.createMediaAssets(assets, id).then(function(response) {
+											console.log(response);
+											var setArgs = {
+												query: {
+													id: id
+												},
+												class: "org.ecocean.media.MediaAssetSet"
+											};
+											// why does this succeed but return a failure
+											Wildbook.saveWorkspace(set, setArgs).then(function(response) {
 												console.log(response);
-												var setArgs = {
-													query: {
-														id: id
-													},
-													class: "org.ecocean.media.MediaAssetSet"
-												};
-												// why does this succeed but return a failure
-												Wildbook.saveWorkspace(set, setArgs).then(function(response) {
-													console.log(response);
-												}, function(response) {
-													console.log(response);
-													$scope.queryWorkspaceList();
-													$scope.setWorkspace(set, false);
-													$mdDialog.hide($scope.upload.uploadSetDialog.dialog);
-												});
+											}, function(response) {
+												console.log(response);
+												$scope.queryWorkspaceList();
+												$scope.setWorkspace(set, false);
+												$mdDialog.hide($scope.upload.uploadSetDialog.dialog);
 											});
 										});
-										break;
+									});
+									break;
 									case "existing":
 										Wildbook.findMediaAssetSetIdFromUploadSet(set).then(function(response) {
 											var id = response.data.metadata.TranslateQueryArgs.query.id;
@@ -1293,5 +1288,4 @@ angular
 		return {
 			readAsDataUrl: readAsDataURL
 		};
-
 	}]);
