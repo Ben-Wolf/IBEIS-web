@@ -1120,7 +1120,6 @@ angular
               console.warn('updateUploadSets() got empty data');
               return;
             }
-						data = data.slice(1, (data.length - 2));
 						$scope.upload.uploadSetDialog.uploadSets = data;
 					},
 					uploadSetName: "",
