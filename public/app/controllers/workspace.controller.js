@@ -652,11 +652,23 @@ angular
 			if($scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)<0||$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)===$scope.pastDetectionReviews.length-1){
 				if(document.getElementsByName("mediaasset-id")[0] != null) {
 					$scope.pastDetectionReviews.push(document.getElementsByName("mediaasset-id")[0].value);
+					$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + document.getElementsByName("mediaasset-id")[0].value)
+					.then(function(response) {
+						console.log(response);
+						$scope.pastDetectionUrls.push(response.url);
+						$scope.detection.detectionLoading();
+						console.log($scope.pastDetectionReviews);
+						console.log($scope.pastDetectionUrls);
+						$scope.detection.submitDetectionReview();
+						$scope.detection.currentReviewID=document.getElementsByName("mediaasset-id")[0].value;
+					});
 				}
-				$scope.detection.detectionLoading();
-				console.log($scope.pastDetectionReviews);
-				$scope.detection.submitDetectionReview();
-				$scope.detection.currentReviewID=document.getElementsByName("mediaasset-id")[0].value;
+				else {
+					$scope.detection.detectionLoading();
+					console.log($scope.pastDetectionReviews);
+					$scope.detection.submitDetectionReview();
+					$scope.detection.currentReviewID=document.getElementsByName("mediaasset-id")[0].value;
+				}
 			} else {
 				var next_idx=$scope.pastDetectionReviews.indexOf($scope.detection.currentReviewID)+1;
 				var next_id=$scope.pastDetectionReviews[next_idx];
