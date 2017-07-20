@@ -15,46 +15,53 @@
       }
 
       function allowDrag(e) {
-        if (true) {  // Test that the item being dragged is a valid one
-          e.dataTransfer.dropEffect = 'copy';
-          e.preventDefault();
-        }
+        e.dataTransfer.dropEffect = 'copy';
+        e.preventDefault();
       }
 
       function handleDrop(e) {
         e.preventDefault();
-        // hideDropZone();
         console.log(e);
+        angular.element(this).scope().upload.select(e);
+        console.log("Drop");
+        // If dropped items aren't files, reject them
+        var dt = e.dataTransfer;
+        if (dt.items) {
+          // Use DataTransferItemList interface to access the file(s)
+          for (var i=0; i < dt.items.length; i++) {
+            if (dt.items[i].kind == "file") {
+              var f = dt.items[i].getAsFile();
+              console.log("... file[" + i + "].name = " + f.name);
+            }
+          }
+        } else {
+          // Use DataTransfer interface to access the file(s)
+          for (var i=0; i < dt.files.length; i++) {
+            console.log("... file[" + i + "].name = " + dt.files[i].name);
+          }
+        }
         // e.upload.show();
-        // $scope.upload.images += e;
+        // $scope.upload.images.push(e;
         alert('Drop!');
         hideDropZone();
       }
 
-      // 1
       window.addEventListener('dragenter', function(e) {
         showDropZone();
       });
-
-      // 2
-      dropZone.addEventListener('dragenter', allowDrag);
       dropZone.addEventListener('dragover', allowDrag);
-
-      // 3
       dropZone.addEventListener('dragleave', function(e) {
         hideDropZone();
       });
-
-      // 4
       dropZone.addEventListener('drop', handleDrop);
     </script>
 
     <style type="text/css">
       div#dropZone {
-        background: white;
+        /*background: black;
         border-color: lightgray;
         border-width: 7px;
-        border-style: dashed;
+        border-style: dashed;*/
         text-align: center;
         vertical-align: middle;
         position: fixed;
@@ -67,7 +74,7 @@
         visibility: hidden;
         position: center;
         padding-top: 200px;
-        color: gray;
+        /*color: gray;*/
         font-size: 5em;
         outline: 15px solid white;
         margin: 15px;
@@ -77,10 +84,18 @@
 
   <body>
     <div class="gridListdemoBasicUsage">
-      <div id="dropZone"><input type="file" multiple accept="image/*" class="file-input" style="display: none;" id="img-upload-btn" onchange="angular.element(this).scope().upload.select(this)"><center> Drag and drop files here... </center></div>
+      <div class="uploader" id="dropZone">
+        <div>Drag &amp; Drop Images Here</div>
+        <label>
+          <span>Select Image</span>
+          <input type="file" style="display:none;" title="Click to add Images" name="files" id="img-upload-btn">
+        </label>
+      </div>
 
       <div class='md-padding' layout="row" layout-align="center center" layout-wrap>
         <!-- <div infinite-scroll="addMoreItems()" infinite-scroll-distance='2'>  stacks the images...-->
+
+        <!-- Following Code generates all the thumbnails. -->
         <md-card class="card-img-parent" style="max-width: 150px; max-height: 150px;" ng-repeat="slide in currentSlides" ng-click="showImageInfo($event, $index)">
 
           <!-- <div style="border: 1px solid black;"> -->

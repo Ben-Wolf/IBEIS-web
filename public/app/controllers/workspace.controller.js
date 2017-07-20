@@ -73,9 +73,8 @@ angular
 				for(var i=0; i<$scope.workspacesObj.length;i++){
 					$scope.workspaces.push($scope.workspacesObj[i].name);
 				}
-				console.log(data);
-				console.log($scope.workspacesObj);
-				console.log($scope.workspaces);
+				console.log("Workspace Objects ", $scope.workspacesObj);
+				console.log("Workspaces ", $scope.workspaces);
 				$scope.setWorkspace($scope.workspaces[0], false);
 			})
 		}).fail(function(data) {
@@ -413,6 +412,7 @@ angular
 			templateUrl: 'app/views/includes/workspace/annotation.review.html',
 			targetEvent: ev,
 			clickOutsideToClose: false,
+			escapeToClose: false,
 			fullscreen: false
 		});
 	}
@@ -1046,6 +1046,7 @@ angular
 					$scope.upload.totalProgress = 0;
 				},
 				select: function(element) {
+					console.log(element);
 					var justFiles = $.map(element.files, function(val, key) {
 						return val;
 					}, true);
@@ -1095,6 +1096,7 @@ angular
 				},
 				completionCallback: function(assets) {
 					console.log ("upload completed");
+					console.log ("$scope.upload.images ", $scope.upload.images)
 					$scope.upload.stage = 0;
 					$scope.upload.reset();
 					$scope.upload.uploadSetDialog.assets = assets;
@@ -1108,6 +1110,7 @@ angular
 					dialog: {
 						templateUrl: 'app/views/includes/workspace/upload/completed_upload.dialog.html',
 						clickOutsideToClose: false,
+						escapeToClose: false,
 						preserveScope: true,
 						scope: $scope
 					},
