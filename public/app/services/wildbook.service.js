@@ -193,6 +193,22 @@ var workspace = angular
       return $http.post(service.baseUrl + 'MediaAssetCreate', mediaAssets);
     };
 
+    // Waiting for wildbook to set this up.
+    service.removeMediaAssetFromWorkspace = function(mediaAssetId_, workspaceId_) {
+      var params = $.param({
+        mediaAssetId: mediaAssetId_,
+        action: "remove",
+        id: workspaceId_
+      });
+      console.log("Deleting media asset " + mediaAssetId_ + " from workspace " + workspaceId_);
+      return $.ajax({
+        type: "POST",
+        url: service.baseUrl + 'WorkspaceServer',
+        data: params,
+        dataType: "json"
+      });
+    };
+
 
     service.getAllMediaAssets = function() {
       console.log("retrieving all media assets for this user");

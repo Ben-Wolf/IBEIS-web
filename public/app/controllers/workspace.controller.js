@@ -140,6 +140,18 @@ angular
 		}
 	};
 
+	// Used to add IAStatus details to slide assets.
+	// $scope.addIAStatus = function(i, data) {
+	// 	if (i = $scope.currentSlides.length) return 0;
+	// 	var id = data.assets[i].id;
+	// 	$http.get('http://uidev.scribble.com/mediaAssetContext?id=' + id).then(function(response) {
+	// 		console.log(i);
+	// 		$scope.currentSlides[i].detectionStatus = response.data.IAStatus.detection;
+	// 		console.log($scope.currentSlides[i]);
+	// 		$scope.addIAStatus(i + 1, data);
+	// 	});
+	// };
+
 	/* WORKSPACES */
 	$scope.setWorkspace = function(id_, checkSame) {
 		// break if we are checking for the same workspace, otherwise
@@ -156,9 +168,9 @@ angular
 		$scope.refreshReviews();
 		Wildbook.getWorkspace(id_)
 		.then(function(data) {
+			console.log("Get Workspace Data ", data.assets);
 			$scope.workspace = id_;
 			$scope.currentSlides = data.assets;
-			// console.log(data);
 			$scope.workspace_args = data.metadata.TranslateQueryArgs;
 			$scope.workspace_occ = $rootScope.Utils.keys(data.metadata.occurrences);
 			$scope.$apply();
@@ -870,6 +882,7 @@ angular
 				var toDelete=assets[0];
 				$scope.delete_index=$scope.currentSlides.indexOf(toDelete);
 				$scope.currentSlides.splice($scope.delete_index,1);
+				Wildbook.removeMediaAssetFromWorkspace($scope.delete_id, workspace).then(function(data) { console.log(data); });
 				$mdDialog.hide();
 			};
 
