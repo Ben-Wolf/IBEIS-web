@@ -1046,9 +1046,24 @@ angular
 					$scope.upload.totalProgress = 0;
 				},
 				select: function(element) {
-					var justFiles = $.map(element.files, function(val, key) {
-						return val;
-					}, true);
+					var justFiles = [];
+					var dt = element.dataTransfer;
+	        if (dt.items) {
+	          // Use DataTransferItemList interface to access the file(s)
+	          for (var i=0; i < dt.items.length; i++) {
+	            if (dt.items[i].kind == "file") {
+	              var f = dt.items[i].getAsFile();
+	              console.log("... file[" + i + "].name = " + f.name);
+	              justFiles.push(f);
+	            }
+	          }
+	        } else {
+	          // Use DataTransfer interface to access the file(s)
+	          for (var i=0; i < dt.files.length; i++) {
+	            console.log("... file[" + i + "].name = " + dt.files[i].name);
+	            justFiles.push(dt.files[i]);
+	          }
+	        }
 
 					console.log(justFiles);
 
