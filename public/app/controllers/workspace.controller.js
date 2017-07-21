@@ -1046,7 +1046,6 @@ angular
 					$scope.upload.totalProgress = 0;
 				},
 				select: function(element) {
-					console.log(element);
 					var justFiles = $.map(element.files, function(val, key) {
 						return val;
 					}, true);
@@ -1096,7 +1095,7 @@ angular
 				},
 				completionCallback: function(assets) {
 					console.log ("upload completed");
-					console.log ("$scope.upload.images ", $scope.upload.images)
+					console.log ("$scope.upload.images ", $scope.upload.images);
 					$scope.upload.stage = 0;
 					$scope.upload.reset();
 					$scope.upload.uploadSetDialog.assets = assets;

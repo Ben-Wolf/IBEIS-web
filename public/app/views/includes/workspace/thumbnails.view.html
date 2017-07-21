@@ -24,6 +24,7 @@
         console.log(e);
         angular.element(this).scope().upload.select(e);
         console.log("Drop");
+        angular.element(this).scope().upload.show();
         // If dropped items aren't files, reject them
         var dt = e.dataTransfer;
         if (dt.items) {
@@ -32,14 +33,18 @@
             if (dt.items[i].kind == "file") {
               var f = dt.items[i].getAsFile();
               console.log("... file[" + i + "].name = " + f.name);
+              // angular.element(this).scope().upload.images.push(f);
             }
           }
         } else {
           // Use DataTransfer interface to access the file(s)
           for (var i=0; i < dt.files.length; i++) {
             console.log("... file[" + i + "].name = " + dt.files[i].name);
+            angular.element(this).scope().upload.images.push(dt.files[i]);
           }
         }
+        // console.log(angular.element(this).scope().upload.images);
+        // angular.element(this).scope().upload.show();
         // e.upload.show();
         // $scope.upload.images.push(e;
         alert('Drop!');
@@ -73,7 +78,7 @@
         opacity: 0.8;
         visibility: hidden;
         position: center;
-        padding-top: 200px;
+        /*padding-top: 200px;*/
         /*color: gray;*/
         font-size: 5em;
         outline: 15px solid white;
