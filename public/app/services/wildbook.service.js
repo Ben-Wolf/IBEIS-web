@@ -182,8 +182,6 @@ var workspace = angular
             assets: assets
           }]
         };
-        // console.log("ASSETS %o", assets);
-        // console.log("MEDIA ASSETS %o", mediaAssets);
       } else {
         mediaAssets = {
           MediaAssetCreate: [{
@@ -193,6 +191,22 @@ var workspace = angular
       }
 
       return $http.post(service.baseUrl + 'MediaAssetCreate', mediaAssets);
+    };
+
+    // Waiting for wildbook to set this up.
+    service.removeMediaAssetFromWorkspace = function(mediaAssetId_, workspaceId_) {
+      var params = $.param({
+        mediaAssetId: mediaAssetId_,
+        action: "remove",
+        id: workspaceId_
+      });
+      console.log("Deleting media asset " + mediaAssetId_ + " from workspace " + workspaceId_);
+      return $.ajax({
+        type: "POST",
+        url: service.baseUrl + 'WorkspaceServer',
+        data: params,
+        dataType: "json"
+      });
     };
 
 
@@ -212,6 +226,7 @@ var workspace = angular
     };
 
     service.getReviewCounts = function() {
+      console.log(service.baseUrl + 'ia?getReviewCounts');
       return $.ajax({
         type: "GET",
         url: service.baseUrl + 'ia?getReviewCounts',
@@ -293,7 +308,7 @@ var workspace = angular
       });
     };
 
-    service.saveMarkedIndividual = function(params){
+    service.saveMarkedIndividual=function(params){
       console.log("test");
       console.log(params);
       return $.ajax({
