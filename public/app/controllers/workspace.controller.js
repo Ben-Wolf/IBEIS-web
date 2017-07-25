@@ -403,13 +403,16 @@ angular
 		$scope.defaultTableSortProperty=newProperty;
 	};
 
+	$scope.delteImage=function(ev,index){
+
+	};
 
 
 	$scope.refreshReviews = function(callback = function() {return;}) {
 		console.log($scope.workspace);
 		Wildbook.getReviewCounts().then(function(response) {
 			$scope.reviewCounts = response;
-		  console.log($scope.reviewCounts);
+			// console.log($scope.reviewCounts);
 
 			callback();
 			// Some cases require reviewCounts to be updated before proceeding
