@@ -889,30 +889,12 @@ angular
 				$mdDialog.hide();
 			};
 
-
-			$scope.toggleLogo = function() {
-				var logo = $('#logo');
-				if (logo.css('display') === 'none') {
-					logo.show();
-				} else {
-					logo.hide();
-				}
-			};
-
 			/* VIEW MENU */
 			$scope.views = ['thumbnails', 'table', 'map'];
 			// $scope.views = ['thumbnails', 'table'];
 			$scope.view = $scope.views[0];
 			$scope.setView = function(v) {
 				$scope.view = v;
-			};
-			$scope.logoVisible = function() {
-				var logo = $('#logo');
-				if (logo.css('display') === 'none') {
-					return false;
-				} else {
-					return true;
-				}
 			};
 
 			var exifToDecimal = function(coords) {
