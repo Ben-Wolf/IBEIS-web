@@ -879,14 +879,22 @@ angular
 			$scope.delete_id=""
 
 			$scope.delete_image=function(){
-				var assets=$scope.currentSlides.filter(function(obj) {
-					return obj.id === $scope.delete_id;
-					});
-				var toDelete=assets[0];
-				$scope.delete_index=$scope.currentSlides.indexOf(toDelete);
-				$scope.currentSlides.splice($scope.delete_index,1);
-				Wildbook.removeMediaAssetFromWorkspace($scope.delete_id, workspace).then(function(data) { console.log(data); });
-				$mdDialog.hide();
+				var confirm = $mdDialog.confirm()
+				.title('Confirm')
+				.textContent('Are you sure you want to delete this image from the workspace?')
+				.ok('Yes')
+				.cancel('No');
+				$mdDialog.show(confirm).then(function(result) {
+					console.log(result);
+					var assets=$scope.currentSlides.filter(function(obj) {
+						return obj.id === $scope.delete_id;
+						});
+					var toDelete=assets[0];
+					$scope.delete_index=$scope.currentSlides.indexOf(toDelete);
+					$scope.currentSlides.splice($scope.delete_index,1);
+					Wildbook.removeMediaAssetFromWorkspace($scope.delete_id, workspace).then(function(data) { console.log(data); });
+					$mdDialog.hide();
+				});
 			};
 
 
@@ -1061,7 +1069,41 @@ angular
 					$scope.upload.images = [];
 					$scope.upload.totalProgress = 0;
 				},
-				select: function(element) {
+
+				addImages: function(element) {
+					
+					console.log("Adding images through select images.");
+					var justFiles = $.map(element.files, function(val, key) {
+						return val;
+					}, true);
+
+				 console.log(justFiles);
+
+				 var fileEquality = function(f1, f2) {
+					 if (f1.name != f2.name) return false;
+					 if (f1.size != f2.size) return false;
+					 if (f1.type != f2.type) return false;
+					 if (f1.lastModified != f2.lastModified) return false;
+					 return true;
+				 }
+				 for (i in justFiles) {
+					 var contains = false;
+					 var file = justFiles[i];
+					 for (i in $scope.upload.images) {
+						 if (fileEquality(file, $scope.upload.images[i])) {
+							 contains = true;
+							 break;
+						 }
+					 }
+					 if (!contains) {
+						 var index = $scope.upload.images.push(file) - 1;
+						 readerFactory.readAsDataUrl(file, $scope, index);
+					 }
+				 }
+				},
+
+				addDropImages: function(element) {
+
 					var justFiles = [];
 					var dt = element.dataTransfer;
 	        if (dt.items) {
