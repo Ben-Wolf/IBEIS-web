@@ -1,8 +1,8 @@
 angular
 	.module('workspace')
 	.controller('workspace-controller', [
-		'$rootScope', '$scope', '$routeParams', '$mdSidenav', '$mdToast', '$mdDialog', '$mdMedia', '$http', '$sce', 'reader-factory', 'Wildbook', 'leafletData',
-		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData) {
+		'$rootScope', '$scope', '$routeParams', '$mdSidenav', '$mdToast', '$mdDialog', '$mdMedia', '$http', '$sce', 'reader-factory', 'Wildbook', 'leafletData', '$timeout',
+		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData, $timeout) {
 
 	//DECLARE VARIABLES
 	$scope.reviewOffset = 0;
@@ -44,16 +44,16 @@ angular
 	      dataType: "json"
 
 	  }).then(function(data) {
-      $scope.loading = 'off';
-      // this callback will be called asynchronously
-      // when the response is available
-      $scope.$apply(function() {
-          $scope.currentSlides = data.assets;
-					console.log(data);
-      })
+	      $scope.loading = 'off';
+	      // this callback will be called asynchronously
+	      // when the response is available
+	      $scope.$apply(function() {
+	          $scope.currentSlides = data.assets;
+						console.log(data);
+	      })
 	  }).fail(function(data) {
-      $scope.loading = 'off';
-      console.log("failed workspaces query");
+	      $scope.loading = 'off';
+	      console.log("failed workspaces query");
     });
   };
 
@@ -65,8 +65,7 @@ angular
 	        return;
 	    }
 			//We need to decide a proper variable for saving workspace data. do we need 1 or 2
-			$scope.$apply(function() {
-
+			$timeout(function(){
 				//data = data.slice(1, (data.length - 2));
 				$scope.workspacesObj = JSON.parse(data);
 				$scope.workspaces=[];
@@ -77,7 +76,7 @@ angular
 				console.log("Workspace Objects ", $scope.workspacesObj);
 				console.log("Workspaces ", $scope.workspaces);
 				$scope.setWorkspace($scope.workspaces[0], false);
-			})
+			});
 		}).fail(function(data) {
 			console.log("failed workspaces get");
 		});
@@ -170,12 +169,13 @@ angular
 		Wildbook.getWorkspace(id_)
 		.then(function(data) {
 			console.log("Get Workspace Data ", data.assets);
-			$scope.workspace = id_;
-			$scope.currentSlides = data.assets;
-			$scope.workspace_args = data.metadata.TranslateQueryArgs;
-			$scope.workspace_occ = $rootScope.Utils.keys(data.metadata.occurrences);
-			$scope.$apply();
-			$scope.map.refreshMap();
+			$timeout(function(){
+				$scope.workspace = id_;
+				$scope.currentSlides = data.assets;
+				$scope.workspace_args = data.metadata.TranslateQueryArgs;
+				$scope.workspace_occ = $rootScope.Utils.keys(data.metadata.occurrences);
+				$scope.map.refreshMap();
+			});
 		}).fail(function(data) {
 			console.log("failed workspace get");
 		});
@@ -245,7 +245,6 @@ angular
 					Wildbook.getWorkspace($scope.workspace)
 					.then(function(data) {
 						assets = data.assets;
-
 						Wildbook.createMediaAssets(assets, args.query.id)
 						.then(function() {
 							var setArgs = {
@@ -254,7 +253,6 @@ angular
 								},
 								class: "org.ecocean.media.MediaAssetSet"
 							};
-
 							Wildbook.saveWorkspace(result, setArgs)
 							.then(function(response) {
 								$scope.loading = 'off';				// For some reason saveworkspace fails but succeeds..
@@ -897,30 +895,12 @@ angular
 				});
 			};
 
-
-			$scope.toggleLogo = function() {
-				var logo = $('#logo');
-				if (logo.css('display') === 'none') {
-					logo.show();
-				} else {
-					logo.hide();
-				}
-			};
-
 			/* VIEW MENU */
 			$scope.views = ['thumbnails', 'table', 'map'];
 			// $scope.views = ['thumbnails', 'table'];
 			$scope.view = $scope.views[0];
 			$scope.setView = function(v) {
 				$scope.view = v;
-			};
-			$scope.logoVisible = function() {
-				var logo = $('#logo');
-				if (logo.css('display') === 'none') {
-					return false;
-				} else {
-					return true;
-				}
 			};
 
 			var exifToDecimal = function(coords) {
@@ -1192,10 +1172,10 @@ angular
 					updateUploadSets: function() {
 						var data = $scope.workspaces;
 						console.log(data);
-            if (!data || (data.length < 1)) {
-              console.warn('updateUploadSets() got empty data');
-              return;
-            }
+            			if (!data || (data.length < 1)) {
+              				console.warn('updateUploadSets() got empty data');
+              				return;
+            			}
 						$scope.upload.uploadSetDialog.uploadSets = data;
 					},
 					uploadSetName: "",
@@ -1207,7 +1187,7 @@ angular
 							var assets = $scope.upload.uploadSetDialog.assets;
 							switch ($scope.upload.uploadSetDialog.addToOption) {
 								case "new":
-									data = $scope.workspaces;
+									var data = $scope.workspaces;
 									console.log(data.length);
 									isDup = data.includes(set);
 									if (isDup) console.log("Duplicate");
