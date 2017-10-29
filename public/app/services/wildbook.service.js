@@ -84,7 +84,7 @@ var workspace = angular
         if (index >= 0) {
           progressCallback(index, progress);
         } else {
-          // TODO: not found error handle
+          console.log("Error: httpUploadProgress failed; image not found");
         }
       });
     };
@@ -119,7 +119,7 @@ var workspace = angular
         console.log(index + " : " + progress);
         progressCallback(index, progress);
       } else {
-        // TODO: not found error handle
+        console.log("Error: fileProgress failed; images not found");
       }
     });
 
@@ -165,8 +165,9 @@ var workspace = angular
 
     // request mediaAssetSet
     service.requestMediaAssetSet = function() {
-      // TODO: check for errors?
-      return $http.get(service.baseUrl + 'MediaAssetCreate?requestMediaAssetSet');
+      return $http.get(service.baseUrl + 'MediaAssetCreate?requestMediaAssetSet').catch(function(e){
+        console.log("requestMediaAssetSet failed, error: ", e);
+      });
     };
 
     service.findMediaAssetSetIdFromUploadSet = function(setName) {
@@ -232,7 +233,7 @@ var workspace = angular
       return $.ajax({
         type: "GET",
 			  url: service.baseUrl + 'MediaAssetContext?id=' + imageID.toString(),
-        dataType: "json"
+        dataType: "json",
       });
     };
 
@@ -241,7 +242,7 @@ var workspace = angular
       return $.ajax({
         type: "GET",
         url: service.baseUrl + 'ia?getReviewCounts',
-        dataType: "json"
+        dataType: "json",
       });
     };
 
