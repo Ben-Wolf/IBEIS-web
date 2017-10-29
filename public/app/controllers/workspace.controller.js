@@ -5,6 +5,8 @@ angular
 		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData) {
 
 	//DECLARE VARIABLES
+	$scope.showJunk = false;
+	$scope.currentSlides = [];
 	$scope.reviewOffset = 0;
 	$scope.workspace = null;
 	$scope.workspace_occ = [];
@@ -48,8 +50,18 @@ angular
       // this callback will be called asynchronously
       // when the response is available
       $scope.$apply(function() {
-          $scope.currentSlides = data.assets;
-					console.log(data);
+				console.log("QUERY WORKSPACE")
+				for (var i = 0; i < data.assets.length; i++) {
+					console.log(data.assets[i]);
+				}
+				$scope.currentSlides = [];
+				for (var i = 0; i < data.assets.length; i++) {
+					if(data.assets[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
+						continue;
+					}
+					currentSlides.push(data.assets[i]);
+				}
+				console.log(data);
       })
 	  }).fail(function(data) {
       $scope.loading = 'off';
@@ -171,7 +183,13 @@ angular
 		.then(function(data) {
 			console.log("Get Workspace Data ", data.assets);
 			$scope.workspace = id_;
-			$scope.currentSlides = data.assets;
+			$scope.currentSlides = [];
+			for (var i = 0; i < data.assets.length; i++) {
+				if(data.assets[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
+					continue;
+				}
+				$scope.currentSlides.push(data.assets[i]);
+			}
 			$scope.workspace_args = data.metadata.TranslateQueryArgs;
 			$scope.workspace_occ = $rootScope.Utils.keys(data.metadata.occurrences);
 			$scope.$apply();
@@ -181,6 +199,11 @@ angular
 		});
 	};
 
+	$scope.toggleJunk = function() {
+		$scope.showJunk = !$scope.showJunk;
+		$scope.setWorkspace($scope.workspace);
+	}
+
 	$scope.viewAllImages = function(checkSame) {
 		if (checkSame && $scope.workspace === "All Images") return;
 		$scope.workspace = "Loading...";
@@ -188,7 +211,14 @@ angular
 		Wildbook.getAllMediaAssets().then(function(response) {
 			console.log(response);
 			$scope.workspace = "All Images";
-			$scope.currentSlides = response.data;
+			// $scope.currentSlides = response.data;
+			$scope.currentSlides = [];
+			for (var i = 0; i < response.data.length; i++) {
+				if(response.data[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
+					continue;
+				}
+				$scope.currentSlides.push(response.data[i]);
+			}
 			$scope.workspace_args = "all";
 			$scope.map.refreshMap();
 		});
@@ -878,21 +908,15 @@ angular
 
 			$scope.delete_id=""
 
-			$scope.delete_image=function(){
+			$scope.delete_image=function() {
 				var confirm = $mdDialog.confirm()
 				.title('Confirm')
-				.textContent('Are you sure you want to delete this image from the workspace?')
+				.textContent('Are you sure you want to label this image as junk?')
 				.ok('Yes')
 				.cancel('No');
 				$mdDialog.show(confirm).then(function(result) {
-					console.log(result);
-					var assets=$scope.currentSlides.filter(function(obj) {
-						return obj.id === $scope.delete_id;
-						});
-					var toDelete=assets[0];
-					$scope.delete_index=$scope.currentSlides.indexOf(toDelete);
-					$scope.currentSlides.splice($scope.delete_index,1);
-					Wildbook.removeMediaAssetFromWorkspace($scope.delete_id, workspace).then(function(data) { console.log(data); });
+					Wildbook.addJunkLabel($scope.delete_id).then(function(data) { console.log("AFTER ADDING JUNK LABEL: ", data); });
+					$scope.setWorkspace($scope.workspace);
 					$mdDialog.hide();
 				});
 			};

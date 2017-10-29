@@ -152,6 +152,17 @@ var workspace = angular
 
     // MEDIA assets
     // ==============
+
+    service.addJunkLabel = function(mediaAssetId) {
+      console.log("Adding junk label to " + mediaAssetId);
+      // var params = {
+      //   method: "POST",
+      //   url = service.baseUrl + "MediaAssetModify?id=" + mediaAssetId + "&labelAdd=junk"
+      // };
+      //
+      return $http.get(service.baseUrl + "MediaAssetModify?id=" + mediaAssetId + "&labelAdd=junk");
+    };
+
     // request mediaAssetSet
     service.requestMediaAssetSet = function() {
       // TODO: check for errors?
