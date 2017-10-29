@@ -180,10 +180,10 @@ td {
     opacity: 1;
 }
 
-.image-info {
+/*.image-info {
     margin: 0;
     text-align: center;
-}
+}*/
 
 .leaflet-contain {
     height: 100%;
