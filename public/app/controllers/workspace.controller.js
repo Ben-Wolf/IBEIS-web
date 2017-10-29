@@ -13,11 +13,12 @@ angular
 	$scope.datetime_model = new Date();
 	$scope.pastDetectionReviews = [];
 	$scope.pastDetectionUrls = [];
-  	$scope.loading = 'off';
+  $scope.loading = 'off';
+	$scope.uploading = 'off';
 	$scope.individual_model="";
 	$scope.myDate = new Date();
 	$scope.min_date = new Date(
-		$scope.myDate.getFullYear()-40,
+		$scope.myDate.getFullYear()-100,
     $scope.myDate.getMonth(),
     $scope.myDate.getDate()
 	)
@@ -844,7 +845,6 @@ angular
 					templateUrl: 'app/views/includes/workspace/image.info.html',
 					targetEvent: ev,
 					clickOutsideToClose: true,
-					fullscreen: true,
 					scope: $scope,
 					preserveScope: true,
 					locals: {
@@ -1044,14 +1044,16 @@ angular
 				mediaAssetSetId: null,
 				images: [],
 				totalProgress: 0,
+				loading: false,
 				reset: function() {
+					$scope.upload.loading = false;
 					$scope.upload.stage = 0;
 					$scope.upload.images = [];
 					$scope.upload.totalProgress = 0;
 				},
 
 				addImages: function(element) {
-					
+
 					console.log("Adding images through select images.");
 					var justFiles = $.map(element.files, function(val, key) {
 						return val;
@@ -1154,7 +1156,6 @@ angular
 					$scope.upload.uploadSetDialog.assets = assets;
 					$scope.upload.uploadSetDialog.updateUploadSets();
 					$scope.upload.close();
-					alert("Successfully uploaded");
 					$mdDialog.show($scope.upload.uploadSetDialog.dialog); // Opens completed_upload.dialog.html
 				},
 				uploadSetDialog: {
@@ -1262,6 +1263,7 @@ angular
 					$scope.upload.stage = 1;
 					Wildbook.upload($scope.upload.images, $scope.upload.type, $scope.upload.progressCallback, $scope.upload.completionCallback, $scope.upload.failureCallback, $scope.workspace);
 				},
+
 				updateProgress: function() {
 					var max = 100 * $scope.upload.images.length;
 					var sum = 0;

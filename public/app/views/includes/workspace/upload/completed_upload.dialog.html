@@ -6,6 +6,11 @@
       </div>
     </md-toolbar>
     <md-dialog-content layout-padding>
+      <div flex ng-if="upload.loading == 1" class="md-content">
+        <div layout="row" layout="column" layout-align="space-around" style="position: absolute;bottom:1%;height:2000px;width:100%">
+          <md-progress-circular md-mode="indeterminate" md-diameter="100" style="position:fixed;bottom:50%" ></md-progress-circular>
+        </div>
+      </div>
       <div class="md-dialog-content">
         <p>Your upload has completed successfully! You have a few options regarding how you would where you would like these photos organized.</p>
         <md-input-container>
@@ -38,14 +43,9 @@
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row">
-      <md-button type="submit" ng-disabled="upload.uploadSetDialog.addToOption === null">
+      <md-button class="md-primary md-raised" type="submit" ng-click="upload.loading = 1" ng-disabled="upload.uploadSetDialog.addToOption === null">
         Confirm
       </md-button>
     </md-dialog-actions>
   </form>
 </md-dialog>
-<!-- <script>
-  $("#workspace_name_input").alphanum({
-    allow: '-_;'
-  });
-</script> -->
