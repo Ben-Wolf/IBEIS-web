@@ -46,7 +46,6 @@ angular
 	      dataType: "json"
 
 	  }).then(function(data) {
-<<<<<<< HEAD
       $scope.loading = 'off';
       // this callback will be called asynchronously
       // when the response is available
@@ -64,15 +63,6 @@ angular
 				}
 				console.log(data);
       })
-=======
-	      $scope.loading = 'off';
-	      // this callback will be called asynchronously
-	      // when the response is available
-	      $scope.$apply(function() {
-	          $scope.currentSlides = data.assets;
-						console.log(data);
-	      })
->>>>>>> 754436494d92ca34e650d85a2d51bd5579cdafdc
 	  }).fail(function(data) {
 	      $scope.loading = 'off';
 	      console.log("failed workspaces query");
