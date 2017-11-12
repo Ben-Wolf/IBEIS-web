@@ -15,7 +15,7 @@ angular
 	$scope.datetime_model = new Date();
 	$scope.pastDetectionReviews = [];
 	$scope.pastDetectionUrls = [];
-  $scope.loading = 'off';
+  	$scope.loading = 'off';
 	$scope.uploading = 'off';
 	$scope.individual_model="";
 	$scope.myDate = new Date();
@@ -476,20 +476,64 @@ angular
 				console.log("starting identification");
 				Wildbook.runIdentification($scope.workspace_occ).then(function(data) {
 					console.log(data);
+					$scope.$apply(function() {
+						//detection has started.  Save the job id, then launch review
+						if (data.success) {
+							$scope.identification.showIdentificationReview(ev);
+						}
+						else {
+							console.log('identification error: ' + data.error);
+							$mdDialog.show(
+								$mdDialog.alert()
+								.clickOutsideToClose(true)
+								.title('Error')
+								.textContent('Identification error.')
+								.ariaLabel('IA Error')
+								.ok('OK')
+								.targetEvent(ev)
+							);
+						}
+					});
+				}).fail(function(data) {
+					console.log("IA server error (identification)");
+					$mdDialog.show(
+						$mdDialog.alert()
+						.clickOutsideToClose(true)
+						.title('Error')
+						.textContent('No Response from IA server.')
+						.ariaLabel('IA Error')
+						.ok('OK')
+						.targetEvent(ev)
+					);
 				});
 			});
 		},
 
 		showIdentificationReview: function(ev) {
-			$scope.refreshReviews();
-			$scope.identification.getReview();
-		},
-
-		getReview: function() {
-			Wildbook.getIdentificationReview().then(function(response) {
-				console.log(response);
+			console.log("Starting identification review");
+			Wildbook.getIdentificationReview().then(function(html) {
+				$mdDialog.show({
+					scope: $scope,
+					preserveScope: true,
+					template: html,
+					targetEvent: ev,
+					clickOutsideToClose: false,
+					fullscreen: false,
+					escapeToClose: false
+				});
+			}).fail(function(data) {
+				$mdDialog.show(
+					$mdDialog.alert()
+					.clickOutsideToClose(true)
+					.title('Error')
+					.textContent('No Response from IA server.')
+					.ariaLabel('IA Error')
+					.ok('OK')
+					.targetEvent(ev)
+				);
 			});
-		}
+			$scope.refreshReviews();
+		},
 	};
 
 	//object where all detection functions are stored
@@ -514,12 +558,12 @@ angular
 								$scope.detection.showDetectionReview(ev);
 							}
 							else {
-								console.log('error: ' + data.error);
+								console.log('Detetion error: ' + data.error);
 								$scope.detection.startDetectionByImage(ev);
 							}
 						});
 					}).fail(function(data) {
-						console.log('IA server error');
+						console.log('IA server error (detection)');
 						$scope.detection.startDetectionByImage(ev);
 					});
 				}
@@ -577,7 +621,7 @@ angular
 					.ariaLabel('IA Error')
 					.ok('OK')
 					.targetEvent(ev)
-				)
+				);
 			});
 		},
 
@@ -591,18 +635,32 @@ angular
 		},
 
 		//creates a dialog
+		//templateUrl: 'app/views/includes/workspace/detection.review.html',
 		showDetectionReview: function(ev) {
 			console.log("Starting detection review");
-			$mdDialog.show({
-				scope: $scope,
-				preserveScope: true,
-				templateUrl: 'app/views/includes/workspace/detection.review.html',
-				targetEvent: ev,
-				clickOutsideToClose: false,
-				fullscreen: false,
-				escapeToClose: false
+			Wildbook.getDetectionReview().then(function(html) {
+				console.log("Html: ", html);
+				$mdDialog.show({
+					scope: $scope,
+					preserveScope: true,
+					template: html,
+					targetEvent: ev,
+					clickOutsideToClose: false,
+					fullscreen: false,
+					escapeToClose: false
+				});
+			}).fail(function(data) {
+				$mdDialog.show(
+					$mdDialog.alert()
+					.clickOutsideToClose(true)
+					.title('Error')
+					.textContent('No Response from IA server.')
+					.ariaLabel('IA Error')
+					.ok('OK')
+					.targetEvent(ev)
+				);
 			});
-			$scope.refreshReviews($scope.detection.startCheckDetection);
+			$scope.refreshReviews();
 		},
 
 		detectDialogCancel: function() {

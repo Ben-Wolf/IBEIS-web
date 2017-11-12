@@ -333,16 +333,16 @@ var workspace = angular
 
     // IDENTIFICATION
     // ==================
-    service.runIdentification = function(occurrences) {
+    service.runIdentification = function(annotations) {
       var params = {
         identify: {
-          occurrenceIds: occurrences
+          annotationIds: annotations
         }
       };
       return $.ajax({
         type: "POST",
         url: service.baseUrl + 'ia',
-        data: JSON.stringify(params),
+        data: params,
         dataType: "json",
         contentType: 'application/javascript'
       });
@@ -369,7 +369,7 @@ var workspace = angular
       return $.ajax({
         type: "POST",
         url: service.baseUrl + 'ia',
-        data: JSON.stringify(params),
+        data: params,
         dataType: "json",
         contentType: "application/javascript"
       });
@@ -384,9 +384,19 @@ var workspace = angular
       return $.ajax({
         type: "POST",
         url: service.baseUrl + 'ia',
-        data: JSON.stringify(params),
+        data: params,
         dataType: "json",
         contentType: "application/javascript"
+      });
+    };
+
+
+    service.getDetectionReview = function() {
+      return $.ajax({
+        type: "GET",
+        url: service.baseUrl + 'ia?getDetectionReviewHtmlNext&test',
+        dataType: "json",
+        contentType: 'application/javascript'
       });
     };
 
