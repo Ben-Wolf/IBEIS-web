@@ -16,8 +16,7 @@
     <img style="margin: 0 auto; display: block; max-width: 100%; padding-top: .75cm" src="{{ mediaAsset.url }}" />
     <div class="md-dialog-content">
       <!-- image metadata and information -->
-      <md-subheader>Date and Time
-      </md-subheader>
+      <md-subheader style="color: white; background-color: #4CAF50;"><b>Date and Time</b></md-subheader>
       <md-list>
         <div ng-if="!edit_datetime" ng-init="edit_datetime=false">
           <md-list-item>
@@ -32,7 +31,7 @@
           <md-icon-button ng-click="save_datetime(); $parent.edit_datetime=false" style="padding-left: 15px;" class="fa fa-save"></md-icon-button>
         </div>
       </md-list>
-      <md-subheader>Marked Individuals</md-subheader>
+      <md-subheader style="color: white; background-color: #4CAF50;"><b>Marked Individuals</b></md-subheader>
       <md-list>
         <div ng-if="!edit_marked_individual" ng-init="edit_marked_individual=false">
           <!--md-list-item ng-repeat="ind in mediaAssetContext.MarkedIndividuals"-->
@@ -49,37 +48,36 @@
           <md-icon-button ng-click="save_marked_individual(); $parent.edit_marked_individual=false" class="fa fa-save"></md-icon-button>
         </div>
       </md-list>
-      <md-subheader>Occurences</md-subheader>
+      <md-subheader style="color: white; background-color: #4CAF50;"><b>Occurences</b></md-subheader>
       <md-list>
         <md-list-item>
           {{ mediaAsset.occurrenceID }}
         </md-list-item>
       </md-list>
-      <md-subheader>Annotations</md-subheader>
+      <md-subheader style="color: white; background-color: #4CAF50;"><b>Annotations</b></md-subheader>
       <md-list>
         <md-list-item ng-repeat="ann in mediaAssetContext.Annotations">
           {{ ann.id }}
         </md-list-item>
       </md-list>
-      <md-subheader>Encounters</md-subheader>
+      <md-subheader style="color: white; background-color: #4CAF50;"><b>Encounters</b></md-subheader>
       <md-list>
         <!--md-list-item ng-repeat="(id, enc) in mediaAssetContext.Encounters"-->
         <md-list-item>
           {{ mediaAsset.features[0].encounterId }}
         </md-list-item>
       </md-list>
-      <md-subheader>Metadata</md-subheader>
+      <md-subheader style="color: white; background-color: #4CAF50;"><b>Metadata</b></md-subheader>
       <md-list>
         <md-list-item ng-repeat="(k, v) in mediaAsset.metadata" class="md-2-line">
           <div class="md-list-item-text">
-            <h3>{{ k }}</h3>
-            <p>{{ v }}</p>
+            <h4><b>{{ k }}:</b> {{ v }}</h4>
           </div>
         </md-list-item>
       </md-list>
-      <md-button class="dltbtn" ng-click="delete_id=mediaAsset.id; delete_image()">
+      <md-button style="background-color: #D3D3D3;" class="dltbtn" ng-click="delete_id=mediaAsset.id; delete_image()"><strong>
         Classify as Junk
-      </md-button>
+      </strong></md-button>
     </div>
   </md-dialog-content>
 </md-dialog>

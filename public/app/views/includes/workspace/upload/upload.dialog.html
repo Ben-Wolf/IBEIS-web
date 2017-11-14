@@ -37,9 +37,10 @@
   <md-dialog-actions layout="row">
     <input type="file" multiple accept="image/*" class="file-input" id="img-upload-btn" onchange="angular.element(this).scope().upload.addImages(this)">
 
-    <md-button class="md-primary md-raised" ng-click="proxy('img-upload-btn')" ng-show="upload.stage < 2" ng-disabled="upload.stage > 0">
+    <!-- Proxy not working for some reason right now so leaving this button commented out -->
+    <!-- <md-button class="md-primary md-raised" ng-click="proxy('img-upload-btn')" ng-show="upload.stage < 2" ng-disabled="upload.stage > 0">
       Select <strong>Images</strong>
-    </md-button>
+    </md-button> -->
     <md-button class="md-primary md-raised" ng-click="upload.upload()" ng-show="upload.stage < 2" ng-disabled="upload.images.length <= 0 || upload.stage > 0">
       Upload <strong>Images</strong>
     </md-button>
