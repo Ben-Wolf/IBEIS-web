@@ -6,6 +6,7 @@ angular
 
 	//DECLARE VARIABLES
 	$scope.showJunk = false;
+	$scope.showImportant = false;
 	$scope.currentSlides = [];
 	$scope.reviewOffset = 0;
 	$scope.workspace = null;
@@ -184,6 +185,9 @@ angular
 			$scope.workspace = id_;
 			$scope.currentSlides = [];
 			for (var i = 0; i < data.assets.length; i++) {
+				if(data.assets[i].labels.indexOf('important') < 0 && $scope.showImportant == true) {
+					continue;
+				}
 				if(data.assets[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
 					continue;
 				}
@@ -199,7 +203,18 @@ angular
 	};
 
 	$scope.toggleJunk = function() {
+		if ($scope.showImportant) {
+			$scope.showImportant = false;
+		}
 		$scope.showJunk = !$scope.showJunk;
+		$scope.setWorkspace($scope.workspace);
+	}
+
+	$scope.toggleImportant = function() {
+		if ($scope.showJunk) {
+			$scope.showJunk = false;
+		}
+		$scope.showImportant = !$scope.showImportant;
 		$scope.setWorkspace($scope.workspace);
 	}
 
@@ -213,6 +228,9 @@ angular
 			// $scope.currentSlides = response.data;
 			$scope.currentSlides = [];
 			for (var i = 0; i < response.data.length; i++) {
+				if(data.assets[i].labels.indexOf('important') < 0 && $scope.showImportant == true) {
+					continue;
+				}
 				if(response.data[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
 					continue;
 				}
@@ -961,16 +979,36 @@ angular
 					});
 			};
 
-			$scope.delete_id=""
 
-			$scope.delete_image=function() {
+			/* CODE BELOW IS LABEL CODE */
+			// ID that Label markers will use
+			$scope.stored_id=""
+
+			$scope.mark_as_junk=function() {
 				var confirm = $mdDialog.confirm()
 				.title('Confirm')
 				.textContent('Are you sure you want to label this image as junk?')
 				.ok('Yes')
 				.cancel('No');
 				$mdDialog.show(confirm).then(function(result) {
-					Wildbook.addJunkLabel($scope.delete_id).then(function(data) { console.log("AFTER ADDING JUNK LABEL: ", data); });
+					Wildbook.addJunkLabel($scope.stored_id, "junk").then(function(data) {
+						console.log("After adding \"junk\" label: ", data);
+					});
+					$scope.setWorkspace($scope.workspace);
+					$mdDialog.hide();
+				});
+			};
+
+			$scope.mark_as_important=function() {
+				var confirm = $mdDialog.confirm()
+				.title('Confirm')
+				.textContent('Are you sure you want to label this image as important?')
+				.ok('Yes')
+				.cancel('No');
+				$mdDialog.show(confirm).then(function(result) {
+					Wildbook.addLabel($scope.stored_id, "important").then(function(data) {
+						console.log("After adding \"important\" label: ", data);
+					});
 					$scope.setWorkspace($scope.workspace);
 					$mdDialog.hide();
 				});

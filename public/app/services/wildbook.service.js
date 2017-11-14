@@ -153,14 +153,15 @@ var workspace = angular
     // MEDIA assets
     // ==============
 
-    service.addJunkLabel = function(mediaAssetId) {
+    service.addLabel = function(mediaAssetId, label) {
       console.log("Adding junk label to " + mediaAssetId);
       // var params = {
       //   method: "POST",
       //   url = service.baseUrl + "MediaAssetModify?id=" + mediaAssetId + "&labelAdd=junk"
       // };
       //
-      return $http.get(service.baseUrl + "MediaAssetModify?id=" + mediaAssetId + "&labelAdd=junk");
+      // EXAMPLE: if label = junk; adds junk label..
+      return $http.get(service.baseUrl + "MediaAssetModify?id=" + mediaAssetId + "&labelAdd=" + label);
     };
 
     // request mediaAssetSet

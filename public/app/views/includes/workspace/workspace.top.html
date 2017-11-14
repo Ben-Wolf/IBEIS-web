@@ -45,24 +45,28 @@
   <md-button ng-click="toggleSidenav('filter')" aria-label="Filter" class="md-icon-button"> <!-- hide-gt-sm  -->
     <i class="fa fa-fw fa-filter"></i>
     <md-tooltip md-autohide>
-      Apply a filter to your workspace.
+      Filter data displayed
     </md-tooltip>
   </md-button>
-  <md-button class="md-icon-button" aria-label="Undo" ng-click="filter.undoFilter()">
+
+  <!-- Not sure we want undo filter capability? Filters should be something can turn on and off, we dont need previous saved states for this... -->
+  <!-- <md-button class="md-icon-button" aria-label="Undo" ng-click="filter.undoFilter()">
     <i class="fa fa-fw fa-undo"></i>
     <md-tooltip md-autohide>
-      Revert to last saved iteration.
+      Revert to last saved iteration
     </md-tooltip>
-  </md-button>
+  </md-button> -->
+
   <div ng-if="!saving" ng-init="saving=false">
     <md-button class="md-icon-button" aria-label="Save" ng-click="saveNewWorkspace($event)">
     <!-- <md-button class="md-icon-button" aria-label="Save" ng-click="$parent.saving=true"> -->
       <i class="fa fa-fw fa-save"></i>
       <md-tooltip md-autohide>
-        Save as new workspace.
+        Save as new workspace
       </md-tooltip>
     </md-button>
   </div>
+
   <div>
     <md-button class="md-icon-button" aria-label="Delete" ng-click="deleteWorkspace()">
       <i class="fa fa-fw fa-trash-o"></i>
@@ -70,6 +74,37 @@
         Delete this workspace
       </md-tooltip>
     </md-button>
+  </div>
+
+  <!-- TODO: Add show workspace functionality -->
+  <div>
+    <md-menu md-position-mode="target-right target">
+      <md-button class="md-icon-button" aria-label="Labels" ng-click="$mdMenu.open($event)">
+        <i class="fa fa-tags"></i>
+        <md-tooltip md-autohide>
+          Filter image labels
+        </md-tooltip>
+      </md-button>
+      <md-menu-content width="3">
+        <md-menu-item>
+          <label>
+            <input type="checkbox" ng-click="toggleJunk()">
+           Show Junk</label><br/>
+          <!-- <md-button ng-click=toggleJunk()>
+            <div layout="row">
+              <p flex>
+                <i class="fa fa-fw fa-trash-o"></i> Show Junk
+              </p>
+            </div>
+          </md-button> -->
+        </md-menu-item>
+        <md-divider></md-divider>
+        <md-menu-item>
+          <label>
+            <input type="checkbox" ng-click="toggleImportant()">
+           Show Important</label><br/>
+      </md-menu-content>
+    </md-menu>
   </div>
 
 
@@ -82,7 +117,7 @@
     <i class="fa fa-save" />
   </md-button> -->
   <span flex></span>
-  <md-menu md-position-mode="target-right target">
+  <md-menu md-position-mode="target-left target">
     <md-button aria-label="View Selector" ng-click="$mdMenu.open($event)">
       VIEW <i class="fa fa-caret-down" aria-hidden="true" fa-lg></i>
       <md-tooltip md-direction="left" md-autohide>
