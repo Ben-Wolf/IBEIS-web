@@ -76,7 +76,6 @@
     </md-button>
   </div>
 
-  <!-- TODO: Add show workspace functionality -->
   <div>
     <md-menu md-position-mode="target-right target">
       <md-button class="md-icon-button" aria-label="Labels" ng-click="$mdMenu.open($event)">
@@ -87,22 +86,36 @@
       </md-button>
       <md-menu-content width="3">
         <md-menu-item>
-          <label>
+          <!-- <label>
             <input type="checkbox" ng-click="toggleJunk()">
-           Show Junk</label><br/>
-          <!-- <md-button ng-click=toggleJunk()>
-            <div layout="row">
+           Show Junk</label><br/> -->
+          <md-button ng-click=toggleJunk()>
+            <div layout="row" ng-if="showJunk">
               <p flex>
-                <i class="fa fa-fw fa-trash-o"></i> Show Junk
+                <i class="fa fa-fw fa-trash-o"></i> Hide Junk
               </p>
             </div>
-          </md-button> -->
+            <div layout="row" ng-if="!showJunk">
+              <p flex>
+                <i class="fa fa-fw fa-trash"></i> Show Junk
+              </p>
+            </div>
+          </md-button>
         </md-menu-item>
         <md-divider></md-divider>
         <md-menu-item>
-          <label>
-            <input type="checkbox" ng-click="toggleImportant()">
-           Show Important</label><br/>
+          <md-button ng-click=toggleImportant()>
+            <div layout="row" ng-if="showImportant">
+              <p flex>
+                <i class="fa fa-fw fa-star-o"></i> Show All
+              </p>
+            </div>
+            <div layout="row" ng-if="!showImportant">
+              <p flex>
+                <i class="fa fa-fw fa-star"></i> Show Important
+              </p>
+            </div>
+          </md-button>
       </md-menu-content>
     </md-menu>
   </div>
