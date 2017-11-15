@@ -153,14 +153,14 @@ var workspace = angular
     // MEDIA assets
     // ==============
 
-    service.addJunkLabel = function(mediaAssetId) {
-      console.log("Adding junk label to " + mediaAssetId);
-      // var params = {
-      //   method: "POST",
-      //   url = service.baseUrl + "MediaAssetModify?id=" + mediaAssetId + "&labelAdd=junk"
-      // };
-      //
-      return $http.get(service.baseUrl + "MediaAssetModify?id=" + mediaAssetId + "&labelAdd=junk");
+    service.addLabel = function(mediaAssetId, label) {
+      console.log("Adding \"" + label + "\" label to " + mediaAssetId);
+      return $http.get(service.baseUrl + "MediaAssetModify?id=" + mediaAssetId + "&labelAdd=" + label);
+    };
+
+    service.removeLabel = function(mediaAssetId, label) {
+      console.log("Removing \"" + label + "\" label from " + mediaAssetId);
+      return $http.get(service.baseUrl + "MediaAssetModify?id=" + mediaAssetId + "&labelRemove=" + label);
     };
 
     // request mediaAssetSet
@@ -342,7 +342,7 @@ var workspace = angular
       return $.ajax({
         type: "POST",
         url: service.baseUrl + 'ia',
-        data: params,
+        data: JSON.stringify(params),
         dataType: "json",
         contentType: 'application/javascript'
       });
@@ -369,7 +369,7 @@ var workspace = angular
       return $.ajax({
         type: "POST",
         url: service.baseUrl + 'ia',
-        data: params,
+        data: JSON.stringify(params),
         dataType: "json",
         contentType: "application/javascript"
       });
@@ -384,7 +384,7 @@ var workspace = angular
       return $.ajax({
         type: "POST",
         url: service.baseUrl + 'ia',
-        data: params,
+        data: JSON.stringify(params),
         dataType: "json",
         contentType: "application/javascript"
       });

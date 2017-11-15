@@ -5,6 +5,7 @@ angular
 		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData, $timeout) {
 
 	//DECLARE VARIABLES
+	$scope.showImportant = false;
 	$scope.showJunk = false;
 	$scope.currentSlides = [];
 	$scope.reviewOffset = 0;
@@ -15,7 +16,7 @@ angular
 	$scope.datetime_model = new Date();
 	$scope.pastDetectionReviews = [];
 	$scope.pastDetectionUrls = [];
-  	$scope.loading = 'off';
+  $scope.loading = 'off';
 	$scope.uploading = 'off';
 	$scope.individual_model="";
 	$scope.myDate = new Date();
@@ -56,6 +57,9 @@ angular
 				}
 				$scope.currentSlides = [];
 				for (var i = 0; i < data.assets.length; i++) {
+					if(data.assets[i].labels.indexOf('important') < 0 && $scope.showImportant == true) {
+						continue;
+					}
 					if(data.assets[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
 						continue;
 					}
@@ -183,7 +187,13 @@ angular
 			console.log("Get Workspace Data ", data.assets);
 			$scope.workspace = id_;
 			$scope.currentSlides = [];
+			if ($scope.showImportant) {
+				console.log("Showing important images");
+			}
 			for (var i = 0; i < data.assets.length; i++) {
+				if(data.assets[i].labels.indexOf('important') < 0 && $scope.showImportant == true) {
+					continue;
+				}
 				if(data.assets[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
 					continue;
 				}
@@ -199,9 +209,20 @@ angular
 	};
 
 	$scope.toggleJunk = function() {
+		if ($scope.showImportant) {
+			$scope.showImportant = false;
+		}
 		$scope.showJunk = !$scope.showJunk;
 		$scope.setWorkspace($scope.workspace);
-	}
+	};
+
+	$scope.toggleImportant = function() {
+		if ($scope.showJunk) {
+			$scope.showJunk = false;
+		}
+		$scope.showImportant = !$scope.showImportant;
+		$scope.setWorkspace($scope.workspace);
+	};
 
 	$scope.viewAllImages = function(checkSame) {
 		if (checkSame && $scope.workspace === "All Images") return;
@@ -213,6 +234,9 @@ angular
 			// $scope.currentSlides = response.data;
 			$scope.currentSlides = [];
 			for (var i = 0; i < response.data.length; i++) {
+				if(response.data[i].labels.indexOf('important') < 0 && $scope.showImportant == true) {
+					continue;
+				}
 				if(response.data[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
 					continue;
 				}
@@ -476,64 +500,20 @@ angular
 				console.log("starting identification");
 				Wildbook.runIdentification($scope.workspace_occ).then(function(data) {
 					console.log(data);
-					$scope.$apply(function() {
-						//detection has started.  Save the job id, then launch review
-						if (data.success) {
-							$scope.identification.showIdentificationReview(ev);
-						}
-						else {
-							console.log('identification error: ' + data.error);
-							$mdDialog.show(
-								$mdDialog.alert()
-								.clickOutsideToClose(true)
-								.title('Error')
-								.textContent('Identification error.')
-								.ariaLabel('IA Error')
-								.ok('OK')
-								.targetEvent(ev)
-							);
-						}
-					});
-				}).fail(function(data) {
-					console.log("IA server error (identification)");
-					$mdDialog.show(
-						$mdDialog.alert()
-						.clickOutsideToClose(true)
-						.title('Error')
-						.textContent('No Response from IA server.')
-						.ariaLabel('IA Error')
-						.ok('OK')
-						.targetEvent(ev)
-					);
 				});
 			});
 		},
 
 		showIdentificationReview: function(ev) {
-			console.log("Starting identification review");
-			Wildbook.getIdentificationReview().then(function(html) {
-				$mdDialog.show({
-					scope: $scope,
-					preserveScope: true,
-					template: html,
-					targetEvent: ev,
-					clickOutsideToClose: false,
-					fullscreen: false,
-					escapeToClose: false
-				});
-			}).fail(function(data) {
-				$mdDialog.show(
-					$mdDialog.alert()
-					.clickOutsideToClose(true)
-					.title('Error')
-					.textContent('No Response from IA server.')
-					.ariaLabel('IA Error')
-					.ok('OK')
-					.targetEvent(ev)
-				);
-			});
 			$scope.refreshReviews();
+			$scope.identification.getReview();
 		},
+
+		getReview: function() {
+			Wildbook.getIdentificationReview().then(function(response) {
+				console.log(response);
+			});
+		}
 	};
 
 	//object where all detection functions are stored
@@ -558,12 +538,12 @@ angular
 								$scope.detection.showDetectionReview(ev);
 							}
 							else {
-								console.log('Detetion error: ' + data.error);
+								console.log('error: ' + data.error);
 								$scope.detection.startDetectionByImage(ev);
 							}
 						});
 					}).fail(function(data) {
-						console.log('IA server error (detection)');
+						console.log('IA server error');
 						$scope.detection.startDetectionByImage(ev);
 					});
 				}
@@ -621,7 +601,7 @@ angular
 					.ariaLabel('IA Error')
 					.ok('OK')
 					.targetEvent(ev)
-				);
+				)
 			});
 		},
 
@@ -635,32 +615,18 @@ angular
 		},
 
 		//creates a dialog
-		//templateUrl: 'app/views/includes/workspace/detection.review.html',
 		showDetectionReview: function(ev) {
 			console.log("Starting detection review");
-			Wildbook.getDetectionReview().then(function(html) {
-				console.log("Html: ", html);
-				$mdDialog.show({
-					scope: $scope,
-					preserveScope: true,
-					template: html,
-					targetEvent: ev,
-					clickOutsideToClose: false,
-					fullscreen: false,
-					escapeToClose: false
-				});
-			}).fail(function(data) {
-				$mdDialog.show(
-					$mdDialog.alert()
-					.clickOutsideToClose(true)
-					.title('Error')
-					.textContent('No Response from IA server.')
-					.ariaLabel('IA Error')
-					.ok('OK')
-					.targetEvent(ev)
-				);
+			$mdDialog.show({
+				scope: $scope,
+				preserveScope: true,
+				templateUrl: 'app/views/includes/workspace/detection.review.html',
+				targetEvent: ev,
+				clickOutsideToClose: false,
+				fullscreen: false,
+				escapeToClose: false
 			});
-			$scope.refreshReviews();
+			$scope.refreshReviews($scope.detection.startCheckDetection);
 		},
 
 		detectDialogCancel: function() {
@@ -961,16 +927,51 @@ angular
 					});
 			};
 
-			$scope.delete_id=""
+			$scope.recover_id="";
 
-			$scope.delete_image=function() {
+			$scope.recover_image=function() {
 				var confirm = $mdDialog.confirm()
 				.title('Confirm')
-				.textContent('Are you sure you want to label this image as junk?')
+				.textContent('Are you sure you want to recover this image?')
 				.ok('Yes')
 				.cancel('No');
 				$mdDialog.show(confirm).then(function(result) {
-					Wildbook.addJunkLabel($scope.delete_id).then(function(data) { console.log("AFTER ADDING JUNK LABEL: ", data); });
+					Wildbook.removeJunkLabel($scope.recover_id).then(function(data) { console.log("AFTER REMOVING JUNK LABEL: ", data); });
+					$scope.setWorkspace($scope.workspace);
+					$mdDialog.hide();
+				});
+			};
+
+			/* LABEL INTERACTIONS */
+
+			// Variable to store media asset id that we are adding/removing a label to/from
+
+			$scope.stored_id="";
+
+			$scope.add_label = function(label) {
+				// labelS = label.charAt(0).toUpperCase() + label.slice(1);
+				var confirm = $mdDialog.confirm()
+				.title('Confirm')
+				.textContent('Are you sure you want to label this image as ' + label + '?')
+				.ok('Yes')
+				.cancel('No');
+				$mdDialog.show(confirm).then(function(result) {
+					Wildbook.addLabel($scope.stored_id, label).then(function(data) { console.log("After adding \"" + label + "\" label: ", data); });
+					$scope.setWorkspace($scope.workspace);
+					$mdDialog.hide();
+				});
+			};
+
+
+			$scope.remove_label = function(label) {
+				// labelS = label.charAt(0).toUpperCase() + label.slice(1);
+				var confirm = $mdDialog.confirm()
+				.title('Confirm')
+				.textContent('Are you sure you want to remove \"' + label + '\" label from this image?')
+				.ok('Yes')
+				.cancel('No');
+				$mdDialog.show(confirm).then(function(result) {
+					Wildbook.removeLabel($scope.stored_id, label).then(function(data) { console.log("After adding \"" + label + "\" label: ", data); });
 					$scope.setWorkspace($scope.workspace);
 					$mdDialog.hide();
 				});
