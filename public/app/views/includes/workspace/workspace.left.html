@@ -120,6 +120,24 @@ $(function(){
 	</md-button>
   </div> -->
   <md-divider></md-divider>
+  <div ng-if="showJunk" style="margin: auto">
+    <p flex>
+      <i class="fa fa-fw fa-trash-o fa-4x"></i>
+      <md-tooltip md-autohide> Showing Junk </md-tooltip>
+    </p>
+  </div>
+  <div ng-if="showImportant" style="margin: auto">
+    <p flex>
+      <i class="fa fa-fw fa-star-o fa-4x"></i>
+      <md-tooltip md-autohide> Showing Important </md-tooltip>
+    </p>
+  </div>
+  <div ng-if="!showJunk && !showImportant" style="margin: auto">
+    <p flex>
+      <i class="fa fa-fw fa-picture-o fa-4x"></i>
+      <md-tooltip md-autohide> Showing All </md-tooltip>
+    </p>
+  </div>
   <!-- <label>
     <input type="checkbox" ng-click="toggleJunk()">
    Show Junk</label><br/> -->
