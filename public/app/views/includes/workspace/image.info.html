@@ -77,19 +77,29 @@
       </md-list>
       <md-subheader style="color: white; background-color: #4CAF50;"><b>Labels</b></md-subheader>
       <md-list>
-        <md-list-item ng-repeat="label in mediaAsset.labels" class="md-2-line">
-          <div class="md-list-item-text">
-            <h4><b>{{ label }}</b></h4>
-          </div>
-        </md-list-item>
+        <div>
+          <md-list-item class="md-2-line">
+            <div ng-if="mediaAsset.labels.indexOf('junk') >= 0">
+              <i class="fa fa-fw fa-trash-o fa-3x"></i>
+              <md-tooltip md-autohide> Junk </md-tooltip>
+            </div>
+            <div ng-if="mediaAsset.labels.indexOf('important') >= 0">
+              <i class="fa fa-fw fa-star-o fa-3x"></i>
+              <md-tooltip md-autohide> Important </md-tooltip>
+            </div>
+          </md-list-item>
+        </div>
       </md-list>
       <md-button style="background-color: #D3D3D3;" ng-if="mediaAsset.labels.indexOf('important') >= 0" ng-click="stored_id=mediaAsset.id; remove_label('important')"><strong>
-        Remove 'Important' Classification
+        Remove Important Classification
       </strong></md-button>
       <md-button style="background-color: #D3D3D3;" ng-if="mediaAsset.labels.indexOf('important') < 0" ng-click="stored_id=mediaAsset.id; add_label('important')"><strong>
         Classify as Important
       </strong></md-button>
-      <md-button style="background-color: #D3D3D3;" class="dltbtn" ng-click="stored_id=mediaAsset.id; add_label('junk')"><strong>
+      <md-button style="background-color: #D3D3D3;" class="dltbtn" ng-if="mediaAsset.labels.indexOf('junk') >= 0" ng-click="stored_id=mediaAsset.id; remove_label('junk')"><strong>
+        Remove Junk Classification
+      </strong></md-button>
+      <md-button style="background-color: #D3D3D3;" class="dltbtn" ng-if="mediaAsset.labels.indexOf('junk') < 0" ng-click="stored_id=mediaAsset.id; add_label('junk')"><strong>
         Classify as Junk
       </strong></md-button>
     </div>
