@@ -90,16 +90,18 @@
           </md-list-item>
         </div>
       </md-list>
-      <md-button style="background-color: #D3D3D3;" ng-if="mediaAsset.labels.indexOf('important') >= 0" ng-click="stored_id=mediaAsset.id; remove_label('important')"><strong>
+
+      <!-- Each button checks whether or not the current mediaAsset is labelled junk/important and displays the correct information depending on the labels. -->
+      <md-button style="background-color: #D3D3D3;" ng-if="isImportant(mediaAsset.id, mediaAsset.labels) == 1" ng-click="remove_label('important')"><strong>
         Remove Important Classification
       </strong></md-button>
-      <md-button style="background-color: #D3D3D3;" ng-if="mediaAsset.labels.indexOf('important') < 0" ng-click="stored_id=mediaAsset.id; add_label('important')"><strong>
+      <md-button style="background-color: #D3D3D3;" ng-if="isImportant(mediaAsset.id, mediaAsset.labels) == 0" ng-click="add_label('important')"><strong>
         Classify as Important
       </strong></md-button>
-      <md-button style="background-color: #D3D3D3;" class="dltbtn" ng-if="mediaAsset.labels.indexOf('junk') >= 0" ng-click="stored_id=mediaAsset.id; remove_label('junk')"><strong>
+      <md-button style="background-color: #D3D3D3;" class="dltbtn" ng-if="isJunk(mediaAsset.id, mediaAsset.labels) == 1" ng-click="remove_label('junk')"><strong>
         Remove Junk Classification
       </strong></md-button>
-      <md-button style="background-color: #D3D3D3;" class="dltbtn" ng-if="mediaAsset.labels.indexOf('junk') < 0" ng-click="stored_id=mediaAsset.id; add_label('junk')"><strong>
+      <md-button style="background-color: #D3D3D3;" class="dltbtn" ng-if="isJunk(mediaAsset.id, mediaAsset.labels) == 0" ng-click="add_label('junk')"><strong>
         Classify as Junk
       </strong></md-button>
     </div>

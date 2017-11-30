@@ -208,6 +208,16 @@ angular
 		});
 	};
 
+	// Function to chekc if a specific image is labelled important
+	$scope.isJunk = function(id, labels) {
+		$scope.stored_id = id;
+		if (labels.indexOf('junk') >= 0) {
+			return 1;
+		}
+		return 0;
+	}
+
+	// Function notifies the workspace to show/hide all images labelled junk
 	$scope.toggleJunk = function() {
 		if ($scope.showImportant) {
 			$scope.showImportant = false;
@@ -216,6 +226,16 @@ angular
 		$scope.setWorkspace($scope.workspace);
 	};
 
+	// Function to chekc if a specific image is labelled important
+	$scope.isImportant = function(id, labels) {
+		$scope.stored_id = id;
+		if (labels.indexOf('important') >= 0) {
+			return 1;
+		}
+		return 0;
+	}
+
+	// Function that notifies the workspace to show/hide images with labelled important
 	$scope.toggleImportant = function() {
 		if ($scope.showJunk) {
 			$scope.showJunk = false;
@@ -955,6 +975,7 @@ angular
 				.textContent('Are you sure you want to label this image as ' + label + '?')
 				.ok('Yes')
 				.cancel('No');
+				console.log("Stored id = ", $scope.stored_id);
 				$mdDialog.show(confirm).then(function(result) {
 					Wildbook.addLabel($scope.stored_id, label).then(function(data) { console.log("After adding \"" + label + "\" label: ", data); });
 					$scope.setWorkspace($scope.workspace);
