@@ -5,7 +5,7 @@
   </md-button>
   <md-menu>
     <md-button style="color: black;" class="md-primary" aria-label="Workspace Selector" ng-click="$mdMenu.open($event)">
-      {{ workspace }}&nbsp;<i class="fa fa-caret-down"></i>
+      <strong>{{ workspace }}&nbsp;</strong><i class="fa fa-caret-down"></i>
     </md-button>
     <md-menu-content width="4">
       <md-menu-item ng-repeat="w in workspaces">

@@ -8,12 +8,16 @@
     <thead>
       <tr>
         <th>Thumbnail</th>
-        <th ng-click="tableSortBy('id')">
-          Media Asset ID
-        </th>
-        <th ng-click="tableSortBy('dateTime')">Date</th>
+
+        <!-- Shows the id/table with caret depending on how the table is currently being sorted -->
+        <th ng-click="tableSortBy('id')" ng-if="defaultTableSortProperty == 'id' && reverse == true">Media Asset ID <i class="fa fa-caret-down" aria-hidden="true"></i></th>
+        <th ng-click="tableSortBy('id')" ng-if="defaultTableSortProperty == 'id' && reverse == false">Media Asset ID <i class="fa fa-caret-up" aria-hidden="true"></i></th>
+        <th ng-click="tableSortBy('id')" ng-if="defaultTableSortProperty != 'id'">Media Asset ID</th>
+        <th ng-click="tableSortBy('dateTime')" ng-if="defaultTableSortProperty == 'dateTime' && reverse == true">Date <i class="fa fa-caret-down" aria-hidden="true"></i></th>
+        <th ng-click="tableSortBy('dateTime')" ng-if="defaultTableSortProperty == 'dateTime' && reverse == false">Date <i class="fa fa-caret-up" aria-hidden="true"></i></th>
+        <th ng-click="tableSortBy('dateTime')" ng-if="defaultTableSortProperty != 'dateTime'">Date</th>
         <th st-sort="submetterOrganization">Organization</th>
-        <th st-sort="recordedBy">recordedBy</th>
+        <th st-sort="recordedBy">Recorded By</th>
       </tr>
     </thead>
     <tbody>
