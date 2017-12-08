@@ -27,9 +27,12 @@
     <div id="detection-loading" layout="row" layout-sm="column" layout-align="space-around">
       <md-progress-circular md-mode="indeterminate"></md-progress-circular>
     </div>
-    <div style="#padding-left: 25cm;" class="ibeis-div" id="detection-review"></div>
+
+    <!-- Wraps the Detection Review from IA Server in a div for formatting purposes -->
+    <div style="padding-left: 10px;">
+      <div style="#padding-left: 25cm;" class="ibeis-div" id="detection-review"></div>
+    </div>
 	<div id="detection-complete">{{detection.reviewCompleteText}}</div>
-  <md-divider></md-divider>
   <div id="past-detections" layout="row" layout-sm="column" layout-align="center">
     <md-card class="card-img-parent" style="max-width: 150px; max-height: 150px;" ng-repeat="url in pastDetectionUrls">
 
@@ -41,6 +44,5 @@
 
     </md-card>
   </div>
-  <md-divider></md-divider>
   </md-dialog-content>
 </md-dialog>
