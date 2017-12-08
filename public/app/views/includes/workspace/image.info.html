@@ -75,6 +75,15 @@
           </div>
         </md-list-item>
       </md-list>
+      <md-subheader style="color: white; background-color: #4CAF50;"><b>Detection Status</b></md-subheader>
+      <md-list>
+        <md-list-item>
+          <p ng-if="detectionStatus() == 0"> Detection not run on this </p>
+          <p ng-if="detectionStatus() == 1"> Detection pending review </p>
+          <p ng-if="detectionStatus() == 2"> Detection review complete on this </p>
+          <p ng-if="detectionStatus() == -1"> There was an error when running detection on this </p>
+        </md-list-item>
+      </md-list>
       <md-subheader style="color: white; background-color: #4CAF50;"><b>Labels</b></md-subheader>
       <md-list>
         <div>

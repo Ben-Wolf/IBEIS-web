@@ -18,6 +18,7 @@
         <th ng-click="tableSortBy('dateTime')" ng-if="defaultTableSortProperty != 'dateTime'">Date</th>
         <th st-sort="submetterOrganization">Organization</th>
         <th st-sort="recordedBy">Recorded By</th>
+        <th> Detection Status </th>
       </tr>
     </thead>
     <tbody>
@@ -29,6 +30,9 @@
         </td>
         <td>{{currentSlides.submitterOrganization}}</td>
         <td>{{currentSlides.recordedBy}}</td>
+        <td ng-if="slide.detectionStatus != 'pending' && slide.detectionStatus != 'complete'" style="color: red;"> Detection not run on this </td>
+        <td ng-if="slide.detectionStatus == 'pending'"> Awaiting Review </td>
+        <td ng-if="slide.detectionStatus == 'complete'" style="color: #4CAF50;"> Complete </td>
       </tr>
     </tbody>
   </table>

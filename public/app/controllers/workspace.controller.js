@@ -857,266 +857,278 @@ angular
 	};
 
 
-			/* SIDENAVS */
-			$scope.close = function(id) {
-				$mdSidenav(id).close();
-				//sets image-focus to null.  If multiple sidenavs are toggled this could cause an issue (maybe).
-				$scope.image_index = -1;
-			};
+	/* SIDENAVS */
+	$scope.close = function(id) {
+		$mdSidenav(id).close();
+		//sets image-focus to null.  If multiple sidenavs are toggled this could cause an issue (maybe).
+		$scope.image_index = -1;
+	};
 
 
-			/* SHARE DIALOG */
-			$scope.showShareDialog = function(ev) {
-				$mdDialog.show(
-					$mdDialog.alert({
-						title: 'Share',
-						content: 'This is where the share dialog will be.',
-						ok: 'Close'
-					})
-				);
-			};
+	/* SHARE DIALOG */
+	$scope.showShareDialog = function(ev) {
+		$mdDialog.show(
+			$mdDialog.alert({
+				title: 'Share',
+				content: 'This is where the share dialog will be.',
+				ok: 'Close'
+			})
+		);
+	};
 
 
-			$scope.confirmDialog = function(string) {
-				$mdDialog.show(
-					$mdDialog.alert()
-					.clickOutsideToClose(true)
-					.title('Cancelled')
-					.textContent(string)
-					.ariaLabel('Alert')
-					.ok('OK')
-				);
-			};
+	$scope.confirmDialog = function(string) {
+		$mdDialog.show(
+			$mdDialog.alert()
+			.clickOutsideToClose(true)
+			.title('Cancelled')
+			.textContent(string)
+			.ariaLabel('Alert')
+			.ok('OK')
+		);
+	};
 
 
-			/* IMAGE INFO DIALOG */
-			function ImageDialogController($scope, $mdDialog, mediaAsset) {
-				var mediaAssetId = mediaAsset.id;
-				$scope.mediaAssetId = mediaAsset.id;
-				$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + mediaAssetId)
-					.then(function(response) {
-						$scope.mediaAssetContext = response.data;
-						console.log(response);
-					});
-				$scope.mediaAsset = mediaAsset;
-				//$scope.indID=mediaAsset.feature
+	/* IMAGE INFO DIALOG */
+	function ImageDialogController($scope, $mdDialog, mediaAsset) {
+		var mediaAssetId = mediaAsset.id;
+		$scope.mediaAssetId = mediaAsset.id;
+		$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + mediaAssetId)
+			.then(function(response) {
+				$scope.mediaAssetContext = response.data;
+				console.log("MEDIA ASSET CONTEXT", response);
+			});
+		$scope.mediaAsset = mediaAsset;
+		//$scope.indID=mediaAsset.feature
 
-				$scope.hide = function() {
-					$mdDialog.hide();
-				};
-				$scope.cancel = function() {
-					$mdDialog.cancel();
-				};
-			};
-			//launched on image click, uses the above controller
-			$scope.showImageInfo = function(ev, index) {
-				var asset = $scope.currentSlides[index];
-				console.log(asset);
-				$scope.image_index = index;
-				$mdDialog.show({
-					controller: ImageDialogController,
-					templateUrl: 'app/views/includes/workspace/image.info.html',
-					targetEvent: ev,
-					clickOutsideToClose: true,
-					scope: $scope,
-					preserveScope: true,
-					locals: {
-						mediaAsset: asset
-					}
-				});
-			};
-			$scope.tableImageInfo=function(ev,id){
-				console.log(id);
-				var assets=$scope.currentSlides.filter(function( obj ) {
-  				return obj.id === id;
-					});
-					var asset=assets[0];
-					console.log(asset);
-					$scope.image_index=$scope.currentSlides.indexOf(asset);
-					$mdDialog.show({
-						controller: ImageDialogController,
-						templateUrl: 'app/views/includes/workspace/image.info.html',
-						targetEvent: ev,
-						clickOutsideToClose: true,
-						fullscreen: true,
-						scope: $scope,
-						preserveScope: true,
-						locals: {
-							mediaAsset: asset
-						}
-					});
-			};
-
-			$scope.recover_id="";
-
-			$scope.recover_image=function() {
-				var confirm = $mdDialog.confirm()
-				.title('Confirm')
-				.textContent('Are you sure you want to recover this image?')
-				.ok('Yes')
-				.cancel('No');
-				$mdDialog.show(confirm).then(function(result) {
-					Wildbook.removeJunkLabel($scope.recover_id).then(function(data) { console.log("AFTER REMOVING JUNK LABEL: ", data); });
-					$scope.setWorkspace($scope.workspace);
-					$mdDialog.hide();
-				});
-			};
-
-			/* LABEL INTERACTIONS */
-
-			// Variable to store media asset id that we are adding/removing a label to/from
-
-			$scope.stored_id="";
-
-			$scope.add_label = function(label) {
-				// labelS = label.charAt(0).toUpperCase() + label.slice(1);
-				var confirm = $mdDialog.confirm()
-				.title('Confirm')
-				.textContent('Are you sure you want to label this image as ' + label + '?')
-				.ok('Yes')
-				.cancel('No');
-				console.log("Stored id = ", $scope.stored_id);
-				$mdDialog.show(confirm).then(function(result) {
-					Wildbook.addLabel($scope.stored_id, label).then(function(data) { console.log("After adding \"" + label + "\" label: ", data); });
-					$scope.setWorkspace($scope.workspace);
-					$mdDialog.hide();
-				});
-			};
-
-
-			$scope.remove_label = function(label) {
-				// labelS = label.charAt(0).toUpperCase() + label.slice(1);
-				var confirm = $mdDialog.confirm()
-				.title('Confirm')
-				.textContent('Are you sure you want to remove \"' + label + '\" label from this image?')
-				.ok('Yes')
-				.cancel('No');
-				$mdDialog.show(confirm).then(function(result) {
-					Wildbook.removeLabel($scope.stored_id, label).then(function(data) { console.log("After adding \"" + label + "\" label: ", data); });
-					$scope.setWorkspace($scope.workspace);
-					$mdDialog.hide();
-				});
-			};
-
-			/* VIEW MENU */
-			$scope.views = ['thumbnails', 'table', 'map'];
-			// $scope.views = ['thumbnails', 'table'];
-			$scope.view = $scope.views[0];
-			$scope.setView = function(v) {
-				$scope.view = v;
-			};
-
-			var exifToDecimal = function(coords) {
-				return (coords[0].numerator
-						+ coords[1].numerator/60
-						+ (coords[2].numerator/coords[2].denominator)
-						/ 3600).toFixed(4);
+		$scope.hide = function() {
+			$mdDialog.hide();
+		};
+		$scope.cancel = function() {
+			$mdDialog.cancel();
+		};
+	};
+	//launched on image click, uses the above controller
+	$scope.showImageInfo = function(ev, index) {
+		var asset = $scope.currentSlides[index];
+		console.log("CURRENT SLIDE IMAGE INFO", asset);
+		$scope.image_index = index;
+		$mdDialog.show({
+			controller: ImageDialogController,
+			templateUrl: 'app/views/includes/workspace/image.info.html',
+			targetEvent: ev,
+			clickOutsideToClose: true,
+			scope: $scope,
+			preserveScope: true,
+			locals: {
+				mediaAsset: asset
 			}
+		});
+	};
+	$scope.tableImageInfo=function(ev,id){
+		var assets=$scope.currentSlides.filter(function( obj ) {
+			return obj.id === id;
+			});
+			var asset=assets[0];
+			$scope.image_index=$scope.currentSlides.indexOf(asset);
+			$mdDialog.show({
+				controller: ImageDialogController,
+				templateUrl: 'app/views/includes/workspace/image.info.html',
+				targetEvent: ev,
+				clickOutsideToClose: true,
+				fullscreen: true,
+				scope: $scope,
+				preserveScope: true,
+				locals: {
+					mediaAsset: asset
+				}
+			});
+	};
 
-			//Leaflet map
-			$scope.map = {
-				center: {
-					lat: 0,
-					lng: 0,
-					zoom: 4
-				},
-				options: {
-					draggable: true,
-					zoomControl: true
-				},
-				markers: [],
-				centerMarkers: function() {
-					// Centers map on average location of markers
-					var centerLat = 0;
-					var centerLng = 0;
-					for (i=0; i<$scope.map.markers.length; i++) {
-						var latLng = $scope.map.markers[i].getLatLng();
-						centerLat += latLng.lat;
-						centerLng += latLng.lng;
-					}
-					if ($scope.map.markers.length > 0) {
-						centerLat /= $scope.map.markers.length;
-						centerLng /= $scope.map.markers.length;
-					}
-					$scope.map.center.lat = centerLat;
-					$scope.map.center.lng = centerLng;
-					leafletData.getMap().then(function(map) {
-						map.setView($scope.map.center, $scope.map.center.zoom);
-					});
-				},
-				setBounds: function() {
-					// Centers map on markers via fitBounds
-					var nLat = 0;
-					var sLat = 0;
-					var eLng = 0;
-					var wLng = 0;
-					for (i=0; i<$scope.map.markers.length; i++) {
-						var m = $scope.map.markers[i].getLatLng;
-						nLat = Math.max(nLat, m.lat);
-						sLat = Math.min(sLat, m.lat);
-						eLng = Math.max(eLng, m.lng);
-						wLng = Math.min(wLng, m.lng);
-					}
-					leafletData.getMap().then(function(map) {
-						map.fitBounds([[sLat,wLng],[nLat,eLng]]);
-					});
-				},
-				invalidateSize: function() {
-					leafletData.getMap().then(function(map) {
-						map.invalidateSize();
-					});
-				},
-				refreshMap: function() {
-					leafletData.getMap().then(function(map) {
-						// Clear previous markers
-						for (i=0; i<$scope.map.markers.length; i++) {
-							map.removeLayer($scope.map.markers[i]);
+	// Function that returns the detection status of a media asset (0 = not run; 1 = pending; 2 = complete; -1 = error)
+	$scope.detectionStatus = function() {
+		if (!("detectionStatus" in $scope.mediaAsset)) {
+			return 0;
+		}
+		if ($scope.mediaAsset.detectionStatus == "complete") {
+			return 2;
+		}
+		if ($scope.mediaAsset.detectionStatus == "pending") {
+			return 1;
+		}
+		return -1;
+	};
+
+	$scope.recover_id="";
+
+	$scope.recover_image=function() {
+		var confirm = $mdDialog.confirm()
+		.title('Confirm')
+		.textContent('Are you sure you want to recover this image?')
+		.ok('Yes')
+		.cancel('No');
+		$mdDialog.show(confirm).then(function(result) {
+			Wildbook.removeJunkLabel($scope.recover_id).then(function(data) { console.log("AFTER REMOVING JUNK LABEL: ", data); });
+			$scope.setWorkspace($scope.workspace);
+			$mdDialog.hide();
+		});
+	};
+
+	/* LABEL INTERACTIONS */
+
+	// Variable to store media asset id that we are adding/removing a label to/from
+
+	$scope.stored_id="";
+
+	$scope.add_label = function(label) {
+		// labelS = label.charAt(0).toUpperCase() + label.slice(1);
+		var confirm = $mdDialog.confirm()
+		.title('Confirm')
+		.textContent('Are you sure you want to label this image as ' + label + '?')
+		.ok('Yes')
+		.cancel('No');
+		console.log("Stored id = ", $scope.stored_id);
+		$mdDialog.show(confirm).then(function(result) {
+			Wildbook.addLabel($scope.stored_id, label).then(function(data) { console.log("After adding \"" + label + "\" label: ", data); });
+			$scope.setWorkspace($scope.workspace);
+			$mdDialog.hide();
+		});
+	};
+
+
+	$scope.remove_label = function(label) {
+		// labelS = label.charAt(0).toUpperCase() + label.slice(1);
+		var confirm = $mdDialog.confirm()
+		.title('Confirm')
+		.textContent('Are you sure you want to remove \"' + label + '\" label from this image?')
+		.ok('Yes')
+		.cancel('No');
+		$mdDialog.show(confirm).then(function(result) {
+			Wildbook.removeLabel($scope.stored_id, label).then(function(data) { console.log("After adding \"" + label + "\" label: ", data); });
+			$scope.setWorkspace($scope.workspace);
+			$mdDialog.hide();
+		});
+	};
+
+	/* VIEW MENU */
+	$scope.views = ['thumbnails', 'table', 'map'];
+	// $scope.views = ['thumbnails', 'table'];
+	$scope.view = $scope.views[0];
+	$scope.setView = function(v) {
+		$scope.view = v;
+	};
+
+	var exifToDecimal = function(coords) {
+		return (coords[0].numerator
+				+ coords[1].numerator/60
+				+ (coords[2].numerator/coords[2].denominator)
+				/ 3600).toFixed(4);
+	}
+
+	//Leaflet map
+	$scope.map = {
+		center: {
+			lat: 0,
+			lng: 0,
+			zoom: 4
+		},
+		options: {
+			draggable: true,
+			zoomControl: true
+		},
+		markers: [],
+		centerMarkers: function() {
+			// Centers map on average location of markers
+			var centerLat = 0;
+			var centerLng = 0;
+			for (i=0; i<$scope.map.markers.length; i++) {
+				var latLng = $scope.map.markers[i].getLatLng();
+				centerLat += latLng.lat;
+				centerLng += latLng.lng;
+			}
+			if ($scope.map.markers.length > 0) {
+				centerLat /= $scope.map.markers.length;
+				centerLng /= $scope.map.markers.length;
+			}
+			$scope.map.center.lat = centerLat;
+			$scope.map.center.lng = centerLng;
+			leafletData.getMap().then(function(map) {
+				map.setView($scope.map.center, $scope.map.center.zoom);
+			});
+		},
+		setBounds: function() {
+			// Centers map on markers via fitBounds
+			var nLat = 0;
+			var sLat = 0;
+			var eLng = 0;
+			var wLng = 0;
+			for (i=0; i<$scope.map.markers.length; i++) {
+				var m = $scope.map.markers[i].getLatLng;
+				nLat = Math.max(nLat, m.lat);
+				sLat = Math.min(sLat, m.lat);
+				eLng = Math.max(eLng, m.lng);
+				wLng = Math.min(wLng, m.lng);
+			}
+			leafletData.getMap().then(function(map) {
+				map.fitBounds([[sLat,wLng],[nLat,eLng]]);
+			});
+		},
+		invalidateSize: function() {
+			leafletData.getMap().then(function(map) {
+				map.invalidateSize();
+			});
+		},
+		refreshMap: function() {
+			leafletData.getMap().then(function(map) {
+				// Clear previous markers
+				for (i=0; i<$scope.map.markers.length; i++) {
+					map.removeLayer($scope.map.markers[i]);
+				}
+				$scope.map.markers = [];
+				for (i=0; i<$scope.currentSlides.length; i++) {
+					// Get image location
+					Wildbook.getMediaAssetDetails($scope.currentSlides[i].id).then(function(response) {
+						var lat;
+						var lng;
+						var id;
+						// Currently uses 'userLatitude'/'userLongitude'
+						// Will switch to 'latitude'/'longitude' eventually
+						if (response.userLatitude) {
+							lat = response.userLatitude;
 						}
-						$scope.map.markers = [];
-						for (i=0; i<$scope.currentSlides.length; i++) {
-							// Get image location
-							Wildbook.getMediaAssetDetails($scope.currentSlides[i].id).then(function(response) {
-								var lat;
-								var lng;
-								var id;
-								// Currently uses 'userLatitude'/'userLongitude'
-								// Will switch to 'latitude'/'longitude' eventually
-								if (response.userLatitude) {
-									lat = response.userLatitude;
-								}
-								else if (response.latitude) {
-									lat = response.latitude;
-								}
-								if (response.userLongitude) {
-									lng = response.userLongitude;
-								}
-								else if (response.longitude) {
-									lng = response.longitude;
-								}
-								if (lat && lng) {
-									// Place marker for applicable images
-									var marker = new L.marker([lat,lng]);
-									var ptxt = "imageID: " + response.id
-												+ "<br><img src='"
-												+ response.url
-												+ "' style='max-width:150px !important; max-height:200px;"
-												+ " width:auto; height:auto'>"
-												+ "<br>" + lat + " N"
-												+ "<br>" + lng + " E";
-									marker.bindPopup(ptxt);
-									map.addLayer(marker);
-									$scope.map.markers.push(marker);
-									$scope.map.centerMarkers();
-								}
-							});
+						else if (response.latitude) {
+							lat = response.latitude;
 						}
-						// Due to asynchronous API calls, this may be called before markers in place
-						// $scope.map.invalidateSize();
-						$scope.map.centerMarkers();
-						// $scope.map.setBounds();
+						if (response.userLongitude) {
+							lng = response.userLongitude;
+						}
+						else if (response.longitude) {
+							lng = response.longitude;
+						}
+						if (lat && lng) {
+							// Place marker for applicable images
+							var marker = new L.marker([lat,lng]);
+							var ptxt = "imageID: " + response.id
+										+ "<br><img src='"
+										+ response.url
+										+ "' style='max-width:150px !important; max-height:200px;"
+										+ " width:auto; height:auto'>"
+										+ "<br>" + lat + " N"
+										+ "<br>" + lng + " E";
+							marker.bindPopup(ptxt);
+							map.addLayer(marker);
+							$scope.map.markers.push(marker);
+							$scope.map.centerMarkers();
+						}
 					});
 				}
-			};
+				// Due to asynchronous API calls, this may be called before markers in place
+				// $scope.map.invalidateSize();
+				$scope.map.centerMarkers();
+				// $scope.map.setBounds();
+			});
+		}
+	};
 
 			//everything below is upload
 
