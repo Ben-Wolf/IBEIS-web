@@ -1,1 +1,44 @@
-<a href="http://localhost:7070/#!/workspace">Go to workspace</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+</head>
+
+<!-- TODO: IMPLEMENT LOGIN AND USER AUTHENTICATION -->
+<md-sidenav id="main-sidenav" layout="column" class="sidenav md-sidenav-left md-whiteframe-z3" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
+  <div class="sidenav-header">
+    <md-menu-bar class="main-menu md-whiteframe-z1">
+    </md-menu-bar>
+    <header id="logo">
+      <div class="logo">
+        <img src="assets/img/logo-ibeis.png" height="240" width="240" ng-click="toggleLogo()">
+      </div>
+    </header>
+    <md-divider></md-divider>
+  </div>
+</md-sidenav>
+<div class="layout-column flex" style="background-color: #eee;">
+  <md-toolbar layout="row" id="toolbar">
+    <ng-include flex></ng-include>
+  </md-toolbar>
+  <h2 style="text-align: center; color: rgb(76,175,80);"> Sign in </h2>
+  <div>
+    <form class="form-horizontal">
+			<div class="form-group">
+					<div class="col-md-4 col-md-offset-4">
+					<input type="email" class="form-control login-input" id="email" name = "email" placeholder="Enter email">
+					</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-4 col-md-offset-4">
+					<input type="password" class="form-control login-input" id="pass" name = "password" placeholder="Enter password">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-4 col-md-offset-4">
+					<a href="http://localhost:7070/#!/workspace" class="btn btn-info .btn-lg">Submit</a>
+				</div>
+			</div>
+		</form>
+  </div>
+</html>

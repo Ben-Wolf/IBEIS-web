@@ -76,7 +76,8 @@
     </md-button>
   </div>
 
-  <div>
+  <!-- TODO: UNCOMMENT FOLLOWING DIV WHEN MORE LABEL SUPPORT IS ADDED - VIRTUALLY USELESS AS OF NOW -->
+  <!-- <div>
     <md-menu md-position-mode="target-right target">
       <md-button class="md-icon-button" aria-label="Labels" ng-click="$mdMenu.open($event)">
         <i class="fa fa-tags"></i>
@@ -86,9 +87,6 @@
       </md-button>
       <md-menu-content width="3">
         <md-menu-item>
-          <!-- <label>
-            <input type="checkbox" ng-click="toggleJunk()">
-           Show Junk</label><br/> -->
           <md-button ng-click=toggleJunk()>
             <div layout="row" ng-if="showJunk">
               <p flex>
@@ -118,7 +116,7 @@
           </md-button>
       </md-menu-content>
     </md-menu>
-  </div>
+  </div> -->
 
 
 
@@ -138,7 +136,7 @@
       </md-tooltip>
     </md-button>
     <md-menu-content width="3">
-      <!--md-menu-item ng-repeat="t in types">
+      <md-menu-item ng-repeat="t in types">
         <md-button ng-click="setType(t)">
           <div layout="row">
             <p flex>
@@ -148,8 +146,8 @@
             </p>
           </div>
         </md-button>
-      </md-menu-item-->
-      <!--md-divider></md-divider-->
+      </md-menu-item>
+      <md-divider></md-divider>
       <md-menu-item ng-repeat="v in views">
         <md-button ng-click="setView(v)">
           <div layout="row">

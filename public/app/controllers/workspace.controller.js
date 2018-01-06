@@ -63,7 +63,10 @@ angular
 					if(data.assets[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
 						continue;
 					}
-					currentSlides.push(data.assets[i]);
+					if(data.assets[i].labels.indexOf('junk') < 0 && $scope.showJunk == true) {
+						continue;
+					}
+					$scope.currentSlides.push(data.assets[i]);
 				}
 				console.log(data);
       })
@@ -85,12 +88,13 @@ angular
 				//data = data.slice(1, (data.length - 2));
 				$scope.workspacesObj = JSON.parse(data);
 				$scope.workspaces=[];
-				$scope.workspaceid=[];
+				$scope.workspaceID=$scope.workspacesObj[0].id;
 				for(var i=0; i<$scope.workspacesObj.length;i++){
 					$scope.workspaces.push($scope.workspacesObj[i].name);
 				}
 				console.log("Workspace Objects ", $scope.workspacesObj);
 				console.log("Workspaces ", $scope.workspaces);
+				console.log("Workspace ID", $scope.workspaceID);
 				$scope.setWorkspace($scope.workspaces[0], false);
 			});
 		}).fail(function(data) {
@@ -146,8 +150,7 @@ angular
 
 	/* TYPE MENU */
 	//Used for top-right selector to change the data between the below 3 items
-	// $scope.types = ['images', 'annotations', 'animals'];
-	$scope.types = ['images'];
+	$scope.types = ['images', 'annotations', 'animals'];
 	$scope.type = $scope.types[0];
 
 	$scope.setType = function(t) {
@@ -186,15 +189,21 @@ angular
 		.then(function(data) {
 			console.log("Get Workspace Data ", data.assets);
 			$scope.workspace = id_;
-			$scope.currentSlides = [];
-			if ($scope.showImportant) {
-				console.log("Showing important images");
+			for (var i = 0; i < $scope.workspacesObj; i++) {
+				if ($scope.workspacesObj[i].name.equals(id_) == true) {
+					$scope.workspaceID = $scope.workspacesObj[i].id;
+					console.log("WORKSPACE ID = ", $scope.workspaceID);
+				}
 			}
+			$scope.currentSlides = [];
 			for (var i = 0; i < data.assets.length; i++) {
 				if(data.assets[i].labels.indexOf('important') < 0 && $scope.showImportant == true) {
 					continue;
 				}
 				if(data.assets[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
+					continue;
+				}
+				if(data.assets[i].labels.indexOf('junk') < 0 && $scope.showJunk == true) {
 					continue;
 				}
 				$scope.currentSlides.push(data.assets[i]);
@@ -258,6 +267,9 @@ angular
 					continue;
 				}
 				if(response.data[i].labels.indexOf('junk') >= 0 && $scope.showJunk == false) {
+					continue;
+				}
+				if(response.data[i].labels.indexOf('junk') < 0 && $scope.showJunk == true) {
 					continue;
 				}
 				$scope.currentSlides.push(response.data[i]);
@@ -427,7 +439,7 @@ angular
       if ($scope.filterID == 'Marked Individual'){ params.class = "org.ecocean.MarkedIndividual"}
       if ($scope.filterID == 'Annotation'){ params.class = "org.ecocean.Annotation"}
       if ($scope.filterID == 'Media Asset'){ params.class = "org.ecocean.MediaAsset"}
-      // params = JSON.stringify(params);
+      params = JSON.stringify(params);
 			$scope.queryWorkspace(params);
 			$scope.close('filter');
 		},
@@ -482,7 +494,7 @@ angular
 
 	$scope.refreshReviews = function(callback = function() {return;}) {
 		console.log($scope.workspace);
-		Wildbook.getReviewCounts().then(function(response) {
+		Wildbook.getReviewCounts($scope.workspaceID).then(function(response) {
 			$scope.reviewCounts = response;
 			// console.log($scope.reviewCounts);
 
@@ -650,6 +662,7 @@ angular
 		},
 
 		detectDialogCancel: function() {
+			$scope.setWorkspace($scope.workspace);
 			$mdDialog.cancel();
 		},
 
@@ -798,9 +811,13 @@ angular
 			if (!$scope.detection.firstRun && $scope.reviewCounts.detection == 0) {
 				console.log('No detections remaining');
 				if (document.getElementById("detection-complete")) {
-					$scope.detection.reviewCompleteText = 'Detection Review Complete!';
-					document.getElementById("detection-loading").style.visibility="hidden";
-					document.getElementById("detection-loading").style.height="0px";
+					$mdDialog.show(
+						$mdDialog.alert({
+							title: 'Detection Review Complete',
+							content: 'No more detection reviews remaining.',
+							ok: 'Close'
+						})
+					);
 				}
 			}
 			else {
