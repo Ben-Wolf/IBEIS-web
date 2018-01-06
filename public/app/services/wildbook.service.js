@@ -237,11 +237,11 @@ var workspace = angular
       });
     };
 
-    service.getReviewCounts = function() {
-      console.log(service.baseUrl + 'ia?getReviewCounts');
+    service.getReviewCounts = function(workspaceID) {
+      console.log(service.baseUrl + 'ia?getReviewCounts&workspaceId=' + workspaceID);
       return $.ajax({
         type: "GET",
-        url: service.baseUrl + 'ia?getReviewCounts',
+        url: service.baseUrl + 'ia?getReviewCounts&workspaceId=' + workspaceID,
         dataType: "json",
       });
     };
