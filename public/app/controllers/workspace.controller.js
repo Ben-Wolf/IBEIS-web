@@ -1,8 +1,8 @@
 angular
 	.module('workspace')
 	.controller('workspace-controller', [
-		'$rootScope', '$scope', '$routeParams', '$mdSidenav', '$mdToast', '$mdDialog', '$mdMedia', '$http', '$sce', 'reader-factory', 'Wildbook', 'leafletData', '$timeout',
-		function($rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData, $timeout) {
+		'$location', '$rootScope', '$scope', '$routeParams', '$mdSidenav', '$mdToast', '$mdDialog', '$mdMedia', '$http', '$sce', 'reader-factory', 'Wildbook', 'leafletData', '$timeout',
+		function($location, $rootScope, $scope, $routeParams, $mdSidenav, $mdToast, $mdDialog, $mdMedia, $http, $sce, readerFactory, Wildbook, leafletData, $timeout) {
 
 	//DECLARE VARIABLES
 	$scope.showImportant = false;
@@ -30,6 +30,10 @@ angular
 		$scope.myDate.getMonth(),
 		$scope.myDate.getDate()
 	)
+
+	$scope.logout = function() {
+		$location.path('/login');
+	};
 
 	//used for saving info using the datepicker
 	$scope.set_datetime_model = function() {
@@ -180,7 +184,13 @@ angular
 
 		if (!id_) {
         console.warn('setWorkspace() not passed an id; failing!');
-        alert('setWorkspace() was not passed an id.  :(');
+				$mdDialog.show(
+					$mdDialog.alert({
+						title : "Error",
+						content : "An error has occurred",
+						ok : "Close"
+					})
+				);
         return;
     }
 
@@ -313,7 +323,7 @@ angular
 					console.log(data[i] + " : " + result);
 					if (data[i] == result) {
 						console.log(data[i] + " : " + result);
-						alert("Cannot have duplicate names in retrieve workspaces");
+						console.log("Cannot have duplicate names in retrieve workspaces");
 						return 0;
 					}
 				}
@@ -1275,7 +1285,13 @@ angular
 					$scope.upload.updateProgress();
 				},
 				failureCallback: function() {
-					alert("Failed to upload files");
+					$mdDialog.show(
+						$mdDialog.alert({
+							title: "Error",
+							content: "Failed to upload files",
+							ok: "Close"
+						})
+					);
 					$scope.upload.stage = 0;
 					console.log($scope.upload.stage);
 					$scope.upload.close();

@@ -5,6 +5,7 @@ angular.module('ibeis', [
   'ibeis.routes',
   // controllers
   'workspace',
+  'login',
   // services
   'wildbook.service',
   // imports

@@ -2,7 +2,12 @@ angular.module('ibeis.routes', ['ngRoute'])
     .config(function($routeProvider) {
         $routeProvider
             .when('/login', {
-                templateUrl: 'app/views/pages/login.html'
+                templateUrl: 'app/views/pages/login.html',
+                controller: 'login-controller',
+                controllerAs: 'loginCtrl'
+            })
+            .when('/register', {
+              templateUrl: 'app/views/pages/register.html',
             })
             .when('/workspace', {
                 templateUrl: 'app/views/pages/workspace.html',

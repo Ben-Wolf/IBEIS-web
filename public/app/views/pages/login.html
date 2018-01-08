@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<link href='https://fonts.googleapis.com/css?family=Scope One' rel='stylesheet'>
 	<meta charset="utf-8">
 </head>
 
@@ -15,28 +16,37 @@
       </div>
     </header>
     <md-divider></md-divider>
+		<div style="text-align: center; font-family: 'Scope One';">
+			<h1> Wildbook </h1>
+		</div>
+		<div style="font-family: 'Scope One';">
+			<p style="padding-left: 15px; padding-right: 15px"> Wildbook blends structured wildlife research with artificial intelligence, citizen science, and computer vision to speed population analysis and develop new insights to help fight extinction.  </p>
+		</div>
   </div>
 </md-sidenav>
 <div class="layout-column flex" style="background-color: #eee;">
   <md-toolbar layout="row" id="toolbar">
     <ng-include flex></ng-include>
   </md-toolbar>
-  <h2 style="text-align: center; color: rgb(76,175,80);"> Sign in </h2>
+  <h1 style="font-family: 'Scope One'; text-align: center; color: rgb(76,175,80);"> <strong>Sign in</strong> </h1>
   <div>
-    <form class="form-horizontal">
-			<div class="form-group">
+    <form name="form" class="form-horizontal" role="form" ng-submit="login()">
+			<div style="padding-bottom:20px">
 					<div class="col-md-4 col-md-offset-4">
-					<input type="email" class="form-control login-input" id="email" name = "email" placeholder="Enter email">
+					<input style="font-family: 'Scope One'" type="email" ng-model="email" required class="form-control login-input" id="email" name = "email" placeholder="E-mail Address">
 					</div>
 			</div>
-			<div class="form-group">
+			<div style="padding-top: 20px; padding-bottom: 20px">
 				<div class="col-md-4 col-md-offset-4">
-					<input type="password" class="form-control login-input" id="pass" name = "password" placeholder="Enter password">
+					<input style="font-family: 'Scope One'" type="password" ng-model="password"  required class="form-control login-input" id="pass" name = "password" placeholder="Password">
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="col-md-4 col-md-offset-4">
-					<a href="http://localhost:7070/#!/workspace" class="btn btn-info .btn-lg">Submit</a>
+			<div style="padding-top: 20px">
+				<div class="form-actions" style="text-align: center">
+					<button class="btn btn-success .btn-lg" style="font-family: 'Scope One'"> Login </button>
+				</div>
+				<div class="col-md-4 col-md-offset-4" style="text-align: center">
+					<a href="http://localhost:7070/#!/register" style="color rgb(76,175,80); text-align: right"> Don't have an account? </a>
 				</div>
 			</div>
 		</form>
