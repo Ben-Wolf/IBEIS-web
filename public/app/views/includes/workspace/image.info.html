@@ -84,7 +84,9 @@
           <p ng-if="detectionStatus() == -1"> There was an error when running detection on this </p>
         </md-list-item>
       </md-list>
-      <md-subheader style="color: white; background-color: #4CAF50;"><b>Labels</b></md-subheader>
+
+      <!-- TODO: UNCOMMENT FOLLOWING CODE WHEN MORE LABEL SUPPORT IS ADDED - UNDERWHELMING AS IS -->
+      <!-- <md-subheader style="color: white; background-color: #4CAF50;"><b>Labels</b></md-subheader>
       <md-list>
         <div>
           <md-list-item class="md-2-line">
@@ -98,10 +100,10 @@
             </div>
           </md-list-item>
         </div>
-      </md-list>
+      </md-list> -->
 
       <!-- Each button checks whether or not the current mediaAsset is labelled junk/important and displays the correct information depending on the labels. -->
-      <!-- TODO: UNCOMMENT FOLLOWING CODE WHEN MORE LABEL SUPPORT IS ADDED - VIRTUALLY USELESS AS IS -->
+
       <!-- <md-button style="background-color: #D3D3D3;" ng-if="isImportant(mediaAsset.id, mediaAsset.labels) == 1" ng-click="remove_label('important')"><strong>
         Remove Important Classification
       </strong></md-button>
