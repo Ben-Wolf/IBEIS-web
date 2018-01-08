@@ -7,22 +7,7 @@
 
 <!-- TODO: IMPLEMENT LOGIN AND USER AUTHENTICATION -->
 <md-sidenav id="main-sidenav" layout="column" class="sidenav md-sidenav-left md-whiteframe-z3" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
-  <div class="sidenav-header">
-    <md-menu-bar class="main-menu md-whiteframe-z1">
-    </md-menu-bar>
-    <header id="logo">
-      <div class="logo">
-        <img src="assets/img/logo-ibeis.png" height="240" width="240" ng-click="toggleLogo()">
-      </div>
-    </header>
-    <md-divider></md-divider>
-		<div style="text-align: center; font-family: 'Scope One';">
-			<h1> Wildbook </h1>
-		</div>
-		<div style="font-family: 'Scope One';">
-			<p style="padding-left: 15px; padding-right: 15px"> Wildbook blends structured wildlife research with artificial intelligence, citizen science, and computer vision to speed population analysis and develop new insights to help fight extinction.  </p>
-		</div>
-  </div>
+	<ng-include src="'app/views/includes/entry/entry.left.html'"></ng-include>
 </md-sidenav>
 <div class="layout-column flex" style="background-color: #eee;">
   <md-toolbar layout="row" id="toolbar">
@@ -43,10 +28,10 @@
 			</div>
 			<div style="padding-top: 20px">
 				<div class="form-actions" style="text-align: center">
-					<button class="btn btn-success .btn-lg" style="font-family: 'Scope One'"> Login </button>
+					<button type="submit" class="btn btn-success .btn-lg" style="font-family: 'Scope One'"> Login </button>
 				</div>
 				<div class="col-md-4 col-md-offset-4" style="text-align: center">
-					<a href="http://localhost:7070/#!/register" style="color rgb(76,175,80); text-align: right"> Don't have an account? </a>
+					<a href="#!/register" style="color rgb(76,175,80); text-align: right"> Don't have an account? </a>
 				</div>
 			</div>
 		</form>
