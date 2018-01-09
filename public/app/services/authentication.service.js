@@ -10,17 +10,18 @@ var authentication = angular
   }
 
   //TODO: When we have server side authentication the post will provide, role etc.
-  Authentication.login = function (credentials) {
+  Authentication.login = function () {
+    // var credentials = {};
+    // credentials.email = $scope.email;
+    // credentials.pw = $scope.pass;
     // return $http
     //   .post('/login', credentials)
     //   .then(function (res) {
     var res = {};
     res.success = true;
     res.id = 1;
-    res.user = 1;
     res.role = "Admin";
-        Session.create(res.id, res.user,
-                       res.role, res.success);
+        Session.create(res.id, res.role);
         return res;
       // });
   };

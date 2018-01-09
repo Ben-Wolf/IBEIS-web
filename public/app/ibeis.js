@@ -43,9 +43,7 @@ angular.module('ibeis', [
 })
 .constant('USER_ROLES', {
   member: 'member',
-  admin: 'admin',
-  editor: 'admin',
-  guest: 'guest'
+  admin: 'admin'
 })
 // setup utility functions
 .run(function($rootScope, $location, $mdDialog, AUTH_EVENTS, Authentication) {
@@ -53,10 +51,13 @@ angular.module('ibeis', [
     keys: Object.keys
   };
 
+  $rootScope.account = {};
+  $rootScope.account.id = 1;  // TEMPORARY CODE TO PREVENT HAVING TO SIGN IN AFTER EVERY REFRESH!!!!
+
   $rootScope.$on('$locationChangeStart', function (event, next, current) {
     // restrict access to certain pages if not logged in
     var restrictedPage = $.inArray($location.path(), ['/login', '/register']) === -1;
-    var loggedIn = $rootScope.userId;
+    var loggedIn = $rootScope.account.id;
     if (restrictedPage && !loggedIn) {
       // If not even on the wildbook ui just redirect to login
       if (next == current) {
