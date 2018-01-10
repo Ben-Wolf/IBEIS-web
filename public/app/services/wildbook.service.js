@@ -238,7 +238,7 @@ var workspace = angular
     };
 
     service.getReviewCounts = function(workspaceID) {
-      console.log(service.baseUrl + 'ia?getReviewCounts&workspaceId=' + workspaceID);
+      // console.log(service.baseUrl + 'ia?getReviewCounts&workspaceId=' + workspaceID);
       return $.ajax({
         type: "GET",
         url: service.baseUrl + 'ia?getReviewCounts&workspaceId=' + workspaceID,

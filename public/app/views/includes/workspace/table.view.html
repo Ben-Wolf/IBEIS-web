@@ -22,17 +22,19 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="slide in currentSlides | orderBy:defaultTableSortProperty:reverse" ng-click="tableImageInfo($event, slide.id)">
-        <td><img class="lazyload" data-src="{{slide.url}}" style="max-height: 150px; max-width: 150px; width: auto" /></td>
-        <td>{{slide.id}}</td>
-        <td>
+      <tr ng-repeat="slide in currentSlides | orderBy:defaultTableSortProperty:reverse">
+        <td ng-click="tableImageInfo($event, slide.id)"><img class="lazyload" data-src="{{slide.url}}" style="max-height: 150px; max-width: 150px; width: auto" /></td>
+        <td ng-click="tableImageInfo($event, slide.id)">{{slide.id}}</td>
+        <td ng-click="tableImageInfo($event, slide.id)">
             {{convertDateTime(slide.dateTime)}}
         </td>
-        <td>{{currentSlides.submitterOrganization}}</td>
-        <td>{{currentSlides.recordedBy}}</td>
-        <td ng-if="slide.detectionStatus != 'pending' && slide.detectionStatus != 'complete'" style="color: red;"> Detection not run on this </td>
-        <td ng-if="slide.detectionStatus == 'pending'"> Awaiting Review </td>
-        <td ng-if="slide.detectionStatus == 'complete'" style="color: #4CAF50;"> Complete </td>
+        <td ng-click="tableImageInfo($event, slide.id)">{{currentSlides.submitterOrganization}}</td>
+        <td ng-click="tableImageInfo($event, slide.id)">{{currentSlides.recordedBy}}</td>
+        <td ng-click="tableImageInfo($event, slide.id)" ng-if="slide.detectionStatus != 'pending' && slide.detectionStatus != 'complete'" style="color: red;"> Detection not run on this </td>
+        <td ng-if="slide.detectionStatus == 'pending'"> Awaiting Review <br>
+          <md-button class="md-primary md-raised" ng-click="detection.setDetectionStoredId(slide.id);detection.detectionReviewFromImage($event)"> Review Now </md-button>
+        </td>
+        <td ng-click="tableImageInfo($event, slide.id)" ng-if="slide.detectionStatus == 'complete'" style="color: #4CAF50;"> Complete </td>
       </tr>
     </tbody>
   </table>
