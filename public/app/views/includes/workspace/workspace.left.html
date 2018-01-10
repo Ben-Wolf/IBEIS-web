@@ -80,7 +80,7 @@ $(function(){
   <!-- Functions -->
   <md-divider></md-divider>
   <div class="action-container" layout="column" style="margin-top: 0px">
-    <md-button class="md-primary md-raised sidenav-btn" ng-click="detection.startDetection($event)" ng-disabled="workspace == 'Loading...'">
+    <md-button class="md-primary md-raised sidenav-btn" ng-click="detection.runDetection($event)" ng-disabled="workspace == 'Loading...'">
       <strong>Run</strong> Detection
     </md-button>
     <md-button class="md-primary md-raised sidenav-btn" ng-click="detection.showDetectionReview($event)" ng-disabled="workspace == 'Loading...'">
@@ -120,6 +120,9 @@ $(function(){
 	</md-button>
   </div> -->
   <md-divider></md-divider>
+  <div ng-if="detection.running == true" style="text-align: center"> Detection Running
+    <md-progress-circular md-diameter="25" md-mode="indeterminate" style="margin:0 auto;"></md-progress-circular>
+  </div>
   <!-- TODO: UNCOMMENT FOLLOWING CODE WHEN MORE LABEL SuPPORT ADDED -->
   <!-- <div ng-if="showJunk" style="margin: auto">
     <p flex>

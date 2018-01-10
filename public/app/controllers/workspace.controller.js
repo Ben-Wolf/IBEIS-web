@@ -15,7 +15,7 @@ angular
 	$scope.reviewData = {};
 	$scope.datetime_model = new Date();
 	$scope.pastDetectionReviews = [];
-	$scope.pastDetectionUrls = [];
+	// $scope.pastDetectionUrls = [];
   $scope.loading = 'off';
 	$scope.uploading = 'off';
 	$scope.individual_model="";
@@ -97,8 +97,8 @@ angular
 					$scope.workspaces.push($scope.workspacesObj[i].name);
 				}
 				console.log("Workspace Objects ", $scope.workspacesObj);
-				console.log("Workspaces ", $scope.workspaces);
-				console.log("Workspace ID", $scope.workspaceID);
+				// console.log("Workspaces ", $scope.workspaces);
+				// console.log("Workspace ID", $scope.workspaceID);
 				$scope.setWorkspace($scope.workspaces[0], false);
 			});
 		}).fail(function(data) {
@@ -194,17 +194,19 @@ angular
         return;
     }
 
+		// Sets the workspace ID
+		for (var i = 0; i < $scope.workspacesObj.length; i++) {
+			if ($scope.workspacesObj[i].name == id_) {
+				$scope.workspaceID = $scope.workspacesObj[i].id;
+			}
+		}
+
 		$scope.refreshReviews();
+
 		Wildbook.getWorkspace(id_)
 		.then(function(data) {
-			console.log("Get Workspace Data ", data.assets);
+			// console.log("Get Workspace Data ", data.assets);
 			$scope.workspace = id_;
-			for (var i = 0; i < $scope.workspacesObj; i++) {
-				if ($scope.workspacesObj[i].name.equals(id_) == true) {
-					$scope.workspaceID = $scope.workspacesObj[i].id;
-					console.log("WORKSPACE ID = ", $scope.workspaceID);
-				}
-			}
 			$scope.currentSlides = [];
 			for (var i = 0; i < data.assets.length; i++) {
 				if(data.assets[i].labels.indexOf('important') < 0 && $scope.showImportant == true) {
@@ -224,7 +226,7 @@ angular
 			$scope.map.refreshMap();
 		}).fail(function(data) {
 			console.log("failed workspace get");
-		});
+		});;
 	};
 
 	// Function to chekc if a specific image is labelled important
@@ -502,13 +504,12 @@ angular
 	};
 
 
-	$scope.refreshReviews = function(callback = function() {return;}) {
-		console.log($scope.workspace);
+	$scope.refreshReviews = function(callback = function() {return;}, id) {
+		// console.log($scope.workspace);
 		Wildbook.getReviewCounts($scope.workspaceID).then(function(response) {
 			$scope.reviewCounts = response;
 			// console.log($scope.reviewCounts);
-
-			callback();
+			callback(id);
 			// Some cases require reviewCounts to be updated before proceeding
 			// Pass function as callback to stall until reviews refreshed
 		});
@@ -558,41 +559,109 @@ angular
 		}
 	};
 
+	$scope.detectionStoredId = "";
+
 	//object where all detection functions are stored
 	$scope.detection = {
 		currentReviewID : 0,
-		startDetection: function(ev) {
-			console.log("Detection starting");
+		runDetection: function(ev) {
+			var ids = [];
 			$scope.detection.firstRun = true;
+			for (i=0; i<$scope.currentSlides.length; i++) {
+				// console.log($scope.currentSlides[i]);
+				if($scope.currentSlides[i].detectionStatus != 'pending' && $scope.currentSlides[i].detectionStatus != 'complete'){
+					ids.push($scope.currentSlides[i].id);
+				}
+			}
+			var confirm = $mdDialog.confirm()
+				.title('Run Detection')
+        .textContent(ids.length + ' images have not had Detection run on them yet.')
+        .targetEvent(ev)
+        .ok('Run detection on all images')
+        .cancel('Run detection on '  + ids.length + ' new images');
+			if (ids.length == 0) {
+				confirm.textContent('All images have had Detection run on them.');
+				confirm.ok('Re-run detection on all images');
+				confirm.cancel('Cancel');
+			}
+			if (ids.length == $scope.currentSlides.length) {
+				$scope.detection.detectAll();
+			}
+			else {
+				$mdDialog.show(confirm).then(function() {
+					$scope.detection.detectAll(ev);
+				}, function() {
+					if (ids.length != 0) {
+						$scope.detection.detectNew(ev, ids);
+					}
+				});
+			}
+		},
+
+		detectAll: function(ev) {
+			console.log("Detection starting on all images in set");
+			$scope.detection.firstRun = true;
+			$scope.detection.running = true;
 			Wildbook.findMediaAssetSetIdFromUploadSet($scope.workspace)
 			.then(function(response) {
-				console.log(response);
+				// console.log(response);
 				if (response.data.metadata.TranslateQueryArgs.query) {
 					console.log(response.data.metadata.TranslateQueryArgs.query.id);
 					Wildbook.runDetection(response.data.metadata.TranslateQueryArgs.query.id)
 					.then(function(data) {
 						// this callback will be called asynchronously
 						// when the response is available
-						console.log(data);
+						// console.log("RUN DETECTION DATA =", data);
 						$scope.$apply(function() {
 							//detection has started.  Save the job id, then launch review
 							if (data.success) {
+								$scope.detection.running = false;
+								// $scope.refreshReviews();
+								// $scope.setWorkspace($scope.workspace);
 								$scope.detection.showDetectionReview(ev);
 							}
 							else {
 								console.log('error: ' + data.error);
-								$scope.detection.startDetectionByImage(ev);
+								$scope.detection.detectNew(ev);
 							}
 						});
 					}).fail(function(data) {
 						console.log('IA server error');
-						$scope.detection.startDetectionByImage(ev);
+						$scope.detection.detectNew(ev);
 					});
 				}
 				else {
 					console.log('error: no valid mediaAssetSetId');
-					$scope.detection.startDetectionByImage(ev);
+					$scope.detection.detectNew(ev);
 				}
+			});
+		},
+
+		// Runs detection on all media assets that have not already had detection run on them.
+		detectNew: function(ev, ids) {
+			$scope.detection.running = true;
+			Wildbook.runDetectionByImage(ids)
+			.then(function(data) {
+				// this callback will be called asynchronously
+				// when the response is available
+				$scope.$apply(function() {
+					//detection has started. Launch review
+					if (data.success) {
+						$scope.detection.running = false;
+						$scope.detection.showDetectionReview(ev);
+					}
+				});
+			}).fail(function(data) {
+				// Shows failure dialog...
+				$mdDialog.show(
+					$mdDialog.alert()
+					.clickOutsideToClose(true)
+					.title('Error')
+					.textContent('No Response from IA server.')
+					.ariaLabel('IA Error')
+					.ok('OK')
+					.targetEvent(ev)
+				)
 			});
 		},
 
@@ -617,48 +686,13 @@ angular
 			$scope.reviewData.reviewReady = true;
 		},
 
-		startDetectionByImage: function(ev) {
-			var ids = [];
-			for (i=0; i<$scope.currentSlides.length; i++) {
-				ids.push($scope.currentSlides[i].id);
-			}
-			Wildbook.runDetectionByImage(ids)
-			.then(function(data) {
-				// this callback will be called asynchronously
-				// when the response is available
-				$scope.$apply(function() {
-					//detection has started. Launch review
-					if (data.success) {
-						$scope.detection.showDetectionReview(ev);
-					}
-					console.log(data);
-				});
-			}).fail(function(data) {
-				// Shows failure dialog...
-				$mdDialog.show(
-					$mdDialog.alert()
-					.clickOutsideToClose(true)
-					.title('Error')
-					.textContent('No Response from IA server.')
-					.ariaLabel('IA Error')
-					.ok('OK')
-					.targetEvent(ev)
-				)
-			});
+		setDetectionStoredId: function(id) {
+			console.log("Setting id to ", id);
+			$scope.detectionStoredId = id;
 		},
 
-		//used to query for results every 3 seconds until it gets a response
-		startCheckDetection: function() {
-			$scope.reviewData.reviewReady = false;
-			$scope.waiting_for_response = true;
-			$scope.detection.reviewCompleteText = '';
-			$scope.detection.getNextDetectionHTML();
-			// $scope.detection.detectionChecker = setInterval($scope.detection.checkLoadedDetection, 500);
-		},
-
-		//creates a dialog
-		showDetectionReview: function(ev) {
-			console.log("Starting detection review");
+		detectionReviewFromImage: function(ev) {
+			console.log("Starting detection review from image", $scope.detectionStoredId);
 			$mdDialog.show({
 				scope: $scope,
 				preserveScope: true,
@@ -668,7 +702,50 @@ angular
 				fullscreen: false,
 				escapeToClose: false
 			});
-			$scope.refreshReviews($scope.detection.startCheckDetection);
+			$scope.refreshReviews($scope.detection.startCheckDetectionFromImage, $scope.detectionStoredId);
+		},
+
+		//creates a dialog
+		showDetectionReview: function(ev) {
+			console.log("Starting detection review");
+			if (!$scope.detection.firstRun && $scope.reviewCounts.detection == 0) {
+				console.log('No detections remaining');
+				$mdDialog.show(
+					$mdDialog.alert({
+						title: 'Detection Review Complete',
+						content: 'No more detection reviews remaining.',
+						ok: 'Close'
+					})
+				);
+			}
+			else {
+				$mdDialog.show({
+					scope: $scope,
+					preserveScope: true,
+					templateUrl: 'app/views/includes/workspace/detection.review.html',
+					targetEvent: ev,
+					clickOutsideToClose: false,
+					fullscreen: false,
+					escapeToClose: false
+				});
+				$scope.refreshReviews($scope.detection.startCheckDetection);
+			}
+		},
+
+		startCheckDetectionFromImage: function(id) {
+			$scope.reviewData.reviewReady = false;
+			$scope.waiting_for_response = true;
+			$scope.detection.reviewCompleteText = '';
+			$scope.detection.getNextDetectionHTMLById(id);
+		},
+
+		//used to query for results every 3 seconds until it gets a response
+		startCheckDetection: function() {
+			$scope.reviewData.reviewReady = false;
+			$scope.waiting_for_response = true;
+			$scope.detection.reviewCompleteText = '';
+			$scope.detection.getNextDetectionHTML();
+			// $scope.detection.detectionChecker = setInterval($scope.detection.checkLoadedDetection, 500);
 		},
 
 		detectDialogCancel: function() {
@@ -765,10 +842,10 @@ angular
 					$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + document.getElementsByName("mediaasset-id")[0].value)
 					.then(function(response) {
 						console.log(response);
-						$scope.pastDetectionUrls.push(response.url);
+						// $scope.pastDetectionUrls.push(response.url);
 						$scope.detection.detectionLoading();
 						console.log($scope.pastDetectionReviews);
-						console.log($scope.pastDetectionUrls);
+						// console.log($scope.pastDetectionUrls);
 						$scope.detection.submitDetectionReview();
 						$scope.detection.currentReviewID=document.getElementsByName("mediaasset-id")[0].value;
 					});
@@ -802,21 +879,6 @@ angular
 			$scope.detection.submitPrevDetectionReview(id);
 		},
 
-		// Load an image based off its media asset it
-		loadDetectionHTMLwithById: function(id){
-			$scope.detection.detectionLoading();
-			console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
-			$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId="+ id);
-		},
-
-		//temp function
-		endReview: function() {
-			//do Submit of current review
-			$scope.detection.submitDetectionReview();
-			//exit
-			$scope.detection.detectDialogCancel();
-		},
-
 		getNextDetectionHTML: function() {
 			if (!$scope.detection.firstRun && $scope.reviewCounts.detection == 0) {
 				console.log('No detections remaining');
@@ -834,7 +896,7 @@ angular
 				$scope.detection.firstRun = false;
 				var time = new Date().getTime();
 				var currId=$scope.workspacesObj.filter(function(itm){return itm.name===$scope.workspace;})[0].id;
-				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&test=123&time=" + time);
+				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+currId+"&test=123&time=" + time);
 				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+currId+"&test=123&time=" + time, function(response, status, xhr) {
 					if ($scope.pastDetectionReviews.length <= 0 || document.getElementsByName("mediaasset-id")[0] == $scope.pastDetectionReviews[1]) {
 						$scope.detection.allowBackButton = false;
@@ -856,17 +918,20 @@ angular
 			if (!$scope.detection.firstRun && $scope.reviewCounts.detection == 0) {
 				console.log('No detections remaining');
 				if (document.getElementById("detection-complete")) {
-					$scope.detection.reviewCompleteText = 'Detection Review Complete!';
-					document.getElementById("detection-loading").style.visibility="hidden";
-					document.getElementById("detection-loading").style.height="0px";
+					$mdDialog.show(
+						$mdDialog.alert({
+							title: 'Detection Review Complete',
+							content: 'No more detection reviews remaining.',
+							ok: 'Close'
+						})
+					);
 				}
 			}
 			else {
 				$scope.detection.firstRun = false;
 				var time = new Date().getTime();
-				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id);
-				console.log(id);
-				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id, function(response, status, xhr) {
+				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id + "&test=123&time=" + time);
+				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id + "&test=123&time=" + time, function(response, status, xhr) {
 					if ($scope.pastDetectionReviews.length <= 0  || id == $scope.pastDetectionReviews[1]) {
 						$scope.detection.allowBackButton = false;
 					} else {
@@ -891,9 +956,23 @@ angular
 		$scope.image_index = -1;
 	};
 
+	/* HELP DIALOG */
+	//TODO: Put in template so Help dialog is actually helpful
+	$scope.openHelpDialog = function(ev) {
+		$mdDialog.show(
+			$mdDialog.alert({
+				title: 'Help',
+				fullscreen: true,
+				// We are going to have to put a template in for this
+				content: "Wildbook provides you with multiple different ways to analyze your wildlife photos.",
+				ok: "Thanks"
+			})
+		);
+	};
 
 	/* SHARE DIALOG */
-	$scope.showShareDialog = function(ev) {
+	//TODO: Make share dialog actually give share capability
+	$scope.openShareDialog = function(ev) {
 		$mdDialog.show(
 			$mdDialog.alert({
 				title: 'Share',
