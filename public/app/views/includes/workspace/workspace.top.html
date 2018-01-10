@@ -49,14 +49,6 @@
     </md-tooltip>
   </md-button>
 
-  <!-- Not sure we want undo filter capability? Filters should be something can turn on and off, we dont need previous saved states for this... -->
-  <!-- <md-button class="md-icon-button" aria-label="Undo" ng-click="filter.undoFilter()">
-    <i class="fa fa-fw fa-undo"></i>
-    <md-tooltip md-autohide>
-      Revert to last saved iteration
-    </md-tooltip>
-  </md-button> -->
-
   <div ng-if="!saving" ng-init="saving=false">
     <md-button class="md-icon-button" aria-label="Save" ng-click="saveNewWorkspace($event)">
     <!-- <md-button class="md-icon-button" aria-label="Save" ng-click="$parent.saving=true"> -->
@@ -72,6 +64,15 @@
       <i class="fa fa-fw fa-trash-o"></i>
       <md-tooltip md-autohide>
         Delete this workspace
+      </md-tooltip>
+    </md-button>
+  </div>
+
+  <div>
+    <md-button class="md-icon-button" aria-label="Refresh" ng-click="setWorkspace(workspace)">
+      <i class="fa fa-fw fa-refresh"></i>
+      <md-tooltip md-autohide>
+        Refresh workspace
       </md-tooltip>
     </md-button>
   </div>
@@ -132,7 +133,7 @@
     <md-button aria-label="View Selector" ng-click="$mdMenu.open($event)">
       VIEW <i class="fa fa-caret-down" aria-hidden="true" fa-lg></i>
       <md-tooltip md-direction="left" md-autohide>
-        Viewing {{type}} in {{view}} mode.
+        Viewing {{type}}.
       </md-tooltip>
     </md-button>
     <md-menu-content width="3">
@@ -147,7 +148,16 @@
           </div>
         </md-button>
       </md-menu-item>
-      <md-divider></md-divider>
+    </md-menu-content>
+  </md-menu>
+  <md-menu md-position-mode="target-left target">
+    <md-button aria-label="View Selector" ng-click="$mdMenu.open($event)">
+      MODE <i class="fa fa-caret-down" aria-hidden="true" fa-lg></i>
+      <md-tooltip md-direction="left" md-autohide>
+        In {{view}} mode.
+      </md-tooltip>
+    </md-button>
+    <md-menu-content width="3">
       <md-menu-item ng-repeat="v in views">
         <md-button ng-click="setView(v)">
           <div layout="row">

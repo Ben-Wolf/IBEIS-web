@@ -15,7 +15,7 @@ angular
 	$scope.reviewData = {};
 	$scope.datetime_model = new Date();
 	$scope.pastDetectionReviews = [];
-	$scope.pastDetectionUrls = [];
+	// $scope.pastDetectionUrls = [];
   $scope.loading = 'off';
 	$scope.uploading = 'off';
 	$scope.individual_model="";
@@ -226,7 +226,7 @@ angular
 			$scope.map.refreshMap();
 		}).fail(function(data) {
 			console.log("failed workspace get");
-		});
+		});;
 	};
 
 	// Function to chekc if a specific image is labelled important
@@ -703,7 +703,6 @@ angular
 				escapeToClose: false
 			});
 			$scope.refreshReviews($scope.detection.startCheckDetectionFromImage, $scope.detectionStoredId);
-			// $scope.detection.startCheckDetectionFromImage($scope.detectionStoredId);
 		},
 
 		//creates a dialog
@@ -843,10 +842,10 @@ angular
 					$http.get('http://uidev.scribble.com/MediaAssetContext?id=' + document.getElementsByName("mediaasset-id")[0].value)
 					.then(function(response) {
 						console.log(response);
-						$scope.pastDetectionUrls.push(response.url);
+						// $scope.pastDetectionUrls.push(response.url);
 						$scope.detection.detectionLoading();
 						console.log($scope.pastDetectionReviews);
-						console.log($scope.pastDetectionUrls);
+						// console.log($scope.pastDetectionUrls);
 						$scope.detection.submitDetectionReview();
 						$scope.detection.currentReviewID=document.getElementsByName("mediaasset-id")[0].value;
 					});
@@ -957,9 +956,23 @@ angular
 		$scope.image_index = -1;
 	};
 
+	/* HELP DIALOG */
+	//TODO: Put in template so Help dialog is actually helpful
+	$scope.openHelpDialog = function(ev) {
+		$mdDialog.show(
+			$mdDialog.alert({
+				title: 'Help',
+				fullscreen: true,
+				// We are going to have to put a template in for this
+				content: "Wildbook provides you with multiple different ways to analyze your wildlife photos.",
+				ok: "Thanks"
+			})
+		);
+	};
 
 	/* SHARE DIALOG */
-	$scope.showShareDialog = function(ev) {
+	//TODO: Make share dialog actually give share capability
+	$scope.openShareDialog = function(ev) {
 		$mdDialog.show(
 			$mdDialog.alert({
 				title: 'Share',

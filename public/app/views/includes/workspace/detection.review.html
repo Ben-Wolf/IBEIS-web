@@ -34,15 +34,15 @@
     </div>
 	<div id="detection-complete">{{detection.reviewCompleteText}}</div>
   <div id="past-detections" layout="row" layout-sm="column" layout-align="center">
-    <md-card class="card-img-parent" style="max-width: 150px; max-height: 150px;" ng-repeat="url in pastDetectionUrls">
+    <div ng-repeat="id in pastDetectionReviews">
 
       <!-- <div ng-if="id == $detection.currentReviewID" style="border: 1px solid black;"> -->
 
-      <img class="lazyload" data-src="{{url}}" style="max-height: 150px; max-width: 150px; width: auto" />
+      <!-- <p> {{id}} </p> -->
 
       <!-- </div> -->
 
-    </md-card>
+    </div>
   </div>
   </md-dialog-content>
 </md-dialog>
