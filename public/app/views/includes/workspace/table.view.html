@@ -10,15 +10,17 @@
         <th>Thumbnail</th>
 
         <!-- Shows the id/table with caret depending on how the table is currently being sorted -->
-        <th ng-click="tableSortBy('id')" ng-if="defaultTableSortProperty == 'id' && reverse == true">Media Asset ID <i class="fa fa-caret-down" aria-hidden="true"></i></th>
-        <th ng-click="tableSortBy('id')" ng-if="defaultTableSortProperty == 'id' && reverse == false">Media Asset ID <i class="fa fa-caret-up" aria-hidden="true"></i></th>
-        <th ng-click="tableSortBy('id')" ng-if="defaultTableSortProperty != 'id'">Media Asset ID</th>
-        <th ng-click="tableSortBy('dateTime')" ng-if="defaultTableSortProperty == 'dateTime' && reverse == true">Date <i class="fa fa-caret-down" aria-hidden="true"></i></th>
-        <th ng-click="tableSortBy('dateTime')" ng-if="defaultTableSortProperty == 'dateTime' && reverse == false">Date <i class="fa fa-caret-up" aria-hidden="true"></i></th>
-        <th ng-click="tableSortBy('dateTime')" ng-if="defaultTableSortProperty != 'dateTime'">Date</th>
+        <th ng-click="tableSortBy('id')" ng-if="defaultTableSortProperty == 'id' && reverse == true"><strong>Media Asset ID </strong><i class="fa fa-caret-down" aria-hidden="true"></i></th>
+        <th ng-click="tableSortBy('id')" ng-if="defaultTableSortProperty == 'id' && reverse == false"><strong>Media Asset ID </strong><i class="fa fa-caret-up" aria-hidden="true"></i></th>
+        <th ng-click="tableSortBy('id')" ng-if="defaultTableSortProperty != 'id'"><strong>Media Asset ID </strong></th>
+        <th ng-click="tableSortBy('dateTime')" ng-if="defaultTableSortProperty == 'dateTime' && reverse == true"><strong>Date </strong><i class="fa fa-caret-down" aria-hidden="true"></i></th>
+        <th ng-click="tableSortBy('dateTime')" ng-if="defaultTableSortProperty == 'dateTime' && reverse == false"><strong>Date </strong><i class="fa fa-caret-up" aria-hidden="true"></i></th>
+        <th ng-click="tableSortBy('dateTime')" ng-if="defaultTableSortProperty != 'dateTime'"><strong>Date</strong></th>
         <th st-sort="submetterOrganization">Organization</th>
         <th st-sort="recordedBy">Recorded By</th>
-        <th> Detection Status </th>
+        <th ng-click="tableSortBy('detectionStatus')" ng-if="defaultTableSortProperty == 'detectionStatus' && reverse == true"><strong>Detection Status </strong><i class="fa fa-caret-up" aria-hidden="true"></i></th>
+        <th ng-click="tableSortBy('detectionStatus')" ng-if="defaultTableSortProperty == 'detectionStatus' && reverse == false"><strong>Detection Status </strong><i class="fa fa-caret-down" aria-hidden="true"></i></th>
+        <th ng-click="tableSortBy('detectionStatus')" ng-if="defaultTableSortProperty != 'detectionStatus'"><strong>Detection Status </strong></th>
       </tr>
     </thead>
     <tbody>

@@ -79,7 +79,7 @@
       <md-list>
         <md-list-item>
           <p ng-if="detectionStatus() == 0"> Detection not run </p>
-          <md-button ng-click="detection.setDetectionStoredId(mediaAssest.id);detection.detectionReviewFromImage($event)" ng-if="detectionStatus() == 1"> Detection awaiting review </md-button>
+          <p ng-if="detectionStatus() == 1"> Detection awaiting review </p>
           <p ng-if="detectionStatus() == 2"> Detection review complete </p>
           <p ng-if="detectionStatus() == -1"> There was an error when running detection </p>
         </md-list-item>

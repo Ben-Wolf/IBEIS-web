@@ -74,15 +74,27 @@
         <!-- <div infinite-scroll="addMoreItems()" infinite-scroll-distance='2'>  stacks the images...-->
 
         <!-- Following Code generates all the thumbnails. -->
-        <md-card class="card-img-parent" style="max-width: 150px; max-height: 150px;" ng-repeat="slide in currentSlides" ng-click="showImageInfo($event, $index)">
+        <div ng-repeat="slide in currentSlides">
+          <md-card class="card-img-parent" style="max-width: 150px; max-height: 150px;" ng-click="showImageInfo($event, $index)">
+            <!-- <div ng-if="slide.detectionStatus=='pending'" style="border: 2px solid black;"> -->
 
-          <!-- <div style="border: 1px solid black;"> -->
+            <img class="lazyload" data-src="{{slide.url}}" style="max-height: 150px; max-width: 150px; width: auto" />
+          </md-card>
 
-          <img class="lazyload" data-src="{{slide.url}}" style="max-height: 150px; max-width: 150px; width: auto" />
+          <div ng-if="slide.detectionStatus=='complete'" style="color: green;padding-left: 10px">
+            Detection:
+            <i class="fa fa-fw fa-check"></i>
+          </div>
+          <div ng-click="detection.setDetectionStoredId(slide.id);detection.detectionReviewFromImage($event)" ng-if="slide.detectionStatus=='pending'" style="padding-left: 10px;">
+            Detection:
+            <i class="fa fa-fw fa-clipboard"></i>
+          </div>
+          <div ng-if="slide.detectionStatus!='pending' && slide.detectionStatus!='complete'" style="padding-left: 10px;color: red">
+            Detection:
+            <i class="fa fa-fw fa-times"></i>
+          </div>
 
-          <!-- </div> -->
-
-        </md-card>
+        </div>
       </div>
     </div>
   </body>
