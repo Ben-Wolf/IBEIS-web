@@ -80,7 +80,7 @@ $(function(){
   <!-- Functions -->
   <md-divider></md-divider>
   <div class="action-container" layout="column" style="margin-top: 0px">
-    <md-button class="md-primary md-raised sidenav-btn" ng-click="detection.startDetection($event)" ng-disabled="workspace == 'Loading...'">
+    <md-button class="md-primary md-raised sidenav-btn" ng-click="detection.runDetection($event)" ng-disabled="workspace == 'Loading...'">
       <strong>Run</strong> Detection
     </md-button>
     <md-button class="md-primary md-raised sidenav-btn" ng-click="detection.showDetectionReview($event)" ng-disabled="workspace == 'Loading...'">
