@@ -896,8 +896,8 @@ angular
 				$scope.detection.firstRun = false;
 				var time = new Date().getTime();
 				var currId=$scope.workspacesObj.filter(function(itm){return itm.name===$scope.workspace;})[0].id;
-				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+currId+"&test=123&time=" + time);
-				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+currId+"&test=123&time=" + time, function(response, status, xhr) {
+				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+currId+"&time=" + time);
+				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlNext&workspaceId="+currId+"&time=" + time, function(response, status, xhr) {
 					if ($scope.pastDetectionReviews.length <= 0 || document.getElementsByName("mediaasset-id")[0] == $scope.pastDetectionReviews[1]) {
 						$scope.detection.allowBackButton = false;
 					} else {
@@ -930,8 +930,8 @@ angular
 			else {
 				$scope.detection.firstRun = false;
 				var time = new Date().getTime();
-				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id + "&test=123&time=" + time);
-				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id + "&test=123&time=" + time, function(response, status, xhr) {
+				console.log("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id + "&time=" + time);
+				$("#detection-review").load("http://uidev.scribble.com/ia?getDetectionReviewHtmlId=" + id + "&time=" + time, function(response, status, xhr) {
 					if ($scope.pastDetectionReviews.length <= 0  || id == $scope.pastDetectionReviews[1]) {
 						$scope.detection.allowBackButton = false;
 					} else {

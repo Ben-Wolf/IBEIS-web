@@ -351,7 +351,7 @@ var workspace = angular
     service.getIdentificationReview = function() {
       return $.ajax({
         type: "GET",
-        url: service.baseUrl + 'ia?getIdentificationReviewHtmlNext&test',
+        url: service.baseUrl + 'ia?getIdentificationReviewHtmlNext',
         dataType: "json",
         contentType: 'application/javascript'
       });
@@ -394,7 +394,7 @@ var workspace = angular
     service.getDetectionReview = function() {
       return $.ajax({
         type: "GET",
-        url: service.baseUrl + 'ia?getDetectionReviewHtmlNext&test',
+        url: service.baseUrl + 'ia?getDetectionReviewHtmlNext',
         dataType: "json",
         contentType: 'application/javascript'
       });
